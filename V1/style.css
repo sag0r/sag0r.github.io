@@ -2,7 +2,7 @@
     *** typos
 */
 .font-poppins, body {
-    font-family: Poppins;
+    font-family: 'Poppins', sans-serif;
 }
 body {
     color: #2d3239;
@@ -233,7 +233,7 @@ body {
 }
 .i-1 .index {
     top: -15px;
-    left: 5px;
+    left: 10px;
 }
 .i-1 i,
 .i-1 .index h1 {
@@ -247,7 +247,7 @@ body {
 }
 .i-2 .index {
     top: -15px;
-    right: 5px;
+    right: 10px;
 }
 .i-2 i,
 .i-2 .index h1 {
@@ -259,7 +259,7 @@ body {
 }
 .i-3 .index {
     bottom: -15px;
-    left: 5px;
+    left: 10px;
 }
 .i-3 i,
 .i-3 .index h1 {
@@ -271,7 +271,7 @@ body {
 }
 .i-4 .index {
     bottom: -15px;
-    right: 5px;
+    right: 10px;
 }
 .i-4 i,
 .i-4 .index h1 {
@@ -336,8 +336,7 @@ body {
     *** intro-2
 */
 .intro-2 {
-    min-height: 350px;
-    max-height: 400px;
+    height: 420px;
     overflow: hidden;
 }
 
@@ -406,7 +405,37 @@ body {
     font-weight: 600;
 }
 .intro-2 .right p {
-    font-size: 18px;
-    line-height: 20px;
+    font-size: 20px;
+    line-height: 25px;
     margin-top: 25px;
+}
+
+
+@media all and (max-width: 576px) {
+    .highlights .item {
+        border: none;
+        border-bottom: 1px solid #eee;
+    }
+
+    .highlights .item .index {
+        top: 0px;
+        left: 15px;
+    }
+}
+
+@media all and (max-width: 768px) {
+    .intro-2 {
+        height: 840px;
+    }
+    .highlights .index h1 {
+        font-size: 75px;
+    }
+    .i-1 .index {
+        top: -10px;
+        left: 10px;
+    }
+    .i-2 .index {
+        top: -10px;
+        right: 10px;
+    }
 }
