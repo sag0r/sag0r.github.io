@@ -4,6 +4,9 @@
 .font-poppins, body {
     font-family: Poppins;
 }
+body {
+    color: #2d3239;
+}
 
 .text-muted-v2 {
     color: rgba(255, 255, 255, 0.5) !important;
@@ -184,9 +187,9 @@
     position: relative;
 }
 .intro .desc .btn {
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(242, 191, 55, 1);
     border-radius: 0;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(242, 191, 55, 1);
     background: transparent;
     transition: .6s ease;
     padding-left: 30px;
@@ -194,12 +197,13 @@
 }
 
 .intro .desc .btn:hover {
-    border-color: #cc9f5a;
-    color: #cc9f5a;
+    background: #cc9f5a;
+    color: #fff;
 }
 .intro .desc h3 {
     font-size: 24px;
     margin: 15px 0;
+    color: #f2bf37;
 }
 
 
@@ -324,4 +328,85 @@
     transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
     z-index: 3;
+}
+
+
+
+/*
+    *** intro-2
+*/
+.intro-2 {
+    min-height: 350px;
+    max-height: 400px;
+    overflow: hidden;
+}
+
+.intro-2 .left,
+.intro-2 .right {
+    height: 410px;
+    overflow: hidden;
+    position: relative;
+}
+
+.intro-2 .left:after,
+.intro-2 .right:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.intro-2 .overlay,
+.intro-2 .overlay {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+}
+
+.intro-2 .left:after {
+    background: linear-gradient(161deg, #1b2840 0%, #26282b 49%, #1b2840 100%);
+    opacity: .9;
+}
+
+.intro-2 .right:after {
+    background: rgba(242, 191, 55, .8);
+}
+
+.intro-2 .left .desc .btn {
+    border: 1px solid rgba(242, 191, 55, 1);
+    border-radius: 0;
+    color: rgba(242, 191, 55, 1);
+    background: transparent;
+    transition: .6s ease;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.intro-2 .left .desc .btn:hover {
+    background: #cc9f5a;
+    color: #fff;
+}
+
+.intro-2 .left .desc h3 {
+    font-size: 24px;
+    margin: 15px 0;
+}
+
+.intro-2 .left span {
+    color: #f2bf37;
+    text-transform: uppercase;
+    font-size: 20px;
+    font-weight: 600;
+}
+.intro-2 .right h3 {
+    font-size: 36px;
+    font-weight: 600;
+}
+.intro-2 .right p {
+    font-size: 18px;
+    line-height: 20px;
+    margin-top: 25px;
 }
