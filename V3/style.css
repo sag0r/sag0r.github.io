@@ -63,10 +63,14 @@ body {
     line-height: 24px;
     font-weight: 700;
     margin-top: 10px;
+    text-transform: uppercase;
 }
 .l-b {
-    font-size: 12px;
-    letter-spacing: 1px;
+    font-size: 24px;
+    text-transform: uppercase;
+    font-weight: 700;
+    line-height: 18px;
+    letter-spacing: 3px;
 }
 
 .main-nav .navbar-brand {
@@ -120,6 +124,7 @@ body {
 
 .cover .icon {
     border-bottom: 2px solid #f0d3b1;
+    padding-bottom: 42px !important;
 }
 
 .cover h1 {
@@ -161,4 +166,64 @@ body {
 .cover .social-icons ul li:hover {
     border-color: #f0d3b1;
     color: #f0d3b1;
+}
+
+
+
+.footer {
+    background: #3b3b3b;
+    padding-top: 35px;
+}
+
+.footer-logo i {
+    color: #f0d3b1;
+}
+.footer-logo h2 {
+    color: #f0d3b1;
+    margin: 10px 0 0;
+}
+.footer-logo h4 {
+    color: #fff;
+    font-size: 16px;
+}
+
+.footer-bottom {
+    background: #343434;
+    padding: 10px 0;
+}
+
+.footer-nav ul,
+.footer-bottom ul {
+    margin: 0;
+    padding: 0;
+}
+
+.footer-nav ul li {
+    display: inline-block;
+    margin: 0 10px;
+    color: #fff;
+    font-size: 20px;
+}
+.footer-bottom ul li {
+    display: inline-block;
+    margin: 0 10px;
+    color: #fff;
+}
+
+.footer-nav h4 {
+    color: #fff;
+    font-size: 20px;
+}
+
+.footer-bottom .copyright {
+    text-align: right;
+}
+
+@media all and (max-width: 767px) {
+    .footer-bottom .copyright {
+        text-align: center;
+    }
+    .footer-bottom ul {
+        text-align: center;
+    }
 }
