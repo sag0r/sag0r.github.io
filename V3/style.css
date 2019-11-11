@@ -308,3 +308,8 @@ body {
 #carouselExampleCaptions .action-btn {
     margin-top: 10px;
 }
+
+
+#carouselExampleIndicators img {
+    max-height: 90vh;
+}
