@@ -313,3 +313,30 @@ body {
 #carouselExampleIndicators img {
     max-height: 90vh;
 }
+.pre-footer-offer {
+    background: #f3f3f3;
+    padding: 15px 0;
+}
+.pre-footer-offer ul {
+    margin: 0;
+    padding: 0;
+}
+.pre-footer-offer ul li {
+    list-style-type: none;
+    display: inline-block;
+    margin: 0 5px;
+}
+
+
+
+@media all and (max-width: 992px) {
+    .contacts {
+        text-align: center;
+    }
+}
+@media all and (max-width: 768px) {
+    .title-newsletter {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+}
