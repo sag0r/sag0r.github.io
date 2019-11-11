@@ -1,0 +1,164 @@
+/*
+    *** typos
+*/
+.font-poppins, body {
+    font-family: Poppins;
+}
+body {
+    color: #343434;
+}
+
+.text-muted-v2 {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* 
+    *** common
+*/
+.bg-primary {
+    background: #f0d3b1 !important;
+}
+.text-primary {
+    color: #f0d3b1 !important;
+}
+.bg-primary-alt {
+    background: #343434 !important;
+}
+.text-primary-alt {
+    color: #343434 !important;
+}
+.btn-brand-alt {
+    background: #343434;
+    color: #fff;
+    border-radius: 0;
+}
+
+.shadow-md {
+    box-shadow: 0 10px 20px 0 rgba(0,0,0,.06)
+}
+
+/*
+    *** Menu
+*/
+.main-nav {}
+
+.bg-black {
+    background: #343434;
+}
+.bg-brand {
+    background: #f3e9d0;
+}
+.and-shadow {
+    box-shadow: 0 3px 5px -1px rgba(0,0,0,.2),
+                0 6px 10px 0 rgba(0,0,0,.14),
+                0 1px 18px 0 rgba(0,0,0,.12);
+}
+
+.l-i {
+    font-size: 42px;
+    color: #343434;
+}
+.l-t {
+    font-size: 24px;
+    line-height: 24px;
+    font-weight: 700;
+    margin-top: 10px;
+}
+.l-b {
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.main-nav .navbar-brand {
+    color: #343434;
+}
+.main-nav .navbar-nav a {
+    color: #343434;
+}
+
+
+
+.cover {
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    background: #3e3e3e;
+}
+
+.cover:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(51, 51, 51, 0.6);
+}
+
+.cover .overlay {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+}
+
+.cover .btn {
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 0;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    font-size: 24px;
+    background: transparent;
+    transition: .6s ease;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+.cover .btn:hover {
+    border-color: #f0d3b1;
+    color: #f0d3b1;
+}
+
+.cover .icon {
+    border-bottom: 2px solid #f0d3b1;
+}
+
+.cover h1 {
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 54px;
+    text-shadow: 0 14px 24px rgba(50, 48, 58, 0.25);
+}
+.cover h6 {
+    font-size: 22px;
+    font-style: italic;
+}
+
+.cover .social-icons {
+    position: absolute;
+    bottom: 25px;
+    left: 0;
+    width: 100%;
+    z-index: 4;
+}
+
+.cover .social-icons ul {
+    margin: 0;
+    padding: 0;
+}
+.cover .social-icons ul li {
+    cursor: pointer;
+    display: inline-block;
+    list-style-type: none;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    width: 35px;
+    border-radius: 50%;
+    height: 35px;
+    padding-top: 5px;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 5px;
+    transition: .6s ease;
+}
+.cover .social-icons ul li:hover {
+    border-color: #f0d3b1;
+    color: #f0d3b1;
+}
