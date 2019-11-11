@@ -21,8 +21,8 @@
         <div class="container">
             <div class="navbar-brand p-0">
                 <div class="d-flex" style="height: 60px;">
-                    <div class="d-flex align-center">
-                        <img src="images/logo-black.png" alt="">
+                    <div class="d-flex align-center ">
+                        <img src="images/logo-black.png" alt="" class="img-logo">
                     </div>
                     <div class="d-flex align-items-start flex-column align-items-stretch font-poppins pl-2">
                         <div class="d-flex align-items-start">
@@ -163,7 +163,7 @@
                         </ol>
                         <div class="carousel-inner">
                             <div class="carousel-item active">
-                                <div class="carousel-caption d-none d-md-block">
+                                <div class="carousel-caption">
                                     <blockquote class="blockquote">
                                         <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
                                             posuere erat a ante.</p>
@@ -176,7 +176,7 @@
                                 </div>
                             </div>
                             <div class="carousel-item">
-                                <div class="carousel-caption d-none d-md-block">
+                                <div class="carousel-caption">
                                     <blockquote class="blockquote">
                                         <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
                                             posuere erat a ante.</p>
@@ -189,7 +189,7 @@
                                 </div>
                             </div>
                             <div class="carousel-item">
-                                <div class="carousel-caption d-none d-md-block">
+                                <div class="carousel-caption">
                                     <blockquote class="blockquote">
                                         <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
                                             posuere erat a ante.</p>
@@ -368,6 +368,15 @@
                 scrollToElement(scrollToEl);
             });
         });
+
+        $('.navbar-toggler').click(function () {
+            const isMenuShown = $('.navbar-collapse').hasClass('show');
+            const icon = $('i', this);
+            const add = isMenuShown ? 'fa-bars' : 'fa-times';
+            const remove = isMenuShown ? 'fa-times' : 'fa-bars';
+            icon.removeClass(remove).addClass(add);
+        });
+
     </script>
 
 </body>

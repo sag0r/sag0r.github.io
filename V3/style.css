@@ -311,6 +311,7 @@ body {
 
 
 #carouselExampleIndicators img {
+    min-height: 480px;
     max-height: 90vh;
 }
 .pre-footer-offer {
@@ -327,7 +328,10 @@ body {
     margin: 0 5px;
 }
 
-
+.title-newsletter,
+.newsletter-form button {
+    text-transform: uppercase;
+}
 
 @media all and (max-width: 992px) {
     .contacts {
@@ -339,4 +343,32 @@ body {
         text-align: center;
         margin-bottom: 10px;
     }
+}
+
+@media all and (max-width: 576px) {
+    #carouselExampleCaptions .blockquote p {
+        font-size: 24px;
+        line-height: 24px;
+    }
+    .img-logo {
+        margin-left: 15px;
+    }
+
+    .footer-logo h2 {
+        font-size: 24px;
+    }
+    .footer-nav ul li {
+        margin: 0 6px;
+        font-size: 18px;
+    }
+    .footer-nav h4 {
+        font-size: 18px;
+    }
+}
+
+.img-logo {
+    width: 50px;
+    height: 50px;
+    display: block;
+    margin-top: 5px;
 }
