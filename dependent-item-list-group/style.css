@@ -1,0 +1,95 @@
+.has-border {
+    border: 1px solid #eee;
+}
+
+.slider-arrow-prev,
+.slider-arrow-next {
+    position: absolute;
+    top: 35%;
+    z-index: 2;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.slider-arrow-prev {
+    left: -13px;
+}
+.slider-arrow-next {
+    right: -13px;
+}
+
+ul.list-group {
+    margin-bottom: 0;
+    margin-top: 5px;
+}
+
+.slick-arrow.slick-disabled {
+    cursor: not-allowed;
+    opacity: .3;
+}
+
+.list-group-wrapper {
+    border: 1px solid #ddd;
+    height: 365px;
+    overflow: hidden;
+    padding-bottom: 10px;
+}
+
+.list-group-wrapper:not(:last-child) {
+    border-right-color: transparent;
+}
+
+.list-group-content {
+    position: relative;
+    height: 100%;
+    width: 108%;
+    overflow: hidden scroll;
+}
+
+.list-group-filter {
+    padding: 15px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+}
+
+.list-group-filter input,
+.list-group-filter .input-group-addon {
+    border-radius: 0;
+    border-color: #eee;
+}
+
+.list-group-filter .input-group-addon {
+    border-radius: 0;
+    background: #fafafa;
+    border-color: #eee;
+    color: #999;
+}
+
+.list-group-item {
+    cursor: pointer;
+    border-radius: 0;
+    border: 0;
+    padding: 8px 10px;
+}
+
+.list-group-item:hover,
+.list-group-item.active {
+    background-color: #f7f7f7 !important;
+    color: initial !important;
+}
+
+.list-group-item > .sub-list-indicator {
+    min-width: 10px;
+    padding: 5px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    float: right;
+    opacity: .6;
+}
