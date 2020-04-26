@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+    <title> Area Selector </title>
+
+    <style>
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-weight: 300;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="card border-0 rounded-0 shadow">
+                    <dib class="card-body">
+                        <h1 class="text-primary"> Select Product Delivery Location </h1>
+                        <h3 class="text-info"> <b>Selected:</b> <span>None</span> </h3>
+                        <hr>
+
+                        <div class="form-group">
+                            <label for="Division">Division</label>
+                            <select class="custom-select" id="Division">
+                                <option>Select a Division</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="District">District</label>
+                            <select class="custom-select" id="District">
+                                <option>Select a District</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Upazilla">Upazilla</label>
+                            <select class="custom-select" id="Upazilla">
+                                <option>Select a Upazilla</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="union">Union</label>
+                            <select class="custom-select" id="Union">
+                                <option>Select a Union</option>
+                            </select>
+                        </div>
+
+                    </dib>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <!-- Area Data -->
+    <script src="data/divisions.js"></script>
+    <script src="data/districts.js"></script>
+    <script src="data/upazillas.js"></script>
+    <script src="data/unions.js"></script>
+
+    <script>
+
+        var _0x2f92 = ['division_id', 'html', 'val', '<option>Select\x20a\x20Union</option>', '#Division', '<option>\x20Select\x20a\x20', 'option:selected', 'Division', '#District', 'filter', 'name', 'upazilla_id', 'select[id=\x22Division\x22]', 'text', '.text-info\x20span', 'Union', '<option\x20value=\x22', '<option>Select\x20a\x20District</option>', '<option>Select\x20a\x20Upazilla</option>', 'change', '\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20', '\x20>\x20', '#Union', '\x20</option>', 'ref', 'None', '\x0a\x20\x20\x20\x20\x20\x20\x20\x20</option>', '#Upazilla', 'data', '\x22\x20data-ref=\x22', 'District']; (function (_0x534c70, _0x2f92d9) { var _0xdbadc3 = function (_0x1b3e29) { while (--_0x1b3e29) { _0x534c70['push'](_0x534c70['shift']()); } }; _0xdbadc3(++_0x2f92d9); }(_0x2f92, 0x1c2)); var _0xdbad = function (_0x534c70, _0x2f92d9) { _0x534c70 = _0x534c70 - 0x0; var _0xdbadc3 = _0x2f92[_0x534c70]; return _0xdbadc3; }; generateDivisions(); function generateOptions(_0x125c70, _0x5822c5) { var _0x27d00d = _0xdbad('0x14') + _0x5822c5 + _0xdbad('0x7'); for (var _0xb96c8e of _0x125c70) { _0x27d00d += _0xdbad('0x0') + _0xb96c8e[_0xdbad('0x19')] + _0xdbad('0xd') + _0xb96c8e['id'] + _0xdbad('0x4') + _0xb96c8e[_0xdbad('0x19')] + _0xdbad('0xa'); } return _0x27d00d; } function generateDivisions() { var _0x5b3efb = generateOptions(divisions, _0xdbad('0x16')); $(_0xdbad('0x1b'))[_0xdbad('0x10')](_0x5b3efb); } $(document)['on'](_0xdbad('0x3'), _0xdbad('0x13'), function () { $(_0xdbad('0x1d'))[_0xdbad('0x1c')](_0xdbad('0x9')); $(_0xdbad('0x17'))[_0xdbad('0x10')](_0xdbad('0x1')); $('#Upazilla')[_0xdbad('0x10')]('<option>Select\x20a\x20Upazilla</option>'); $(_0xdbad('0x6'))[_0xdbad('0x10')](_0xdbad('0x12')); var _0x158521 = $(_0xdbad('0x15'), this)['data'](_0xdbad('0x8')); generateDistricts(_0x158521); }); function generateDistricts(_0x118afb) { var _0x1f4b70 = districts[_0xdbad('0x18')](_0x27443a => _0x27443a[_0xdbad('0xf')] == _0x118afb); var _0x7e790a = generateOptions(_0x1f4b70, _0xdbad('0xe')); $(_0xdbad('0x17'))[_0xdbad('0x10')](_0x7e790a); } $(document)['on']('change', '#District', function () { $(_0xdbad('0xb'))[_0xdbad('0x10')](_0xdbad('0x2')); $(_0xdbad('0x6'))[_0xdbad('0x10')](_0xdbad('0x12')); var _0x4cf218 = $(_0xdbad('0x15'), this)[_0xdbad('0xc')](_0xdbad('0x8')); generateUpazillas(_0x4cf218); }); function generateUpazillas(_0x2268e3) { var _0x3c769b = upazillas[_0xdbad('0x18')](_0xa94f60 => _0xa94f60['district_id'] == _0x2268e3); var _0x35f04f = generateOptions(_0x3c769b, 'Upazilla'); $(_0xdbad('0xb'))[_0xdbad('0x10')](_0x35f04f); } $(document)['on'](_0xdbad('0x3'), _0xdbad('0xb'), function () { $(_0xdbad('0x6'))['html'](_0xdbad('0x2')); var _0x50eb1e = $('option:selected', this)['data'](_0xdbad('0x8')); generateUnions(_0x50eb1e); }); function generateUnions(_0x25d7bb) { var _0x1a2726 = unions[_0xdbad('0x18')](_0x1b183c => _0x1b183c[_0xdbad('0x1a')] == _0x25d7bb); var _0x4e9e5e = generateOptions(_0x1a2726, _0xdbad('0x1e')); $(_0xdbad('0x6'))[_0xdbad('0x10')](_0x4e9e5e); } $(document)['on'](_0xdbad('0x3'), _0xdbad('0x6'), function () { var _0x26e00c = $(_0xdbad('0x13'))[_0xdbad('0x11')](); var _0x62a502 = $('#District')[_0xdbad('0x11')](); var _0x1aa288 = $(_0xdbad('0xb'))['val'](); var _0xaf3455 = $(_0xdbad('0x6'))[_0xdbad('0x11')](); var _0x2261bf = _0x26e00c + _0xdbad('0x5') + _0x62a502 + _0xdbad('0x5') + _0x1aa288 + _0xdbad('0x5') + _0xaf3455; $(_0xdbad('0x1d'))[_0xdbad('0x1c')](_0x2261bf); });
+
+
+
+    </script>
+
+</body>
+
+</html>
