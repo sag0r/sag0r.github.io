@@ -1,0 +1,49 @@
+/*
+    I Hate Writing CSS :( 
+        Forget It...
+
+    Let's try simple things 
+*/
+
+/* Loader indicator */
+.loader-indicator {
+    height: 70vh;
+}
+.loader-indicator img {
+    animation-name: spin;
+    animation-duration: 5000ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear; 
+}
+
+/* Cover */
+.cover {
+    background: linear-gradient(to right bottom,#f7f5fb 50%,#fff 50%);
+}
+
+/* Happens when the page is loaded for the first time */
+.cover.acting-welcome {
+    height: 100vh;
+}
+
+/*  */
+.cover.search-visible {
+    height: 30vh;
+}
+
+/* Country select container */
+.contains-country-selector {
+    width: 420px;
+}
+
+
+
+/* Animations */
+@keyframes spin {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
+}
