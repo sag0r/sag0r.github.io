@@ -58,7 +58,7 @@ $(document)[_0x46a6("0x43")]((canCreateDiscussions) => {
     $(_0x46a6("0x26"))["hide"]();
     const id = $("#country")[_0x46a6("0x51")]();
     $(_0x46a6("0x48"))[_0x46a6("0x13")]($(_0x46a6("0x6"))["text"]());
-    const url = API_BASE + "country/" + id;
+    const url = API_BASE + "/country/" + id;
     const trace = await httpGet(url);
     console[_0x46a6("0x27")]("stat count", trace[_0x46a6("0x4e")]);
     const _0x1bae81 = trace[_0x46a6("0xa")]((data, step) => {
