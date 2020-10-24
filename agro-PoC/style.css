@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400&display=swap');
+
+/*  */
+body {
+    font-family: Rubik,Segoe UI,Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    background-color: #f7f6f6;
+}
+
+/* reset */
+button:focus {
+    box-shadow: none !important;
+}
+
+/* global */
+.bg-light-green {
+    background: #7EB954 !important;
+}
+.text-light-green {
+    color: #7EB954 !important;
+}
+
+/* header */
+.header-top {
+    background: #4D5056;
+}
+.header-top button {
+    font-size: 13px;
+}
+.logo-big {
+    max-width: 280px;
+}
+
+/* mega menu */
+.nav-link.l-big {
+    font-size: 18px;
+    /* text-transform: uppercase; */
+    font-weight: bold;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+.shop-dropdown .nav-link {
+    width: 180px;
+    border-left: 3px solid #eee;
+    font-size: 14px;
+}
+.shop-dropdown .nav-link:hover,
+.shop-dropdown .nav-link:focus,
+.shop-dropdown .nav-link.active {
+    background: #fff !important;
+    border-left-color: #7EB954;
+}
+
+.shop-dropdown .nav-link img {
+    width: 24px;
+    opacity: 0.4;
+    margin-right: 5px;
+    transition: all 0.3s ease-in-out;
+}
+.shop-dropdown .nav-link:hover img,
+.shop-dropdown .nav-link:focus img,
+.shop-dropdown .nav-link.active img {
+    opacity: 1;
+}
+
+.menu-tab-content-wrap {}
+.menu-tab-content-wrap hr {
+    margin: 5px auto;
+    border-top-color: rgba(0,0,0,.04);
+}
+
+.menu-tab-content-wrap .menu-items-wrap,
+.menu-ads-wrap {
+    height: 365px;
+    overflow: auto;
+}
+
+
+
+/* Banner */
+.homepage-banner {
+    min-height: 530px;
+    background-image: linear-gradient(282deg, rgba(174,213,121,0), rgba(99,144,56,0.8)),url(img/andy-kelly-5APBLfC2hUs-unsplash.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.banner-content h3,
+.typed-caption,
+.typed-descn {
+    /* text-transform: uppercase; */
+}
+.typed-cursor {
+    font-size: 35px;
+}
+.banner-content h3 {
+    font-size: 30px;
+    line-height: 32px;
+    letter-spacing: 2px;
+}
+
+.typed-caption {
+    font-size: 45px;
+    line-height: 47px;
+    font-weight: bold;
+}
+.typed-descn {
+    font-size: 30px;
+    line-height: 32px;
+}
+.banner-caption-right {
+    background: rgba(116,171,78,0.7);
+    height: 530px;
+}

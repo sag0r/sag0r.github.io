@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://kit-free.fontawesome.com/releases/latest/css/free.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <title>Hello, world!</title>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div class="header bg-white">
+        <div class="header-top">
+            <div class="container pt-1 pb-1">
+                <div class="row">
+                    <div class="col ht-left">
+                        <ul class="nav">
+                            <li class="nav-item dropdown">
+                                <button class="btn btn-sm text-white dropdown-toggle" id="navbarDropdown" role="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-globe"></i>
+                                    English (US)
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="#">English (US)</a>
+                                    <a class="dropdown-item" href="#">Bengali (BN)</a>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <button class="btn btn-sm text-white">
+                                    <i class="fas fa-funnel-dollar"></i>
+                                    Sell on Site
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="btn btn-sm text-white">
+                                    <i class="fas fa-hand-sparkles"></i>
+                                    Customer Wish
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-auto ht-right">
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <button class="btn btn-sm text-white">
+                                    <i class="fas fa-lock"></i>
+                                    Login
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="btn btn-sm text-white">
+                                    |
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="btn btn-sm bg-light-green text-white">
+                                    <i class="fas fa-user-plus"></i>
+                                    Sign Up
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav class="navbar navbar-expand navbar-light">
+            <div class="container">
+                <a class="navbar-brand logo-big" href="#">
+                    <img src="img/logo-new.png" alt="" class="img-fluid">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link l-big" href="#">
+                                Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link l-big" href="#">
+                                <i class="fas fa-search"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown position-static">
+                            <a class="nav-link l-big dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Shop
+                            </a>
+                            <div class="dropdown-menu shop-dropdown w-100 bg-transparent border-0 pt-0 mt-0"
+                                aria-labelledby="navbarDropdown">
+                                <div class="container bg-white p-0 shadow-sm">
+
+                                    <div class="w-100 d-flex">
+                                        <div class="">
+                                            <div class="nav flex-column" id="v-pills-tab" role="tablist"
+                                                aria-orientation="vertical">
+
+                                                <!--  -->
+                                                <a class="nav-link bg-light active" id="v-pills-a-tab"
+                                                    data-toggle="pill" href="#v-pills-a" role="tab"
+                                                    aria-controls="v-pills-a" aria-selected="true">
+                                                    <img src="img/category-icons/announcement.png" alt="">
+                                                    Highlights
+                                                </a>
+
+                                                <!--  -->
+                                                <a class="nav-link bg-light" id="v-pills-b-tab" data-toggle="pill"
+                                                    href="#v-pills-b" role="tab" aria-controls="v-pills-b"
+                                                    aria-selected="true">
+                                                    <img src="img/category-icons/haatbazar.png" alt="">
+                                                    HaatBazar
+                                                </a>
+
+                                                <!--  -->
+                                                <a class="nav-link bg-light" id="v-pills-c-tab" data-toggle="pill"
+                                                    href="#v-pills-c" role="tab" aria-controls="v-pills-c"
+                                                    aria-selected="true">
+                                                    <img src="img/category-icons/cattle.png" alt="">
+                                                    Cattle
+                                                </a>
+
+                                                <!--  -->
+                                                <a class="nav-link bg-light" id="v-pills-d-tab" data-toggle="pill"
+                                                    href="#v-pills-d" role="tab" aria-controls="v-pills-d"
+                                                    aria-selected="true">
+                                                    <img src="img/category-icons/poultry.png" alt="">
+                                                    Poultry
+                                                </a>
+
+                                                <!--  -->
+                                                <a class="nav-link bg-light" id="v-pills-e-tab" data-toggle="pill"
+                                                    href="#v-pills-e" role="tab" aria-controls="v-pills-e"
+                                                    aria-selected="true">
+                                                    <img src="img/category-icons/aqua.png" alt="">
+                                                    Aqua
+                                                </a>
+
+                                                <!--  -->
+                                                <a class="nav-link bg-light" id="v-pills-f-tab" data-toggle="pill"
+                                                    href="#v-pills-f" role="tab" aria-controls="v-pills-f"
+                                                    aria-selected="true">
+                                                    <img src="img/category-icons/agriculture.png" alt="">
+                                                    Agri Supply
+                                                </a>
+
+                                                <!--  -->
+                                                <a class="nav-link bg-light" id="v-pills-g-tab" data-toggle="pill"
+                                                    href="#v-pills-g" role="tab" aria-controls="v-pills-g"
+                                                    aria-selected="true">
+                                                    <img src="img/category-icons/feedmill-supply.png" alt="">
+                                                    Feedmill Supply
+                                                </a>
+
+                                                <!--  -->
+                                                <a class="nav-link bg-light" id="v-pills-h-tab" data-toggle="pill"
+                                                    href="#v-pills-h" role="tab" aria-controls="v-pills-h"
+                                                    aria-selected="true">
+                                                    <img src="img/category-icons/pets-birds-fish.png" alt="">
+                                                    Pets, Birds & Aquarium Fishes
+                                                </a>
+
+                                                <!--  -->
+                                                <a class="nav-link bg-light" id="v-pills-i-tab" data-toggle="pill"
+                                                    href="#v-pills-i" role="tab" aria-controls="v-pills-i"
+                                                    aria-selected="true">
+                                                    <img src="img/category-icons/gardening.png" alt="">
+                                                    Gardening
+                                                </a>
+
+
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="tab-content" id="v-pills-tabContent">
+
+                                                <!--  -->
+                                                <div class="tab-pane fade show active" id="v-pills-a" role="tabpanel"
+                                                    aria-labelledby="v-pills-a-tab">
+
+                                                    <div class="menu-tab-content-wrap p-2">
+                                                        <div class="d-flex">
+                                                            <div class="col-7 menu-items-wrap pr-4">
+                                                                <!--  -->
+                                                                <h6 class="text-muted"> MVV (Most Valuable Vendor) </h6>
+                                                                <hr>
+                                                                <div class="row row-cols-6">
+                                                                    <div class="col px-1 py-1">
+                                                                        <img src="https://via.placeholder.com/100x100?text=A"
+                                                                            alt="" class="img-fluid" loading="lazy">
+                                                                    </div>
+                                                                    <div class="col px-1 py-1">
+                                                                        <img src="https://via.placeholder.com/100x100?text=B"
+                                                                            alt="" class="img-fluid" loading="lazy">
+                                                                    </div>
+                                                                    <div class="col px-1 py-1">
+                                                                        <img src="https://via.placeholder.com/100x100?text=C"
+                                                                            alt="" class="img-fluid" loading="lazy">
+                                                                    </div>
+                                                                    <div class="col px-1 py-1">
+                                                                        <img src="https://via.placeholder.com/100x100?text=D"
+                                                                            alt="" class="img-fluid" loading="lazy">
+                                                                    </div>
+                                                                </div>
+
+                                                                <!--  -->
+                                                                <h6 class="text-muted mt-3"> Trending Categories </h6>
+                                                                <hr>
+                                                                <div class="row row-cols-4">
+                                                                    <div class="col px-1 py-1">
+                                                                        <img src="https://via.placeholder.com/155x155?text=Category+A"
+                                                                            alt="" class="img-fluid" loading="lazy">
+                                                                    </div>
+                                                                    <div class="col px-1 py-1">
+                                                                        <img src="https://via.placeholder.com/155x155?text=Category+B"
+                                                                            alt="" class="img-fluid" loading="lazy">
+                                                                    </div>
+                                                                    <div class="col px-1 py-1">
+                                                                        <img src="https://via.placeholder.com/155x155?text=Category+C"
+                                                                            alt="" class="img-fluid" loading="lazy">
+                                                                    </div>
+                                                                    <div class="col px-1 py-1">
+                                                                        <img src="https://via.placeholder.com/155x155?text=Category+D"
+                                                                            alt="" class="img-fluid" loading="lazy">
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row mt-3">
+                                                                    <div class="col px-1 py-1">
+                                                                        <img src="https://via.placeholder.com/550x250?text=Flash+Sale+Deals"
+                                                                            alt="" class="img-fluid" loading="lazy">
+                                                                    </div>
+                                                                    <div class="col px-1 py-1">
+                                                                        <img src="https://via.placeholder.com/550x250?text=AgroMukam+Special"
+                                                                            alt="" class="img-fluid" loading="lazy">
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="col-5 pl-4 menu-ads-wrap">
+                                                                <!--  -->
+                                                                <h6 class="text-muted"> Product of the week </h6>
+                                                                <hr>
+                                                                <div class="row row-cols-2">
+                                                                    <div class="col px-1 py-1">
+                                                                        <img src="https://via.placeholder.com/200x200?text=Product+A"
+                                                                            alt="" class="img-fluid" loading="lazy">
+                                                                    </div>
+                                                                    <div class="col px-1 py-1">
+                                                                        <img src="https://via.placeholder.com/200x200?text=Random+Add"
+                                                                            alt="" class="img-fluid" loading="lazy">
+                                                                    </div>
+                                                                    <div class="col px-1 py-1">
+                                                                        <img src="https://via.placeholder.com/200x200?text=Product+C"
+                                                                            alt="" class="img-fluid" loading="lazy">
+                                                                    </div>
+                                                                    <div class="col px-1 py-1">
+                                                                        <img src="https://via.placeholder.com/200x200?text=Product+D"
+                                                                            alt="" class="img-fluid" loading="lazy">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                                <!--  -->
+                                                <div class="tab-pane fade" id="v-pills-b" role="tabpanel"
+                                                    aria-labelledby="v-pills-b-tab">
+                                                    HaatBazar
+                                                </div>
+
+                                                <!--  -->
+                                                <div class="tab-pane fade" id="v-pills-c" role="tabpanel"
+                                                    aria-labelledby="v-pills-c-tab">
+                                                    Cattle
+                                                </div>
+
+                                                <!--  -->
+                                                <div class="tab-pane fade" id="v-pills-d" role="tabpanel"
+                                                    aria-labelledby="v-pills-d-tab">
+                                                    Poultry
+                                                </div>
+
+                                                <!--  -->
+                                                <div class="tab-pane fade" id="v-pills-e" role="tabpanel"
+                                                    aria-labelledby="v-pills-e-tab">
+                                                    Aqua
+                                                </div>
+
+                                                <!--  -->
+                                                <div class="tab-pane fade" id="v-pills-f" role="tabpanel"
+                                                    aria-labelledby="v-pills-f-tab">
+                                                    Agri Supply
+                                                </div>
+
+                                                <!--  -->
+                                                <div class="tab-pane fade" id="v-pills-g" role="tabpanel"
+                                                    aria-labelledby="v-pills-g-tab">
+                                                    Feedmill Supply
+                                                </div>
+
+                                                <!--  -->
+                                                <div class="tab-pane fade" id="v-pills-h" role="tabpanel"
+                                                    aria-labelledby="v-pills-h-tab">
+                                                    Pets, Birds & Aquarium fishes
+                                                </div>
+
+                                                <!--  -->
+                                                <div class="tab-pane fade" id="v-pills-i" role="tabpanel"
+                                                    aria-labelledby="v-pills-i-tab">
+                                                    Gardening
+                                                </div>
+
+
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link l-big" href="#">
+                                Track Order
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link l-big" href="#">
+                                Customer Care
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link l-big" href="#">
+                                <i class="fas fa-shopping-cart"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!-- /Header -->
+
+    <!-- Banner -->
+    <div class="homepage-banner">
+        <div class="container banner-content">
+            <div class="row">
+                <div class="col-8 pt-5 text-white">
+                    <h3 class="mb-5"> First and Largest B2B Digital marketplace in Bangladesh </h3>
+                    <div id="typed-strings">
+                        <span>
+                            <span class="typed-caption"> Let us know what you need </span>
+                            <br>
+                            <span class="typed-descn"> Eggs, Chickens, Tools, ... </span>
+                        </span>
+                        <span>
+                            <span class="typed-caption"> Get the things you need at your doorstep </span>
+                            <br>
+                            <span class="typed-descn"> 24-48 hours Express Delivery </span>
+                        </span>
+                        <span>
+                            <span class="typed-caption"> Start selling as a Vendor </span>
+                            <br>
+                            <span class="typed-descn"> Personal / Business </span>
+                        </span>
+                    </div>
+                    <span id="typed"></span>
+                </div>
+                <div class="col-4 banner-caption-right pt-5 text-white text-center">
+                    <h5 class=""> Browse categories to find what you need </h5>
+                    <div class="bcr-categories d-flex justify-content-center flex-wrap mt-3">
+                        <div class="bg-white rounded-circle pt-2 m-2" style="width: 64px; height: 64px;">
+                            <img src="img/category-icons/agriculture.png" alt="" class="img-fluid m-auto d-block">
+                        </div>
+                        <div class="bg-white rounded-circle pt-2 m-2" style="width: 64px; height: 64px;">
+                            <img src="img/category-icons/cattle.png" alt="" class="img-fluid m-auto d-block">
+                        </div>
+                        <div class="bg-white rounded-circle pt-2 m-2" style="width: 64px; height: 64px;">
+                            <img src="img/category-icons/poultry.png" alt="" class="img-fluid m-auto d-block">
+                        </div>
+                        <div class="bg-white rounded-circle pt-2 m-2" style="width: 64px; height: 64px;">
+                            <img src="img/category-icons/aqua.png" alt="" class="img-fluid m-auto d-block">
+                        </div>
+                        <div class="bg-white rounded-circle pt-2 m-2" style="width: 64px; height: 64px;">
+                            <img src="img/category-icons/feedmill-supply.png" alt="" class="img-fluid m-auto d-block">
+                        </div>
+                        <div class="bg-white rounded-circle pt-2 m-2" style="width: 64px; height: 64px;">
+                            <img src="img/category-icons/haatbazar.png" alt="" class="img-fluid m-auto d-block">
+                        </div>
+                    </div>
+
+                    <h6 style="margin-top: 115px;">Can't find the product you are looking for?</h6>
+                    <button class="btn bg-white mt-2 shadow"> Post it here </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Banner -->
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11"></script>
+    <script src="jquery.hoverIntent.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
