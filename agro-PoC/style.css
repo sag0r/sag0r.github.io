@@ -13,13 +13,62 @@ button:focus {
 }
 
 /* global */
+.cursor-pointer {
+    cursor: pointer;
+}
+
 .bg-light-green {
     background: #7EB954 !important;
 }
 .text-light-green {
     color: #7EB954 !important;
 }
+.bg-deep-green {
+    background: #76AB33 !important;
+}
+.text-deep-green {
+    color: #76AB33 !important;
+}
+.btn-outline-green {
+    border-color: #7EB954;
+    color: #7EB954;
+}
+.btn-outline-green:hover {
+    background-color: #7EB954;
+    color: #fff;
+}
+.text-muted-x {
+    color: rgba(0, 0, 0, .4);
+}
 
+/* Countdown Timer */
+.countdown-clock {
+    font-size: 16px;
+}
+.countdown-clock > div {
+    position: relative;
+    height: 40px;
+}
+.countdown-clock > div:not(.separator) {
+    width: 40px;
+    background: #7EB954;
+    color: #fff;
+}
+.countdown-clock > .separator {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.countdown-clock .clock-label {
+    position: absolute;
+    bottom: -18px;
+    left: 0;
+    font-size: 12px;
+    width: 100%;
+    color: #7EB954;
+}
+
+
+/* *************************************************** */
 /* header */
 .header-top {
     background: #4D5056;
@@ -63,7 +112,6 @@ button:focus {
     opacity: 1;
 }
 
-.menu-tab-content-wrap {}
 .menu-tab-content-wrap hr {
     margin: 5px auto;
     border-top-color: rgba(0,0,0,.04);
@@ -87,11 +135,6 @@ button:focus {
     background-size: cover;
 }
 
-.banner-content h3,
-.typed-caption,
-.typed-descn {
-    /* text-transform: uppercase; */
-}
 .typed-cursor {
     font-size: 35px;
 }
@@ -113,4 +156,87 @@ button:focus {
 .banner-caption-right {
     background: rgba(116,171,78,0.7);
     height: 530px;
+}
+
+
+/* Smart Search */
+.smart-search .custom-select {
+    font-size: 14px;
+}
+.smart-search h6 {
+    padding-top: 4px;
+}
+.smart-search button {
+    height: 35px;
+}
+
+
+
+/* Flash Sale */
+
+/* Items */
+.item-thumb {
+    height: 180px;
+}
+.item-info {
+    line-height: 16px;
+    height: 34px;
+    overflow: hidden;
+}
+.current-price {
+    font-size: 20px;
+}
+
+
+
+/* Category Collection */
+.cc-grid .nav-link {
+    color: #4D5056;
+    font-size: 14px;
+    padding-left: 5px;
+    letter-spacing: 2px;
+    padding-right: 5px;
+    border-bottom: 2px solid transparent;
+}
+
+.cc-grid .nav-link:hover,
+.cc-grid .nav-link:focus,
+.cc-grid .nav-link.active {
+    color: #7EB954;
+    border-bottom-color: #7EB954;
+}
+
+.cc-grid .item-thumb {
+    height: 115px;
+    margin-bottom: 12px;
+}
+.cc-grid .item-thumb img {
+    height: 100%;
+}
+.cc-grid .current-price {
+    font-size: 14px;
+}
+
+.cc-grid .item-box {
+    border-left-color: transparent !important;
+}
+.cc-grid .col:nth-child(1) .item-box,
+.cc-grid .col:nth-child(2) .item-box,
+.cc-grid .col:nth-child(3) .item-box,
+.cc-grid .col:nth-child(4) .item-box,
+.cc-grid .col:nth-child(5) .item-box {
+    border-top-color: transparent !important;
+}
+.cc-grid .col:nth-child(6) .item-box,
+.cc-grid .col:nth-child(7) .item-box,
+.cc-grid .col:nth-child(8) .item-box,
+.cc-grid .col:nth-child(9) .item-box,
+.cc-grid .col:nth-child(10) .item-box {
+    border-top-color: transparent !important;
+    border-bottom-color: transparent !important;
+}
+
+.cc-grid .col:nth-child(5) .item-box,
+.cc-grid .col:nth-child(10) .item-box {
+    border-right-color: transparent !important;
 }
