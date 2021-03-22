@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet"
+          href="https://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <title>Hello, world!</title>
+
+    <style>
+        /**/
+        .content {
+            margin: 100px auto;
+            max-width: 300px;
+        }
+
+        .colors {
+            float: left;
+            margin: 20px auto;
+            width: 260px;
+        }
+
+        .colors a {
+            float: left;
+            height: 30px;
+            width: 33.33333333%;
+        }
+
+        .colors .default {
+            background: #414956;
+        }
+
+        .colors .blue {
+            background: #4a89dc;
+        }
+
+        .colors .white {
+            background: #ffffff;
+        }
+
+        .menu {
+            float: left;
+            width: 260px;
+            outline: 0;
+            position: relative;
+        }
+
+        .menu * {
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            outline: 0;
+        }
+
+        .menu .menu-footer {
+            background: #414956;
+            color: #f0f0f0;
+            float: left;
+            font-weight: normal;
+            height: 50px;
+            line-height: 50px;
+            font-size: 6px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .menu .menu-header {
+            background: #414956;
+            color: #f0f0f0;
+            font-weight: bold;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .menu ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .menu ul li {
+            display: block;
+            float: left;
+            position: relative;
+            width: 100%;
+        }
+
+        .menu ul li a {
+            background: #414956;
+            color: #f0f0f0;
+            float: left;
+            font-size: 13px;
+            overflow: hidden;
+            padding: 14px 22px;
+            position: relative;
+            text-decoration: none;
+            white-space: nowrap;
+            width: 100%;
+        }
+
+        .menu ul li a i {
+            float: left;
+            font-size: 16px;
+            line-height: 18px;
+            text-align: left;
+            width: 34px;
+        }
+
+        .menu ul li .menu-label {
+            background: #f0f0f0;
+            border-radius: 100%;
+            color: #555555;
+            font-size: 11px;
+            font-weight: 800;
+            line-height: 18px;
+            min-width: 20px;
+            padding: 1px 2px 1px 1px;
+            position: absolute;
+            right: 18px;
+            text-align: center;
+            top: 14px;
+        }
+
+        .menu ul .submenu {
+            display: none;
+            position: static;
+            width: 100%;
+        }
+
+        .menu ul .submenu .submenu-indicator {
+            line-height: 16px;
+        }
+
+        .menu ul .submenu li {
+            clear: both;
+            width: 100%;
+        }
+
+        .menu ul .submenu li ul.submenu {
+            display: none;
+            position: static;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .menu ul .submenu li a {
+            background: #383838;
+            border-left: solid 6px transparent;
+            border-top: none;
+            float: left;
+            font-size: 11px;
+            position: relative;
+            width: 100%;
+        }
+
+        .menu ul .submenu li:hover>a {
+            border-left-color: #414956;
+        }
+
+        .menu ul .submenu li .menu-label {
+            background: #f0f0f0;
+            border-radius: 100%;
+            color: #555555;
+            font-size: 11px;
+            font-weight: 800;
+            line-height: 18px;
+            min-width: 20px;
+            padding: 1px 2px 1px 1px;
+            position: absolute;
+            right: 18px;
+            text-align: center;
+            top: 12px;
+            top: 14px;
+        }
+
+        .menu ul .submenu>li>a {
+            padding-left: 30px;
+        }
+
+        .menu ul .submenu>li>ul.submenu>li>a {
+            padding-left: 45px;
+        }
+
+        .menu ul .submenu>li>ul.submenu>li>ul.submenu>li>a {
+            padding-left: 60px;
+        }
+
+        .menu .submenu-indicator {
+            -moz-transition: "transform .3s linear";
+            -o-transition: "transform .3s linear";
+            -webkit-transition: "transform .3s linear";
+            transition: "transform .3s linear";
+            float: right;
+            font-size: 20px;
+            line-height: 19px;
+            position: absolute;
+            right: 22px;
+        }
+
+        .menu .submenu-indicator-minus>.submenu-indicator {
+            -moz-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            -o-transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+
+        .menu>ul>li.active>a {
+            background: #3b424d;
+            color: #ffffff;
+        }
+
+        .menu>ul>li:hover>a {
+            background: #3b424d;
+            color: #ffffff;
+        }
+
+        .menu>ul>li>a {
+            border-bottom: solid 1px #3b424d;
+        }
+
+        .ink {
+            -moz-transform: scale(0);
+            -ms-transform: scale(0);
+            -o-transform: scale(0);
+            -webkit-transform: scale(0);
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 100%;
+            display: block;
+            position: absolute;
+            transform: scale(0);
+        }
+
+        .animate-ink {
+            -moz-animation: ripple .3s linear;
+            -ms-animation: ripple .3s linear;
+            -o-animation: ripple .3s linear;
+            -webkit-animation: ripple .3s linear;
+            animation: ripple .3s linear;
+        }
+
+        @-moz-keyframes ripple {
+            100% {
+                opacity: 0;
+                transform: scale(2.5);
+            }
+        }
+
+        @-webkit-keyframes ripple {
+            100% {
+                opacity: 0;
+                transform: scale(2.5);
+            }
+        }
+
+        @keyframes ripple {
+            100% {
+                opacity: 0;
+                transform: scale(2.5);
+            }
+        }
+
+        .blue.menu .menu-footer {
+            background: #4a89dc;
+        }
+
+        .blue.menu .menu-header {
+            background: #4a89dc;
+        }
+
+        .blue.menu ul li>a {
+            background: #4a89dc;
+        }
+
+        .blue.menu ul ul.submenu li:hover>a {
+            border-left-color: #3e82da;
+        }
+
+        .blue.menu>ul>li.active>a {
+            background: #3e82da;
+        }
+
+        .blue.menu>ul>li:hover>a {
+            background: #3e82da;
+        }
+
+        .blue.menu>ul>li>a {
+            border-bottom-color: #3e82da;
+        }
+
+        .white.menu .menu-footer {
+            background: #ffffff;
+            color: #555555;
+        }
+
+        .white.menu .menu-header {
+            background: #ffffff;
+            color: #555555;
+        }
+
+        .white.menu ul li a {
+            background: #ffffff;
+            color: #555555;
+        }
+
+        .white.menu ul ul.submenu li:hover>a {
+            border-left-color: #f0f0f0;
+        }
+
+        .white.menu ul ul.submenu li a {
+            color: #555555;
+        }
+
+        .white.menu>ul>li.active>a {
+            background: #f0f0f0;
+        }
+
+        .white.menu>ul>li:hover>a {
+            background: #f0f0f0;
+        }
+
+        .white.menu>ul>li>a {
+            border-bottom-color: #f0f0f0;
+        }
+
+        .white.menu>ul>li>a>.ink {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        /**/
+
+        ul,
+        #myUL {
+            list-style-type: none;
+        }
+
+        #myUL {
+            margin: 0;
+            padding: 0;
+        }
+
+        .caret {
+            cursor: pointer;
+            -webkit-user-select: none;
+            /* Safari 3.1+ */
+            -moz-user-select: none;
+            /* Firefox 2+ */
+            -ms-user-select: none;
+            /* IE 10+ */
+            user-select: none;
+        }
+
+        .caret::before {
+            font-family: FontAwesome;
+            content: "\f0fe";
+            color: black;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+        .caret-down::before {
+            content: "\f147";
+        }
+
+        .nested {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+    </style>
+
+
+</head>
+
+<body>
+
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <div class="card border-0 rounded-0 shadow-sm">
+                    <div class="card-header border-0">
+                        Traditional collapsible menu (found on eCommerce websites)
+                    </div>
+                    <div class="card-body">
+                        <p class="text-info">
+                            ** Expand 'Bangladesh' to explore multi-level
+                        </p>
+                        <nav>
+                            <div id="menu"
+                                 class="menu white shadow-sm">
+                                <ul>
+                                    <li><a href="#">Australia</a>
+                                        <ul class="submenu">
+                                            <li><a href="#">New South Wales</a></li>
+                                            <li><a href="#">Queensland</a></li>
+                                            <li><a href="#">South Australia</a></li>
+                                            <li><a href="#">Tasmania</a></li>
+                                            <li><a href="#">Victoria</a></li>
+                                            <li><a href="#">Western Australia</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="#">Bangladesh</a>
+                                        <ul class="submenu">
+                                            <li><a href="#">Barisal</a></li>
+                                            <li><a href="#">Chittaong</a></li>
+                                            <li><a href="#">Dhaka</a>
+                                                <ul class="submenu">
+                                                    <li><a href="#">Dhaka</a>
+                                                        <ul class="submenu">
+                                                            <li><a href="#">Dhaka East</a>
+                                                                <ul class="submenu">
+                                                                    <li><a href="#">Educational Institutes</a>
+                                                                        <ul class="submenu">
+                                                                            <li><a href="#">School</a></li>
+                                                                            <li><a href="#">College</a></li>
+                                                                            <li><a href="#">Madrashah</a></li>
+                                                                        </ul>
+                                                                    </li>
+                                                                    <li><a href="#">Hospitals</a></li>
+                                                                    <li><a href="#">Govt. Office</a></li>
+                                                                </ul>
+                                                            </li>
+                                                            <li><a href="#">Dhaka West</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li><a href="#">Faridpur</a></li>
+                                                    <li><a href="#">Gazipur</a></li>
+                                                    <li><a href="#">Gopalganj</a></li>
+                                                    <li><a href="#">Kishoreganj</a></li>
+                                                    <li><a href="#">Madaripur</a></li>
+                                                </ul>
+                                            </li>
+                                            <li><a href="#">Khulna</a></li>
+                                            <li><a href="#">Mymensingh</a></li>
+                                            <li><a href="#">Rajshahi</a></li>
+                                            <li><a href="#">Rangpur</a></li>
+                                            <li><a href="#">Sylhet</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="#">Canada</a></li>
+                                    <li><a href="#">Canada</a></li>
+                                </ul>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="card border-0 rounded-0 shadow-sm">
+                    <div class="card-header border-0">
+                        Simple Tree like View (found on <a
+                           href="https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_treeview">w3schools</a>)
+                    </div>
+                    <div class="card-body">
+                        <ul id="myUL">
+                            <li><span class="caret">Beverages</span>
+                                <ul class="nested">
+                                    <li>Water</li>
+                                    <li>Coffee</li>
+                                    <li><span class="caret">Tea</span>
+                                        <ul class="nested">
+                                            <li>Black Tea</li>
+                                            <li>White Tea</li>
+                                            <li><span class="caret">Green Tea</span>
+                                                <ul class="nested">
+                                                    <li>Sencha</li>
+                                                    <li>Gyokuro</li>
+                                                    <li>Matcha</li>
+                                                    <li>Pi Lo Chun</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#menu").accordion();
+
+            //
+            var toggler = document.getElementsByClassName("caret");
+            var i;
+
+            for (i = 0; i < toggler.length; i++) {
+                toggler[i].addEventListener("click", function () {
+                    this.parentElement.querySelector(".nested").classList.toggle("active");
+                    this.classList.toggle("caret-down");
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
