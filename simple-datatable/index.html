@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="jquery-ui-1.14.0.custom/jquery-ui.min.css" />
+    <link href="https://cdn.datatables.net/2.1.2/css/dataTables.dataTables.css" rel="stylesheet" />
+
+    <style>
+        *:focus {
+            outline: 0 !important;
+            box-shadow: none !important;
+        }
+
+        table.dataTable th.dt-type-numeric:not(.editing),
+        table.dataTable th.dt-type-date:not(.editing),
+        table.dataTable td.dt-type-numeric:not(.editing),
+        table.dataTable td.dt-type-date:not(.editing) {
+            padding-right: 25px;
+        }
+
+        #example tbody td {
+            position: relative;
+        }
+
+        #example tbody td.editable:not(.editing)::before {
+            content: "\F4CB";
+            position: absolute;
+            right: 5px;
+            top: 10px;
+            font-family: 'bootstrap-icons';
+            font-size: 12px;
+        }
+
+        #SimpleDataTable td.invalid-data {
+            background: rgba(220, 53, 69, .5);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container pt-5">
+        <div class="card">
+            <div class="card-body">
+
+                <div class="d-flex justify-content-center align-items-center">
+                    <button class="btn btn-sm btn-primary rounded-pill btn-add-row px-4 mx-1">
+                        Add new Row
+                    </button>
+                    <button class="btn btn-sm btn-success rounded-pill btn-submit-data px-4 mx-1">
+                        Submit Data to Server
+                    </button>
+                </div>
+
+                <div class="alert-wrapper my-3"></div>
+
+                <table id="SimpleDataTable" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Active</th>
+                            <th>Name</th>
+                            <th>Position</th>
+                            <th>Office</th>
+                            <th>DOB</th>
+                            <th>Salary</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog"
+        aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this row?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="jquery-ui-1.14.0.custom/jquery-ui.min.js"></script>
+    <script src="https://cdn.datatables.net/2.1.2/js/dataTables.js"></script>
+    <script src="dataTables.cellEdit.js"></script>
+
+    <script>
+
+        const DATA = [
+            {
+                "id": 1,
+                "first_name": "Tiger",
+                "last_name": "Nixon",
+                "position": "System Architect",
+                "email": "t.nixon@datatables.net",
+                "office": "Edinburgh",
+                "extn": 5421,
+                "age": 61,
+                "salary": 320800,
+                "dob": "2011-04-25",
+                "active": 0
+            },
+            {
+                "id": 2,
+                "first_name": "Garrett",
+                "last_name": "Winters",
+                "position": "Accountant",
+                "email": "g.winters@datatables.net",
+                "office": "Tokyo",
+                "extn": 8422,
+                "age": 63,
+                "salary": 170750,
+                "dob": "2011-07-25",
+                "active": 1
+            },
+            {
+                "id": 3,
+                "first_name": "Ashton",
+                "last_name": "Cox",
+                "position": "Junior Technical Author",
+                "email": "a.cox@datatables.net",
+                "office": "San Francisco",
+                "extn": 1562,
+                "age": 66,
+                "salary": 86000,
+                "dob": "2009-01-12",
+                "active": 0
+            },
+            {
+                "id": 4,
+                "first_name": "Cedric",
+                "last_name": "Kelly",
+                "position": "Senior Javascript Developer",
+                "email": "c.kelly@datatables.net",
+                "office": "Edinburgh",
+                "extn": 6224,
+                "age": 22,
+                "salary": 433060,
+                "dob": "2012-03-29",
+                "active": 1
+            },
+            {
+                "id": 5,
+                "first_name": "Airi",
+                "last_name": "Satou",
+                "position": "Accountant",
+                "email": "a.satou@datatables.net",
+                "office": "Tokyo",
+                "extn": 5407,
+                "age": 33,
+                "salary": 162700,
+                "dob": "2008-11-28",
+                "active": 1
+            },
+            {
+                "id": 6,
+                "first_name": "Brielle",
+                "last_name": "Williamson",
+                "position": "Integration Specialist",
+                "email": "b.williamson@datatables.net",
+                "office": "New York",
+                "extn": 4804,
+                "age": 61,
+                "salary": 372000,
+                "dob": "2012-12-02",
+                "active": 1
+            },
+            {
+                "id": 7,
+                "first_name": "Herrod",
+                "last_name": "Chandler",
+                "position": "Sales Assistant",
+                "email": "h.chandler@datatables.net",
+                "office": "San Francisco",
+                "extn": 9608,
+                "age": 59,
+                "salary": 137500,
+                "dob": "2012-08-06",
+                "active": 1
+            },
+            {
+                "id": 8,
+                "first_name": "Rhona",
+                "last_name": "Davidson",
+                "position": "Integration Specialist",
+                "email": "r.davidson@datatables.net",
+                "office": "Tokyo",
+                "extn": 6200,
+                "age": 55,
+                "salary": 327900,
+                "dob": "2010-10-14",
+                "active": 0
+            },
+            {
+                "id": 9,
+                "first_name": "Colleen",
+                "last_name": "Hurst",
+                "position": "Javascript Developer",
+                "email": "c.hurst@datatables.net",
+                "office": "San Francisco",
+                "extn": 2360,
+                "age": 39,
+                "salary": 205500,
+                "dob": "2009-09-15",
+                "active": 0
+            },
+            {
+                "id": 10,
+                "first_name": "Sonya",
+                "last_name": "Frost",
+                "position": "Software Engineer",
+                "email": "s.frost@datatables.net",
+                "office": "Edinburgh",
+                "extn": 1667,
+                "age": 23,
+                "salary": 103600,
+                "dob": "2008-12-13",
+                "active": 0
+            },
+            {
+                "id": 11,
+                "first_name": "Jena",
+                "last_name": "Gaines",
+                "position": "Office Manager",
+                "email": "j.gaines@datatables.net",
+                "office": "London",
+                "extn": 3814,
+                "age": 30,
+                "salary": 90560,
+                "dob": "2008-12-19",
+                "active": 1
+            },
+            {
+                "id": 12,
+                "first_name": "Quinn",
+                "last_name": "Flynn",
+                "position": "Support Lead",
+                "email": "q.flynn@datatables.net",
+                "office": "Edinburgh",
+                "extn": 9497,
+                "age": 22,
+                "salary": 342000,
+                "dob": "2013-03-03",
+                "active": 1
+            }
+        ];
+
+        // reference to DataTable
+        let DATA_TABLE = null;
+
+        const SHOW_EDIT_ICON = true;
+        const EDITABLE_COLUMNS = [0, 1, 2, 3, 4, 5];
+
+        // UPLOAD:: Controller => DataTable, Method => ParseContentFromXls
+        const UPLOAD_URL = '/DataTable/ParseContentFromXls';
+        // SUBMIT:: Controller => DataTable, Method => ParseContentFromXls
+        const SUBMIT_URL = '/DataTable/SubmitData';
+
+        // dummy options for input type == <select>
+        const POSITIONS = ['System Architect', 'Accountant', 'Junior Technical Author', 'Senior Javascript Developer', 'Integration Specialist', 'Sales Assistant', 'Javascript Developer', 'Software Engineer', 'Office Manager', 'Support Lead'];
+        const POSITION_OPTIONS = POSITIONS.map(p => ({ value: p, display: p }));
+
+        // initialize datatable with editable feature
+        function initializeDataTable(selector, data) {
+            console.log('initializeDataTable(data)', data);
+            // Column Definitions
+            let columns = [
+                {
+                    data: 'active',
+                    contentPadding: '0px',
+                    render: function (data, type, row) {
+                        return parseInt(data) == 0 ? 'No' : 'Yes';
+                    }
+                },
+                { data: 'first_name', contentPadding: '0px' },
+                { data: 'position', contentPadding: '0px' },
+                { data: 'office', contentPadding: '0px', width: '230px' },
+                {
+                    data: 'dob',
+                    contentPadding: '0px',
+                    render: function (data, type, row) {
+                        const dt = new Date(data);
+                        return dt.toLocaleDateString('en-AU');
+                    }
+                },
+                { data: 'salary', contentPadding: '0px' },
+                {
+                    data: 'id',
+                    contentPadding: '0px',
+                    width: '100px',
+                    render: function (data, type, row) {
+                        return `<button
+                            type="button"
+                            class="btn btn-sm bg-brand"
+                            data-id="${data}"
+                            onclick="deleteRow(${data})">
+                                <i class="bi bi-trash"></i> Delete
+                        </button>`;
+                    }
+                }
+            ];
+
+            columns = columns.map((c, i) =>
+                EDITABLE_COLUMNS.includes(i)
+                    ? ({ ...c, className: 'editable' })
+                    : c);
+
+            // Initialize DataTable from JS array
+            DATA_TABLE = new DataTable(selector, {
+                columns,
+                data,
+                order: [[5, 'desc']]
+            });
+
+            // Initialize editable cell plugin
+            const wrapperHtml = `<div class="input-group input-group-sm">
+                {content}
+                <span class="input-group-text"
+                    onclick='$(this).updateEditableCell($(this).prev())'>
+                    <i class="bi bi-check2-all"></i>
+                </span>
+            </div>`;
+
+            DATA_TABLE.MakeCellsEditable({
+                onUpdate: cellUpdateCallback,
+                inputCss: 'form-control form-control-sm',
+                columns: EDITABLE_COLUMNS,
+                wrapperHtml: wrapperHtml,
+                inputTypes: [
+                    {
+                        column: 0,
+                        type: 'checkbox'
+                    },
+                    {
+                        column: 2,
+                        type: 'datalist',
+                        options: POSITION_OPTIONS
+                    },
+                    {
+                        column: 3,
+                        type: 'textarea'
+                    },
+                    {
+                        column: 4,
+                        type: 'datepicker'
+                    }
+                ]
+            });
+
+        }
+
+        function printCurrentTableData() {
+            const data = DATA_TABLE.rows().data().toArray();
+            console.log('Traversed:', data);
+        }
+
+        function cellUpdateCallback(updatedCell, updatedRow, oldValue) {
+            console.log('The new value for the cell is: ' + updatedCell.data());
+            console.log('The values for each cell in that row are: ' + updatedRow.data());
+            printCurrentTableData();
+        }
+
+        function deleteRow(id) {
+            // Show the modal
+            $('#deleteConfirmationModal').modal('show');
+
+            // Set the ID of the row to be deleted in a data attribute
+            $('#confirmDelete').data('row-id', id);
+
+            // Add an event listener to the delete button
+            $('#confirmDelete').off('click').on('click', function () {
+                const rowId = $(this).data('row-id');
+                console.log('Deleting row with ID:', rowId);
+
+                DATA_TABLE
+                    .row($(`[data-id="${rowId}"]`).closest('tr'))
+                    .remove()
+                    .draw(false);
+
+                printCurrentTableData();
+
+                // Hide the modal after deletion
+                $('#deleteConfirmationModal').modal('hide');
+            });
+        }
+
+        function identifyInvalidCells() {
+            $(`#SimpleDataTable td`).each(function () {
+                const textContent = $(this).text().trim();
+                if (!textContent
+                    || textContent.toLowerCase().includes('invalid date'))
+                    $(this).addClass('invalid-data');
+            });
+        }
+
+        function showAlert(msg, isSuccess = true) {
+            const alertClass = isSuccess ? 'alert-success' : 'alert-danger';
+            const alertHtml = `<div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                ${msg}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`;
+            $('.alert-wrapper').html(alertHtml);
+        }
+
+        $(document).ready(function () {
+
+            initializeDataTable('#SimpleDataTable', DATA);
+
+            // Numeric Validation
+            $(document).on('keydown', '#SimpleDataTable .form-control', function (e) {
+
+                // Early trigger submit on 'Enter' press
+                if (e.key === 'Enter') {
+                    console.log('ENTER PRESSED, SUBMIT & QUIT EDITING');
+                    $(this).blur();
+                }
+                const parent = $(this).closest('td');
+                if (!!parent && parent.hasClass('dt-type-numeric')) {
+                    console.log('VALIDATE NUMBERS');
+                    if (e.key.length === 1 && !/[0-9]/.test(e.key)) {
+                        e.preventDefault();
+                    }
+                }
+            });
+
+            // Add new row to datatable
+            $('.btn-add-row').click(function () {
+                const newRowData = {
+                    first_name: '',
+                    last_name: '',
+                    position: '',
+                    email: '',
+                    office: '',
+                    extn: '',
+                    age: '',
+                    salary: '',
+                    dob: '',
+                    active: "0",
+                    id: DATA_TABLE.rows().data().toArray().length + 10
+                };
+
+                // Add new row to the table
+                DATA_TABLE.row.add(newRowData).draw(false);
+                // Show the new row at the top
+                DATA_TABLE.order([1, 'asc']).draw();
+            });
+
+            $('.btn-submit-data').click(function () {
+                console.log('submit data')
+                $('td').removeClass('invalid-data');
+                const data = DATA_TABLE.rows().data().toArray();
+
+                // validations
+                const invalidData = data.filter(d => !d.dob
+                    || !d.first_name
+                    || !d.office
+                    || !d.position
+                    || !d.salary);
+
+                if (invalidData.length > 0) {
+                    identifyInvalidCells();
+                    showAlert('One or more cells have invalid data, please fix before submit.', false);
+                } else {
+                    console.log('all valid, submit to server');
+                    showAlert('Submit Success');
+                }
+            });
+
+        });
+    </script>
+</body>
+
+</html>
