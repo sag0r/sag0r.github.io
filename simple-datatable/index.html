@@ -45,35 +45,127 @@
 
 <body>
 
-    <div class="container pt-5">
-        <div class="card">
-            <div class="card-body">
+    <nav class="navbar fixed-top bg-white shadow-xl">
+        <div class="container-fluid justify-content-start">
+            <a class="navbar-brand site-logo" href="#">
+                <i class="bi bi-journal-bookmark-fill text-brand"></i>
+                <span class="text-brand">DataExpo</span>
+            </a>
 
-                <div class="d-flex justify-content-center align-items-center">
-                    <button class="btn btn-sm btn-primary rounded-pill btn-add-row px-4 mx-1">
-                        Add new Row
-                    </button>
-                    <button class="btn btn-sm btn-success rounded-pill btn-submit-data px-4 mx-1">
-                        Submit Data to Server
+            <div class="d-flex flex-row">
+                <div class="d-flex ms-3">
+                    <button type="button" class="btn btn-outline-brand btn-sm px-4 launch-upload-modal">
+                        <i class="bi bi-file-earmark-excel"></i>
+                        Upload
                     </button>
                 </div>
+            </div>
+        </div>
+    </nav>
 
-                <div class="alert-wrapper my-3"></div>
+    <div class="main-content-wrap">
 
-                <table id="SimpleDataTable" class="display" cellspacing="0" width="100%">
-                    <thead>
-                        <tr>
-                            <th>Active</th>
-                            <th>Name</th>
-                            <th>Position</th>
-                            <th>Office</th>
-                            <th>DOB</th>
-                            <th>Salary</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                </table>
+        <div class="container-fluid pt-4">
 
+            <!-- pre-content, displayed on page load -->
+            <div class="pre-content-wrapper cursor-pointer launch-upload-modal" style="height: 80vh;">
+                <div class="d-flex flex-column justify-content-center align-items-center h-100">
+
+                    <i class="bi bi-file-earmark-excel" style="font-size: 62px; color: rgba(253, 182, 4, .5)"></i>
+
+                    <h6 class="mt-3">
+                        Click here to get started
+                    </h6>
+                </div>
+            </div>
+
+            <!-- content -->
+            <main role="main" class="main-content-wrapper px-3" style="display: none;">
+
+                <div class="card data-table-card border-0 shadow-sm mt-5">
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-center align-items-center mb-2">
+                            <button class="btn btn-sm bg-brand rounded-xl btn-show-upload-modal px-4 mx-1 border-0"
+                                disabled>
+                                <i class="bi bi-upload"></i>
+                                Upload
+                            </button>
+                            <button class="btn btn-sm bg-brand rounded-xl btn-add-row px-4 mx-1 border-0">
+                                <i class="bi bi-node-plus"></i>
+                                Add Row
+                            </button>
+                            <button class="btn btn-sm bg-brand rounded-xl btn-submit-data px-4 mx-1 border-0">
+                                <i class="bi bi-send"></i>
+                                Submit
+                            </button>
+                        </div>
+
+                        <div class="d-flex justify-content-center align-items-center">
+                            <div class="mx-1">
+                                <select class="form-select form-select-sm rounded-pill ps-3" id="SelectSource">
+                                    <option value="0" selected> Select Source </option>
+                                    <option value="1"> Local File </option>
+                                    <option value="2"> Cloud File </option>
+                                    <option value="3"> From Link </option>
+                                </select>
+                            </div>
+
+                            <div class="mx-1">
+                                <select class="form-select form-select-sm rounded-pill ps-3" id="SelectType">
+                                    <option value="0" selected> Select Type </option>
+                                    <option value="1"> XLS / XLSX </option>
+                                    <option value="2"> CSV </option>
+                                    <option value="3"> DOC / DOCX </option>
+                                    <option value="4"> PDF </option>
+                                    <option value="5"> JPEG / PNG </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="alert-wrapper my-3"></div>
+
+                        <table id="SimpleDataTable" class="display" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Active</th>
+                                    <th>Name</th>
+                                    <th>Position</th>
+                                    <th>Office</th>
+                                    <th>DOB</th>
+                                    <th>Salary</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+
+    </div>
+
+
+    <div class="modal fade" id="fileUploadModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="file">Select Excel File</label>
+                        <input type="file" name="file" id="file" class="form-control form-control-sm mt-2 rounded-xl" />
+                        <div class="invalid-feedback" data-for="file"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-outline-secondary px-5 rounded-xl"
+                        data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-sm bg-brand text-white px-5 rounded-xl"
+                        data-bs-dismiss="modal">
+                        Understood
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -276,6 +368,12 @@
         // SUBMIT:: Controller => DataTable, Method => ParseContentFromXls
         const SUBMIT_URL = '/DataTable/SubmitData';
 
+        // file upload modal
+        const modalEl = document.getElementById('fileUploadModal');
+        const modal = new bootstrap.Modal(modalEl, {
+            backdrop: 'static'
+        });
+
         // dummy options for input type == <select>
         const POSITIONS = ['System Architect', 'Accountant', 'Junior Technical Author', 'Senior Javascript Developer', 'Integration Specialist', 'Sales Assistant', 'Javascript Developer', 'Software Engineer', 'Office Manager', 'Support Lead'];
         const POSITION_OPTIONS = POSITIONS.map(p => ({ value: p, display: p }));
@@ -422,9 +520,29 @@
             $('.alert-wrapper').html(alertHtml);
         }
 
+        function toggleUploadButtonDisableState() {
+            const source = $('#SelectSource').val();
+            const type = $('#SelectType').val();
+            if (source == 0 || type == 0) {
+                $('.btn-show-upload-modal').attr('disabled', true);
+            } else {
+                $('.btn-show-upload-modal').removeAttr('disabled', true);
+            }
+
+            console.log('toggleUploadButtonDisableState', source, type);
+        }
+
         $(document).ready(function () {
 
-            initializeDataTable('#SimpleDataTable', DATA);
+            $('.btn-show-upload-modal').click(function () {
+                modal.show();
+            });
+
+            $('.launch-upload-modal').click(function () {
+                $('.pre-content-wrapper').hide();
+                $('.main-content-wrapper').show();
+                initializeDataTable('#SimpleDataTable', DATA);
+            });
 
             // Numeric Validation
             $(document).on('keydown', '#SimpleDataTable .form-control', function (e) {
@@ -460,9 +578,7 @@
                 };
 
                 // Add new row to the table
-                DATA_TABLE.row.add(newRowData).draw(false);
-                // Show the new row at the top
-                DATA_TABLE.order([1, 'asc']).draw();
+                DATA_TABLE.row.add(newRowData).draw();
             });
 
             $('.btn-submit-data').click(function () {
@@ -485,6 +601,9 @@
                     showAlert('Submit Success');
                 }
             });
+
+            // upload button's disable state
+            $('#SelectSource, #SelectType').change(toggleUploadButtonDisableState);
 
         });
     </script>
