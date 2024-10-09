@@ -91,7 +91,7 @@
                                 <i class="bi bi-upload"></i>
                                 Upload
                             </button>
-                            <button class="btn btn-sm bg-brand rounded-xl btn-add-row px-4 mx-1 border-0">
+                            <button class="btn btn-sm btn-warning rounded-xl btn-add-row px-4 mx-1 border-0">
                                 <i class="bi bi-node-plus"></i>
                                 Add Row
                             </button>
@@ -99,6 +99,11 @@
                                 <i class="bi bi-send"></i>
                                 Submit
                             </button>
+                            <a href="https://firebasestorage.googleapis.com/v0/b/i-tester.appspot.com/o/SampleData.xlsx?alt=media"
+                                class="btn btn-sm btn-warning rounded-xl px-4 mx-1 border-0">
+                                <i class="bi bi-send"></i>
+                                Submit
+                            </a>
                         </div>
 
                         <div class="d-flex justify-content-center align-items-center">
@@ -375,7 +380,7 @@
         });
 
         // dummy options for input type == <select>
-        const POSITIONS = ['System Architect', 'Accountant', 'Junior Technical Author', 'Senior Javascript Developer', 'Integration Specialist', 'Sales Assistant', 'Javascript Developer', 'Software Engineer', 'Office Manager', 'Support Lead'];
+        const POSITIONS = ['System Architect', 'Accountant', 'Sales Assistant', 'Software Engineer', 'Office Manager', 'Support Lead'];
         const POSITION_OPTIONS = POSITIONS.map(p => ({ value: p, display: p }));
 
         // initialize datatable with editable feature
@@ -391,11 +396,12 @@
                     }
                 },
                 { data: 'first_name', contentPadding: '0px' },
-                { data: 'position', contentPadding: '0px' },
+                { data: 'position', contentPadding: '0px', className: 'dt-type-dropdown' },
                 { data: 'office', contentPadding: '0px', width: '230px' },
                 {
                     data: 'dob',
                     contentPadding: '0px',
+                    className: 'dt-type-datepicker',
                     render: function (data, type, row) {
                         const dt = new Date(data);
                         return dt.toLocaleDateString('en-AU');
@@ -420,7 +426,7 @@
 
             columns = columns.map((c, i) =>
                 EDITABLE_COLUMNS.includes(i)
-                    ? ({ ...c, className: 'editable' })
+                    ? ({ ...c, className: !!c.className ? c.className + ' editable' : 'editable' }) // if column definition contains 'className' prop already then add that value too
                     : c);
 
             // Initialize DataTable from JS array
@@ -476,6 +482,7 @@
         function cellUpdateCallback(updatedCell, updatedRow, oldValue) {
             console.log('The new value for the cell is: ' + updatedCell.data());
             console.log('The values for each cell in that row are: ' + updatedRow.data());
+            identifyInvalidCells();
             printCurrentTableData();
         }
 
@@ -506,8 +513,26 @@
         function identifyInvalidCells() {
             $(`#SimpleDataTable td`).each(function () {
                 const textContent = $(this).text().trim();
-                if (!textContent
-                    || textContent.toLowerCase().includes('invalid date'))
+
+                let valid = false;
+
+                if ($(this).hasClass('dt-type-dropdown')) {
+                    // data type: select option
+                    const optionExist = POSITION_OPTIONS.find(p => p.display == textContent)
+                    console.log('option exist', optionExist);
+                    valid = !!optionExist;
+                } else if ($(this).hasClass('dt-type-datepicker')) {
+                    // data type: date picker
+                    valid = !!textContent && !textContent.toLowerCase().includes('invalid date');
+                } else if ($(this).hasClass('dt-type-numeric')) {
+                    // data type: numeric
+                    const number = parseInt(textContent);
+                    valid = !!textContent && !isNaN(number) && number > 0;
+                } else {
+                    valid = !!textContent;
+                }
+
+                if (!valid)
                     $(this).addClass('invalid-data');
             });
         }
@@ -588,14 +613,9 @@
                 const data = DATA_TABLE.rows().data().toArray();
 
                 // validations
-                const invalidData = data.filter(d => !d.dob
-                    || !d.first_name
-                    || !d.office
-                    || !d.position
-                    || !d.salary);
+                identifyInvalidCells();
 
-                if (invalidData.length > 0) {
-                    identifyInvalidCells();
+                if ($('#SimpleDataTable td.invalid-data').length) {
                     showAlert('One or more cells have invalid data, please fix before submit.', false);
                 } else {
                     console.log('all valid, submit to server');
