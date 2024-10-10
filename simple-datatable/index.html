@@ -399,6 +399,8 @@
 
         const SHOW_EDIT_ICON = true;
         const EDITABLE_COLUMNS = [0, 1, 2, 3, 4, 5];
+        const DATATABLE_PAGING = false;
+        const VALIDATION_ERROR_MSG = 'One or more cells have invalid data, please fix before submit.';
 
         // UPLOAD:: Controller => DataTable, Method => ParseContentFromXls
         const UPLOAD_URL = '/DataTable/ParseContentFromXls';
@@ -428,7 +430,12 @@
                     }
                 },
                 { data: 'first_name', contentPadding: '0px' },
-                { data: 'position', contentPadding: '0px', className: 'dt-type-dropdown' },
+                {
+                    data: 'position',
+                    contentPadding: '0px',
+                    // use this className to determine data-type when validating cell value
+                    className: 'dt-type-dropdown'
+                },
                 {
                     data: 'office',
                     type: 'string',
@@ -438,6 +445,7 @@
                 {
                     data: 'dob',
                     contentPadding: '0px',
+                    // use this className to determine data-type when validating cell value
                     className: 'dt-type-datepicker',
                     render: function (data, type, row) {
                         const dt = new Date(data);
@@ -447,7 +455,7 @@
                 {
                     data: 'salary',
                     type: 'num',
-                    contentPadding: '0px'
+                    contentPadding: '0px',
                 },
                 {
                     data: 'id',
@@ -455,19 +463,24 @@
                     width: '100px',
                     render: function (data, type, row) {
                         return `<button
-                            type="button"
-                            class="btn btn-sm bg-brand"
-                            data-id="${data}"
-                            onclick="deleteRow(${data})">
-                                <i class="bi bi-trash"></i> Delete
-                        </button>`;
+                    type="button"
+                    class="btn btn-sm bg-brand"
+                    data-id="${data}"
+                    onclick="deleteRow(${data})">
+                        <i class="bi bi-trash"></i> Delete
+                </button>`;
                     }
                 }
             ];
 
+            // if column definition contains 'className' prop already 
+            //  then prepend that value to 'editable'
+            const getClassname = (columnObj) =>
+                !!columnObj.className ? columnObj.className + ' editable' : 'editable';
+
             columns = columns.map((c, i) =>
                 EDITABLE_COLUMNS.includes(i)
-                    ? ({ ...c, className: !!c.className ? c.className + ' editable' : 'editable' }) // if column definition contains 'className' prop already then add that value too
+                    ? ({ ...c, className: getClassname(c) })
                     : c);
 
             // Initialize DataTable from JS array
@@ -475,8 +488,8 @@
                 columns,
                 data,
                 order: [[5, 'desc']],
-                paging: false,
-                destroy: true
+                paging: DATATABLE_PAGING,
+                destroy: true //destroy before initialize (if already initialized)
             });
 
             // Initialize editable cell plugin
@@ -488,6 +501,7 @@
                 </span>
             </div>`;
 
+            //destroy before initialize (if already initialized)
             DATA_TABLE.MakeCellsEditable('destroy');
             DATA_TABLE.MakeCellsEditable({
                 onUpdate: cellUpdateCallback,
@@ -529,6 +543,19 @@
             printCurrentTableData();
         }
 
+        function getColumnNameForCurrentCell(td) {
+            // Get the clicked cell
+            const cell = DATA_TABLE.cell(td);
+
+            // Get column index of the clicked cell
+            const columnIndex = cell.index().column;
+
+            // Get the column name from the DataTable settings
+            const columnName = DATA_TABLE.column(columnIndex).header().textContent;
+
+            return columnName;
+        }
+
         function deleteRow(id) {
             // Show the modal
             $('#deleteConfirmationModal').modal('show');
@@ -554,36 +581,84 @@
         }
 
         function identifyInvalidCells() {
+            let [dropdownError, datePickerError, numericError, otherError] = [0, 0, 0, 0];
+
             $(`#SimpleDataTable td`).each(function () {
                 const textContent = $(this).text().trim();
-
-                let valid = false;
+                let valid = true;
 
                 if ($(this).hasClass('dt-type-dropdown')) {
                     // data type: select option
-                    const optionExist = POSITION_OPTIONS.find(p => p.display == textContent)
-                    console.log('option exist', optionExist);
-                    valid = !!optionExist;
+                    // rule: must exist in position dropdown list
+
+                    // get column name
+                    const columnName = getColumnNameForCurrentCell(this);
+
+                    // Positions Column
+                    if (columnName.toLowerCase() == 'position') {
+                        const optionExist = POSITION_OPTIONS.find(p => p.display == textContent)
+                        if (!optionExist) {
+                            valid = false;
+                            dropdownError++;
+                        }
+                    }
+
                 } else if ($(this).hasClass('dt-type-datepicker')) {
                     // data type: date picker
-                    valid = !!textContent && !textContent.toLowerCase().includes('invalid date');
+                    // rule: can't be empty && must be valid date
+                    if (!textContent || textContent.toLowerCase().includes('invalid date')) {
+                        datePickerError++;
+                        valid = false;
+                    }
                 } else if ($(this).hasClass('dt-type-numeric')) {
                     // data type: numeric
+                    // rule: can't be empty && must be a number & greater than 0
                     const number = parseInt(textContent);
-                    valid = !!textContent && !isNaN(number) && number > 0;
+                    if (!textContent || isNaN(number) || number <= 0) {
+                        numericError++;
+                        valid = false;
+                    }
                 } else {
-                    valid = !!textContent;
+                    // data type: else, string and all
+                    // rule: can't be null OR empty
+                    if (!textContent) {
+                        otherError++;
+                        valid = false;
+                    }
                 }
 
                 if (!valid)
                     $(this).addClass('invalid-data');
             });
+
+            return ({ dropdownError, datePickerError, numericError, otherError });
         }
 
         function showAlert(msg, isSuccess = true) {
             const alertClass = isSuccess ? 'alert-success' : 'alert-danger';
             const alertHtml = `<div class="alert ${alertClass} alert-dismissible fade show" role="alert">
                 ${msg}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`;
+            $('.alert-wrapper').html(alertHtml);
+        }
+
+        function showErrorAlertWithValidationSummary(msg, validationErrors) {
+            const { dropdownError, datePickerError, numericError, otherError } = validationErrors;
+            let errorSummary = ``;
+
+            if (dropdownError > 0)
+                errorSummary += `<li> <b>${dropdownError}</b> Invalid Dropdown Value  </li>`;
+            if (datePickerError > 0)
+                errorSummary += `<li> <b>${datePickerError}</b> Invalid DatePicker Value  </li>`;
+            if (numericError > 0)
+                errorSummary += `<li> <b>${numericError}</b> Invalid Numeric Value  </li>`;
+            if (otherError > 0)
+                errorSummary += `<li> <b>${otherError}</b> Invalid String Value  </li>`;
+
+            const alertHtml = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                ${msg}
+                <div class="mt-3"><ul> ${errorSummary} </ul></div>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>`;
             $('.alert-wrapper').html(alertHtml);
@@ -658,13 +733,18 @@
             $('#confirmSubmit').click(function () {
                 console.log('submit data')
                 $('td').removeClass('invalid-data');
+
+                // Initialize DataTable with empty [] data if not already initialized
+                if (!DataTable.isDataTable('#SimpleDataTable'))
+                    initializeDataTable('#SimpleDataTable', []);
+
                 const data = DATA_TABLE.rows().data().toArray();
 
-                // validations
-                identifyInvalidCells();
+                // run validations
+                const validationErrors = identifyInvalidCells();
 
                 if ($('#SimpleDataTable td.invalid-data').length) {
-                    showAlert('One or more cells have invalid data, please fix before submit.', false);
+                    showErrorAlertWithValidationSummary(VALIDATION_ERROR_MSG, validationErrors);
                 } else {
                     console.log('all valid, submit to server');
                     showAlert('Submit Success');
