@@ -252,16 +252,20 @@ function getInputHtml(currentColumnIndex, settings, oldValue) {
                 " onchange='this.value = this.checked ? 1 : 0; $(this).updateEditableCell(this)' value='" + oldValue + "'>";
             break;
         case "datalist":
-            input.html = startWrapperHtml + "<datalist id='ejbeatycelledit'>";
-            $.each(inputSetting.options, function (index, option) {
-                if (oldValue == option.value) {
-                    input.html = input.html + "<option value='" + option.value + "' selected>" + option.display + "</option>"
-                } else {
-                    input.html = input.html + "<option value='" + option.value + "' >" + option.display + "</option>"
-                }
-            });
-            input.html = input.html + "</datalist><input type='text' class='" + inputCss + "' list='ejbeatycelledit'>" + endWrapperHtml;
-            input.focus = false;
+            const dropdownMarkup = `<div class="input-group input-group-sm">
+                <input type="text" id="ejbeatycelledit" class="form-control" data-bs-toggle="dropdown" aria-expanded="false" value="${oldValue}" onkeyup="filterDropdown(this)" />  
+                <span class="input-group-text"
+                    onclick='$(this).updateEditableCell($(this).prev())'>
+                    <i class="bi bi-check2-all"></i>
+                </span>              
+                <ul class="dropdown-menu border-0 shadow" id="editableDropdown" style="height: 260px; overflow-y: scroll;">
+                    ${inputSetting.options.map(i => `<li>
+                        <a class="dropdown-item" href="javascript:void(0);" onclick="selectDropdownItem(this)">${i.display}</a>
+                    </li>`).join('')}
+                </ul>
+            </div>`;
+
+            input.html = dropdownMarkup;
             break;
         default: // text input
             input.html = startWrapperHtml + "<input id='ejbeatycelledit' class='" + inputCss + "' onfocusout='$(this).updateEditableCell(this)' value='" + oldValue + "'></input>" + endWrapperHtml;
@@ -302,4 +306,31 @@ function sanitizeCellValue(cellValue) {
         cellValue = cellValue.replace(/'/g, "&#39;");
     }
     return cellValue;
+}
+
+function filterDropdown(input) {
+    // Get the input value and convert it to lowercase for case-insensitive comparison
+    let filter = input.value.toLowerCase();
+
+    // Get all the dropdown items
+    let items = document.querySelectorAll('#editableDropdown .dropdown-item');
+
+    // Loop through the dropdown items and hide/show based on the input value
+    items.forEach(item => {
+        let text = item.textContent.toLowerCase();
+        if (text.includes(filter)) {
+            item.style.display = ''; // Show item
+        } else {
+            item.style.display = 'none'; // Hide item
+        }
+    });
+}
+
+function selectDropdownItem(item) {
+    // Get the input field and set its value to the selected dropdown item's text
+    let inputField = document.getElementById('ejbeatycelledit');
+    inputField.value = item.textContent;
+
+    // Trigger the updateEditableCell function to submit the edit (adjust this part based on your method)
+    $(inputField).updateEditableCell(inputField);
 }

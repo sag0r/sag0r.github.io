@@ -414,7 +414,60 @@
         });
 
         // dummy options for input type == <select>
-        const POSITIONS = ['System Architect', 'Accountant', 'Sales Assistant', 'Software Engineer', 'Office Manager', 'Support Lead'];
+        const POSITIONS = [
+            'System Architect', 'Accountant', 'Sales Assistant', 'Software Engineer', 'Office Manager', 'Support Lead',
+            'Software Engineer',
+            'Data Scientist',
+            'Product Manager',
+            'UX/UI Designer',
+            'Project Manager',
+            'Marketing Manager',
+            'Business Analyst',
+            'DevOps Engineer',
+            'QA Engineer',
+            'Financial Analyst',
+            'Content Writer',
+            'Human Resources Manager',
+            'Sales Executive',
+            'IT Support Specialist',
+            'Network Administrator',
+            'Mobile App Developer',
+            'Graphic Designer',
+            'Operations Manager',
+            'Digital Marketing Specialist',
+            'Database Administrator',
+            'SEO Specialist',
+            'Social Media Manager',
+            'Customer Support Representative',
+            'Account Manager',
+            'Copywriter',
+            'Cybersecurity Analyst',
+            'Cloud Engineer',
+            'Systems Analyst',
+            'Data Engineer',
+            'Web Developer',
+            'Recruiter',
+            'Creative Director',
+            'IT Consultant',
+            'AI/ML Engineer',
+            'Video Editor',
+            'Mechanical Engineer',
+            'Electrical Engineer',
+            'Architect',
+            'Civil Engineer',
+            'Legal Advisor',
+            'Chief Executive Officer (CEO)',
+            'Chief Financial Officer (CFO)',
+            'Chief Technology Officer (CTO)',
+            'Chief Operating Officer (COO)',
+            'Front-End Developer',
+            'Back-End Developer',
+            'Full-Stack Developer',
+            'Machine Learning Engineer',
+            'Public Relations Specialist',
+            'Event Manager',
+            'Logistics Coordinator'
+        ];
         const POSITION_OPTIONS = POSITIONS.map(p => ({ value: p, display: p }));
 
         // initialize datatable with editable feature
@@ -463,12 +516,12 @@
                     width: '100px',
                     render: function (data, type, row) {
                         return `<button
-                    type="button"
-                    class="btn btn-sm bg-brand"
-                    data-id="${data}"
-                    onclick="deleteRow(${data})">
-                        <i class="bi bi-trash"></i> Delete
-                </button>`;
+                            type="button"
+                            class="btn btn-sm bg-brand"
+                            data-id="${data}"
+                            onclick="deleteRow(${data})">
+                                <i class="bi bi-trash"></i> Delete
+                        </button>`;
                     }
                 }
             ];
@@ -583,6 +636,7 @@
         function identifyInvalidCells() {
             let [dropdownError, datePickerError, numericError, otherError] = [0, 0, 0, 0];
 
+            $('td').removeClass('invalid-data');
             $(`#SimpleDataTable td`).each(function () {
                 const textContent = $(this).text().trim();
                 let valid = true;
