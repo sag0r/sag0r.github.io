@@ -253,7 +253,7 @@ function getInputHtml(currentColumnIndex, settings, oldValue) {
             break;
         case "datalist":
             const dropdownMarkup = `<div class="input-group input-group-sm">
-                <input type="text" id="ejbeatycelledit" class="form-control" data-bs-toggle="dropdown" aria-expanded="false" value="${oldValue}" onkeyup="filterDropdown(this)" />  
+                <input type="text" id="ejbeatycelledit" class="form-control" data-bs-toggle="dropdown" aria-expanded="false" onkeyup="filterDropdown(this)" />  
                 <span class="input-group-text"
                     onclick='$(this).updateEditableCell($(this).prev())'>
                     <i class="bi bi-check2-all"></i>
