@@ -674,6 +674,7 @@
                     // 1. must exist in dropdown list
                     // 2. must align with office location
                     if (columnName.toLowerCase() == 'position') {
+                        console.log('positions dropdown = ', textContent);
                         const optionExist = POSITION_OPTIONS.find(p => p.display == textContent)
                         if (!optionExist) {
                             valid = false;
@@ -836,7 +837,11 @@
             });
 
             $('#confirmSubmit').click(function () {
-                console.log('submit data')
+                console.log('submit data');
+
+                // exit edit mode for all cells that are in edit mode
+                $('.editing .form-control, .editing .form-select').trigger('change');
+
                 $('td').removeClass('invalid-data');
 
                 // Initialize DataTable with empty [] data if not already initialized
