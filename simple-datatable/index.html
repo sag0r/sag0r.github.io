@@ -587,7 +587,7 @@
                     },
                     {
                         column: 3,
-                        type: 'datalist',
+                        type: 'list',
                         options: POSITION_OPTIONS
                     },
                     {
@@ -660,14 +660,11 @@
 
                 // get column name
                 const columnName = getColumnNameForCurrentCell(this);
-                console.log('columnname', columnName, textContent);
 
-                // for 'office' column, save the value
+                // for 'office' column, save the value;
                 // later use it to validate 'position' value
-                if (columnName.toLowerCase() == 'office') {
-                    console.log('Office column', textContent);
+                if (columnName.toLowerCase() == 'office')
                     officeLoation = textContent;
-                }
 
                 if ($(this).hasClass('dt-type-dropdown')) {
                     // data type: select option
@@ -691,7 +688,7 @@
                                 positionsError++;
                             } else {
                                 const option = mapping.positions.find(x => x == textContent);
-                                if (!mapping) {
+                                if (!option) {
                                     valid = false;
                                     positionsError++;
                                 }
@@ -708,9 +705,9 @@
                     }
                 } else if ($(this).hasClass('dt-type-numeric')) {
                     // data type: numeric
-                    // rule: can't be empty && must be a number & greater than 0
+                    // rule: can't be empty && must be a number
                     const number = parseInt(textContent);
-                    if (!textContent || isNaN(number) || number <= 0) {
+                    if (!textContent || isNaN(number)) {
                         numericError++;
                         valid = false;
                     }
