@@ -253,12 +253,12 @@ function getInputHtml(currentColumnIndex, settings, oldValue) {
             break;
         case "datalist":
             const dropdownMarkup = `<div class="input-group input-group-sm">
-                <input type="text" id="ejbeatycelledit" class="form-control" data-bs-toggle="dropdown" aria-expanded="false" onkeyup="filterDropdown(this)" />  
+                <input type="text" id="ejbeatycelledit" class="form-control" data-bs-toggle="dropdown" aria-expanded="false" onfocus="showDropdown(this)" onkeyup="filterDropdown(this)" />
                 <span class="input-group-text"
                     onclick='$(this).updateEditableCell($(this).prev())'>
                     <i class="bi bi-check2-all"></i>
                 </span>              
-                <ul class="dropdown-menu border-0 shadow" id="editableDropdown" style="height: 260px; overflow-y: scroll;">
+                <ul class="dropdown-menu border-0 shadow" id="editableDropdown" style="height: 260px; overflow-y: scroll;margin-top: 32px;">
                     ${inputSetting.options.map(i => `<li>
                         <a class="dropdown-item" href="javascript:void(0);" onclick="selectDropdownItem(this)">${i.display}</a>
                     </li>`).join('')}
@@ -306,6 +306,11 @@ function sanitizeCellValue(cellValue) {
         cellValue = cellValue.replace(/'/g, "&#39;");
     }
     return cellValue;
+}
+
+function showDropdown(input) {
+    var dropdownMenu = input.nextElementSibling.nextElementSibling; // target the dropdown
+    dropdownMenu.classList.add('show'); // Show the dropdown
 }
 
 function filterDropdown(input) {
