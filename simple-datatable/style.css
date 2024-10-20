@@ -470,3 +470,46 @@ table.dataTable,
 .alert-wrapper:empty {
     display: none;
 }
+
+
+
+.search-select #search-select-filtered-options {
+    height: 300px;
+    overflow-y: scroll;
+}
+
+/* 
+.search-select button,
+.search-select ul,
+.search-select input {
+    width: 100%;
+}
+
+.search-select ul {
+    padding: 0;
+}
+
+.search-select button {
+    text-align: left;
+}
+
+.search-select button i {
+    float: right;
+}
+
+.search-select .dropdown-menu {
+    width: 100%;
+    border: solid 2px #2490EF;
+}
+
+.search-select input {
+    padding: 6px 10px;
+    border: none;
+    border-bottom: solid 2px #2490EF;
+}
+
+.search-select input:focus {
+    border: none;
+    border-bottom: solid 2px #2490EF;
+    outline: none;
+} */
