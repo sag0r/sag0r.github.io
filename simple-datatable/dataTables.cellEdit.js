@@ -186,7 +186,7 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
             const cell = table.cell(currentRowIndex, columnToMatchValue);
 
             // Get the text content of the cell
-            const cellText = $(cell.node()).text();
+            const cellText = $(cell.node()).text(); // [e.g: New York]
 
             const mapping = mappings.find(x => x.location.includes(cellText));
 
