@@ -182,7 +182,7 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
             // get datatable reference
             const table = $('table').DataTable().table();
 
-            // find the cell to validation options with
+            // find the cell to validate options with
             const cell = table.cell(currentRowIndex, columnToMatchValue);
 
             // Get the text content of the cell
