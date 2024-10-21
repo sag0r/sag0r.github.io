@@ -106,7 +106,6 @@ jQuery.fn.dataTable.Api.register('MakeCellsEditable()', function (settings) {
         $(table.body()).on('click', 'td', function () {
 
             var currentColumnIndex = table.cell(this).index().column;
-            var currentRowIndex = table.cell(this).index().row;
 
             // DETERMINE WHAT COLUMNS CAN BE EDITED
             if ((settings.columns && settings.columns.indexOf(currentColumnIndex) > -1) || (!settings.columns)) {
@@ -122,7 +121,7 @@ jQuery.fn.dataTable.Api.register('MakeCellsEditable()', function (settings) {
                 // Show input
                 if (!$(cell).find('input').length && !$(cell).find('select').length && !$(cell).find('textarea').length) {
                     // Input CSS
-                    var input = getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex);
+                    var input = getInputHtml(currentColumnIndex, settings, oldValue);
                     $(cell).html(input.html);
                     if (input.focus) {
                         $('#ejbeatycelledit').focus();
@@ -134,7 +133,7 @@ jQuery.fn.dataTable.Api.register('MakeCellsEditable()', function (settings) {
 
 });
 
-function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
+function getInputHtml(currentColumnIndex, settings, oldValue) {
     var inputSetting, inputType, input, inputCss, confirmCss, cancelCss, startWrapperHtml = '', endWrapperHtml = '', listenToKeys = false;
 
     input = { "focus": true, "html": null };
@@ -167,38 +166,6 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
         case "list":
             input.html = startWrapperHtml + "<select class='form-select' onchange='$(this).updateEditableCell(this);'>";
             $.each(inputSetting.options, function (index, option) {
-                if (oldValue == option.value) {
-                    input.html = input.html + "<option value='" + option.value + "' selected>" + option.display + "</option>"
-                } else {
-                    input.html = input.html + "<option value='" + option.value + "' >" + option.display + "</option>"
-                }
-            });
-            input.html = input.html + "</select>" + endWrapperHtml;
-            input.focus = false;
-            break;
-        case "list-filter":
-            let { columnToMatchValue, options, mappings } = inputSetting;
-
-            // get datatable reference
-            const table = $("table").DataTable().table();
-
-            // find the cell to validation options with
-            const cell = table.cell(currentRowIndex, columnToMatchValue);
-
-            // Get the text content of the cell
-            const cellText = $(cell.node()).text();
-
-            const mapping = mappings.find(x => x.location.includes(cellText));
-
-            if (!!mapping) {
-                options = options.filter((option, index, self) =>
-                    mapping.positions.includes(option.value) &&
-                    index === self.findIndex(o => o.value === option.value)  // Remove duplicates by value
-                );
-            }
-
-            input.html = startWrapperHtml + "<select class='form-select' onchange='$(this).updateEditableCell(this);'>";
-            $.each(options, function (index, option) {
                 if (oldValue == option.value) {
                     input.html = input.html + "<option value='" + option.value + "' selected>" + option.display + "</option>"
                 } else {
@@ -301,6 +268,46 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
             </div>`;
             input.html = dropdownMarkup;
 
+            // Handle when the dropdown is shown
+            $(window).on('shown.bs.dropdown', function (e) {
+                var $btnDropDown = $('#dropdownBtn');
+                var $listHolder = $('.search-select').find(".dropdown-menu");
+
+                // Adjust position of the dropdown to make sure it shows outside the parent
+                $listHolder.css({
+                    "position": "absolute",
+                    "top": ($btnDropDown.offset().top + $btnDropDown.outerHeight(true)) + "px",
+                    "left": $btnDropDown.offset().left + "px",
+                    "z-index": 1050  // Ensure it stays on top
+                }).data("open", true);
+
+                // Append the dropdown to the body to make sure it's not hidden by the parent table
+                $('body').append($listHolder.detach());
+            });
+
+            // Handle when the dropdown is hidden
+            $(window).on('hidden.bs.dropdown', function (e) {
+                var $listHolder = $('.search-select').find(".dropdown-menu");
+
+                // Move the dropdown back to its original location in the DOM
+                $(e.target).append($listHolder.detach());
+                $listHolder.data("open", false);
+            });
+
+            // Handle scrolling of table or container to reposition the dropdown
+            $(window).scroll(function () {
+                var $ddHolder = $('.search-select.dropdown');
+                var $btnDropDown = $('#dropdownBtn');
+                var $listHolder = $ddHolder.find(".dropdown-menu");
+
+                // If the dropdown is open, reposition it during scroll
+                if ($listHolder.data("open")) {
+                    $listHolder.css({
+                        "top": ($btnDropDown.offset().top + $btnDropDown.outerHeight(true)) + "px",
+                        "left": $btnDropDown.offset().left + "px"
+                    });
+                }
+            });
 
             $(document).off().on('keyup', '#filter-dropdown', function (e) {
                 filterData(inputSetting.options, e.target.value)

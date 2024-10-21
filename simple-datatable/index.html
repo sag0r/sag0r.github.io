@@ -346,7 +346,7 @@
                 "last_name": "Hurst",
                 "position": "Javascript Developer",
                 "email": "c.hurst@datatables.net",
-                "office": "San Francisco",
+                "office": "New York",
                 "extn": 2360,
                 "age": 39,
                 "salary": 205500,
@@ -476,7 +476,7 @@
                 positions: ['System Architect', 'Accountant', 'Sales Assistant', 'Software Engineer']
             },
             {
-                location: 'Edinburgh',
+                location: 'London',
                 positions: ['SEO Specialist', 'Support Lead']
             },
             {
@@ -587,8 +587,10 @@
                     },
                     {
                         column: 3,
-                        type: 'datalist',
-                        options: POSITION_OPTIONS
+                        type: 'list-filter',
+                        options: POSITION_OPTIONS,
+                        columnToMatchValue: 2,
+                        mappings: OFFICE_POSITION_MAPPING
                     },
                     {
                         column: 4,
@@ -648,10 +650,24 @@
             });
         }
 
+        function findDuplicateRows() {
+            console.log('find duplcates');
+            const data = DATA_TABLE.rows().data().toArray();
+            const duplicates = data.reduce((acc, item) => {
+                const key = `${item.office}-${item.position}`;
+                acc[key] ? acc[key].push(item) : acc[key] = [item];
+                return acc;
+            }, {});
+
+            const result = Object.values(duplicates).filter(arr => arr.length > 1).flat();
+            console.log(`Found ${result.length} duplicates`);
+        }
+
         function identifyInvalidCells() {
             let [dropdownError, datePickerError, numericError, otherError, positionsError] = [0, 0, 0, 0, 0];
 
             $('td').removeClass('invalid-data');
+            findDuplicateRows();
 
             let officeLoation = '';
             $(`#SimpleDataTable td`).each(function () {
@@ -674,7 +690,7 @@
                     // 1. must exist in dropdown list
                     // 2. must align with office location
                     if (columnName.toLowerCase() == 'position') {
-                        console.log('positions dropdown = ', textContent);
+                        //console.log('positions dropdown = ', textContent);
                         const optionExist = POSITION_OPTIONS.find(p => p.display == textContent)
                         if (!optionExist) {
                             valid = false;
