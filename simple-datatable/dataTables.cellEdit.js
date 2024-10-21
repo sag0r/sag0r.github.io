@@ -180,7 +180,7 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
             let { columnToMatchValue, options, mappings } = inputSetting;
 
             // get datatable reference
-            const table = $("table").DataTable().table();
+            const table = $('table').DataTable().table();
 
             // find the cell to validation options with
             const cell = table.cell(currentRowIndex, columnToMatchValue);
