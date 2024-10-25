@@ -47,9 +47,14 @@
 
     <nav class="navbar fixed-top bg-white shadow-xl">
         <div class="container-fluid justify-content-start">
-            <a class="navbar-brand site-logo" href="#">
-                <i class="bi bi-journal-bookmark-fill text-brand"></i>
-                <span class="text-brand">DataExpo</span>
+            <a class="navbar-brand site-logo d-flex flex-row" href="#">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-journal-bookmark-fill text-brand"></i>
+                </div>
+                <div class="d-flex flex-column ps-2">
+                    <span class="text-brand">DataExpo</span>
+                    <span class="text-muted" style="font-size: 14px;line-height: 16px;">Explore the Data</span>
+                </div>
             </a>
 
             <div class="d-flex flex-row">
@@ -131,6 +136,10 @@
                                         <i class="bi bi-download"></i>
                                         Download
                                     </a>
+                                    <button class="btn btn-sm bg-brand rounded-xl btn-go-to-link px-4 mx-1">
+                                        <i class="bi bi-share"></i>
+                                        Go to Link
+                                    </button>
                                 </div>
                             </div>
 
@@ -900,6 +909,18 @@
 
             // upload button's disable state
             $('#SelectSource, #SelectType').change(toggleUploadButtonDisableState);
+
+            // Go to link
+            $('.btn-go-to-link').click(function () {
+
+                // get select-option values
+                const source = $('#SelectSource').val();
+                const type = $('#SelectType').val();
+
+                //send to another link
+                const url = `someurl?source=${source}&type=${type}`;
+                window.open(url, '_blank');
+            });
 
         });
     </script>

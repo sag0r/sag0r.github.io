@@ -105,6 +105,11 @@ jQuery.fn.dataTable.Api.register('MakeCellsEditable()', function (settings) {
         // On cell click
         $(table.body()).on('click', 'td', function () {
 
+            // Exit edit mode for all cells that are in edit mode, except for elements inside the current cell
+            $('.editing .form-control, .editing .form-select')
+                .not($(this).find('.form-control, .form-select'))
+                .trigger('change');
+
             var currentColumnIndex = table.cell(this).index().column;
             var currentRowIndex = table.cell(this).index().row;
 
