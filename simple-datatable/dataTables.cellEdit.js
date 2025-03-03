@@ -168,6 +168,25 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
         cancelCss = settings.confirmationButton.cancelCss;
         inputType = inputType + "-confirm";
     }
+
+
+    /**
+     * Moved following common variables at the top to resolve conflicts in newer methods
+     */
+    let { columnToMatchValue, options, mappings } = inputSetting;
+
+    // get datatable reference
+    const table = $('table').DataTable().table();
+
+    // find the cell to validate options with
+    const cell = table.cell(currentRowIndex, columnToMatchValue);
+
+    // Get the text content of the cell
+    const cellText = $(cell.node()).text(); // [e.g: New York]
+
+    // Find the mapping by the text value
+    const mapping = mappings?.find(x => x.location == cellText);
+
     switch (inputType) {
         case "list":
             input.html = startWrapperHtml + "<select class='form-select' onchange='$(this).updateEditableCell(this);'>";
@@ -182,19 +201,8 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
             input.focus = false;
             break;
         case "list-filter":
-            let { columnToMatchValue, options, mappings } = inputSetting;
-
-            // get datatable reference
-            const table = $('table').DataTable().table();
-
-            // find the cell to validate options with
-            const cell = table.cell(currentRowIndex, columnToMatchValue);
-
-            // Get the text content of the cell
-            const cellText = $(cell.node()).text(); // [e.g: New York]
-
-            const mapping = mappings.find(x => x.location.includes(cellText));
-
+            // If a mapping is found, we filter the options
+            // Otherwise all options are shown
             if (!!mapping) {
                 options = options.filter((option, index, self) =>
                     mapping.positions.includes(option.value) &&
@@ -212,6 +220,101 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
             });
             input.html = input.html + "</select>" + endWrapperHtml;
             input.focus = false;
+            break;
+        case "searchable-list":
+            // If a mapping is found, filter the options
+            // Otherwise, show all options
+            if (!!mapping) {
+                options = options.filter((option, index, self) =>
+                    mapping.positions.includes(option.value) &&
+                    index === self.findIndex(o => o.value === option.value) // Remove duplicates
+                );
+            }
+
+            // Generate a unique ID for input field
+            let uniqueId = "searchable-dropdown-" + Date.now();
+
+            const selectedItem = options.find(o => o.value == oldValue);
+            const selectedItemHtml = selectedItem
+                ? `<div class="selected-item">
+                        <span>${selectedItem.display}</span>
+                        <hr class="my-2" />
+                    </div>`
+                : '';
+
+            input.html = `
+                    <div class="search-dropdown-wrapper" style="position: relative;">
+                        <input type="text" id="${uniqueId}" class="form-control form-control-sm search-input"
+                               placeholder="Type to search..." autocomplete="off" />
+                    </div>
+                `;
+
+            input.focus = false;
+
+            setTimeout(() => {
+                const inputField = $(`#${uniqueId}`);
+
+                // Create dropdown list dynamically & append to body
+                let dropdownList = $(`<ul class="search-dropdown bg-white p-2 rounded border-0 shadow"
+                        style="display: none; position: absolute; background: white; border: 1px solid #ccc;
+                        max-height: 200px; overflow-y: auto; list-style: none; padding: 0; margin: 0; width: 100%;">
+                        ${selectedItemHtml}
+                        ${options.map(option => `<li data-value="${option.value}" class="search-item ${oldValue == option.value ? 'is-selected' : ''}">${option.display}</li>`).join('')}
+                    </ul>`).appendTo("body");
+
+                // Function to position dropdown
+                function positionDropdown() {
+                    let offset = inputField.offset();
+                    dropdownList.css({
+                        top: offset.top + inputField.outerHeight(),
+                        left: offset.left,
+                        width: inputField.outerWidth()
+                    });
+                }
+
+                // Show dropdown on focus
+                inputField.on("focus", function () {
+                    positionDropdown();
+                    dropdownList.show();
+                });
+
+                // Filter options on input
+                inputField.on("input", function () {
+                    let searchText = $(this).val().toLowerCase();
+                    dropdownList.children("li").each(function () {
+                        let text = $(this).text().toLowerCase();
+                        $(this).toggle(text.includes(searchText));
+                    });
+                });
+
+                // Handle selection
+                dropdownList.on("click", ".search-item", function () {
+                    let selectedValue = $(this).data("value");
+                    let selectedText = $(this).text();
+
+                    // Update input value
+                    inputField.val(selectedText);
+
+                    // Manually trigger update
+                    setTimeout(() => {
+                        $(inputField).updateEditableCell(inputField);
+                    }, 50);
+
+                    dropdownList.hide();
+                });
+
+                // Hide dropdown when clicking outside
+                $(document).on("click", function (e) {
+                    if (!$(e.target).closest(".search-dropdown-wrapper, .search-dropdown").length) {
+                        dropdownList.hide();
+                    }
+                });
+
+                inputField.focus();
+                positionDropdown();
+                dropdownList.show();
+            }, 10);
+
             break;
         case "list-confirm": // List w/ confirm
             input.html = startWrapperHtml + "<select class='" + inputCss + "'>";
@@ -290,45 +393,20 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
                 " onchange='this.value = this.checked ? 1 : 0; $(this).updateEditableCell(this)' value='" + oldValue + "'>";
             break;
         case "datalist":
-            const dropdownMarkup = `<div class="search-select dropdown">
-                <div class="cursor-pointer d-flex flex-row" id="dropdownBtn" type="button" data-bs-toggle="dropdown" data-boundary="window">
-                    <span class="d-flex flex-fill align-items-center">${oldValue}</span>
-                    <i class="bi bi-caret-down-fill"></i>
-                </div>
-                <div class="dropdown-menu border-0 shadow p-0">
-                    <div class="d-flex flex-column">
-                        <div class="d-flex p-1 shadow-sm" style="border-top: 4px solid #FDB604;border-radius: 4px 4px 0 0;">
-                            <input class="form-control form-control-sm" autofocus type="text" placeholder="Search..." id="filter-dropdown" />
-                        </div>
-                        <div class="d-flex flex-fill flex-column" id="search-select-filtered-options"></div>            
-                    </div>
-                </div>
+            const dropdownMarkup = `<div class="input-group input-group-sm">
+                <input type="text" id="ejbeatycelledit" class="form-control" data-bs-toggle="dropdown" aria-expanded="false" onkeyup="filterDropdown(this)" />  
+                <span class="input-group-text"
+                    onclick='$(this).updateEditableCell($(this).prev())'>
+                    <i class="bi bi-check2-all"></i>
+                </span>              
+                <ul class="dropdown-menu border-0 shadow" id="editableDropdown" style="height: 260px; overflow-y: scroll;">
+                    ${inputSetting.options.map(i => `<li>
+                        <a class="dropdown-item" href="javascript:void(0);" onclick="selectDropdownItem(this)">${i.display}</a>
+                    </li>`).join('')}
+                </ul>
             </div>`;
+
             input.html = dropdownMarkup;
-
-
-            $(document).off().on('keyup', '#filter-dropdown', function (e) {
-                filterData(inputSetting.options, e.target.value)
-            });
-
-            setTimeout(function () {
-                setSelectOptions(inputSetting.options);
-            }, 0);
-
-            // const dropdownMarkup = `<div class="input-group input-group-sm">
-            //     <input type="text" id="ejbeatycelledit" class="form-control" data-bs-toggle="dropdown" aria-expanded="false" onfocus="showDropdown(this)" onkeyup="filterDropdown(this)" />
-            //     <span class="input-group-text"
-            //         onclick='$(this).updateEditableCell($(this).prev())'>
-            //         <i class="bi bi-check2-all"></i>
-            //     </span>              
-            //     <ul class="dropdown-menu border-0 shadow" id="editableDropdown" style="height: 260px; overflow-y: scroll;margin-top: 32px;">
-            //         ${inputSetting.options.map(i => `<li>
-            //             <a class="dropdown-item" href="javascript:void(0);" onclick="selectDropdownItem(this)">${i.display}</a>
-            //         </li>`).join('')}
-            //     </ul>
-            // </div>`;
-
-            // input.html = dropdownMarkup;
             break;
         default: // text input
             input.html = startWrapperHtml + "<input id='ejbeatycelledit' class='" + inputCss + "' onfocusout='$(this).updateEditableCell(this)' value='" + oldValue + "'></input>" + endWrapperHtml;

@@ -40,6 +40,70 @@
         #SimpleDataTable td.invalid-data {
             background: rgba(220, 53, 69, .5);
         }
+
+        /* Tree view */
+        #btnSourceDropdown {
+            border: 1px solid #ced4da;
+            color: #212529;
+        }
+
+        #btnSourceDropdown.show,
+        #btnSourceDropdown:hover,
+        #btnSourceDropdown:focus,
+        #btnSourceDropdown:active {
+            background: #fff !important;
+        }
+
+        .hummingbird-treeview,
+        .hummingbird-treeview * {
+            list-style: none;
+            font-size: 14px;
+            line-height: 20px;
+        }
+
+        .hummingbird-treeview label {
+            font-weight: normal;
+            padding-left: 8px;
+        }
+
+
+        .hummingbird-treeview input[type=checkbox] {
+            width: 12px;
+            height: 12px;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        .hummingbird-treeview ul:not(.hummingbird-base) {
+            display: none;
+        }
+
+        .hummingbird-treeview .bi {
+            font-style: normal;
+            cursor: pointer;
+        }
+
+        .search-dropdown {
+            z-index: 1;
+        }
+
+        .search-dropdown li {
+            cursor: pointer;
+            cursor: pointer;
+            padding: 2px 0;
+            transition: .1s all linear;
+        }
+
+        .search-dropdown li,
+        .search-dropdown .selected-item {
+            font-size: 14px;
+            line-height: 20px;
+        }
+
+        .search-dropdown .selected-item,
+        .search-dropdown li:hover {
+            color: #FDB604;
+        }
     </style>
 </head>
 
@@ -92,17 +156,25 @@
 
                         <div class="row">
 
-                            <div class="col">
+                            <div class="col mb-2 d-flex justify-content-center align-items-center">
                                 <div class="d-flex justify-content-start align-items-center">
-                                    <div class="mx-1">
-                                        <select class="form-select form-select-sm rounded-pill ps-3" id="SelectSource">
-                                            <option value="0" selected> Select Source </option>
-                                            <option value="1"> Local File </option>
-                                            <option value="2"> Cloud File </option>
-                                            <option value="3"> From Link </option>
-                                        </select>
+                                    <label class="mx-1">Slect Sources</label>
+                                    <div class="dropdown ms-1 me-4">
+                                        <button class="btn btn-outline-secondary btn-sm rounded-xl dropdown-toggle"
+                                            type="button" id="btnSourceDropdown" data-bs-toggle="dropdown"
+                                            aria-expanded="false" data-bs-auto-close="outside">
+                                            0 Selected
+                                        </button>
+                                        <div class="dropdown-menu border-0 shadow" aria-labelledby="btnSourceDropdown"
+                                            style="width: 300px;">
+                                            <div id="treeview_container"
+                                                class="hummingbird-treeview well h-scroll-large">
+                                                <ul id="treeview" class="hummingbird-base m-0 ps-2"></ul>
+                                            </div>
+                                        </div>
                                     </div>
 
+                                    <label class="mx-1">Select type</label>
                                     <div class="mx-1">
                                         <select class="form-select form-select-sm rounded-pill ps-3" id="SelectType">
                                             <option value="0" selected> Select Type </option>
@@ -241,6 +313,7 @@
     <script src="jquery-ui-1.14.0.custom/jquery-ui.min.js"></script>
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.js"></script>
     <script src="dataTables.cellEdit.js"></script>
+    <script src="tree-view.js"></script>
 
     <script>
 
@@ -596,7 +669,7 @@
                     },
                     {
                         column: 3,
-                        type: 'list-filter',
+                        type: 'searchable-list',
                         options: POSITION_OPTIONS,
                         columnToMatchValue: 2,
                         mappings: OFFICE_POSITION_MAPPING
@@ -797,6 +870,79 @@
             console.log('toggleUploadButtonDisableState', source, type);
         }
 
+        // TREE VIEW SAMPLE DATA
+        const DUMMY_DATA = [
+            { id: 1, name: 'Australia', parent: 0 },
+            { id: 4, name: 'New South Wales', parent: 1 },
+            { id: 5, name: 'Queensland', parent: 1 },
+            { id: 6, name: 'South Australia', parent: 1 },
+            { id: 7, name: 'Tasmania', parent: 1 },
+            { id: 8, name: 'Victoria', parent: 1 },
+            { id: 9, name: 'Western Australia', parent: 1 },
+            { id: 2, name: 'Bangladesh', parent: 0 },
+            { id: 10, name: 'Barisal', parent: 2 },
+            { id: 11, name: 'Chottagong', parent: 2 },
+            { id: 12, name: 'Dhaka', parent: 2 },
+            { id: 18, name: 'Dhaka', parent: 12 },
+            { id: 24, name: 'Educational Institudes', parent: 18 },
+            { id: 27, name: 'School', parent: 24 },
+            { id: 28, name: 'College', parent: 24 },
+            { id: 29, name: 'Madrashah', parent: 24 },
+            { id: 25, name: 'Hospitals', parent: 18 },
+            { id: 26, name: 'Restaurants', parent: 18 },
+            { id: 19, name: 'Faridpur', parent: 12 },
+            { id: 20, name: 'Gazipur', parent: 12 },
+            { id: 21, name: 'Gopalganj', parent: 12 },
+            { id: 22, name: 'Kishoreonj', parent: 12 },
+            { id: 23, name: 'Madaripur', parent: 12 },
+            { id: 13, name: 'Khulna', parent: 2 },
+            { id: 14, name: 'Mymensingh', parent: 2 },
+            { id: 15, name: 'Rajshahi', parent: 2 },
+            { id: 16, name: 'Rangpur', parent: 2 },
+            { id: 17, name: 'Sylhet', parent: 2 },
+            { id: 3, name: 'United States', parent: 0 },
+        ];
+
+        function createNode(rootEl, items, idPrefix, dataPrefix) {
+            for (const item of items) {
+                const id = item.id;
+                const idAttr = idPrefix + id;
+                const dataAttr = dataPrefix + id;
+                const children = DUMMY_DATA.filter(x => x.parent == id);
+
+                const li = $('<li></li>');
+                li
+                    .append(`<label class="${children.length == 0 ? 'ml-3' : ''}">
+                            <input
+                                class="${children.length == 0 ? 'hummingbird-end-node' : ''}"
+                                type="checkbox"
+                                id="${idAttr}"
+                                data-id="${dataAttr}" />
+                            ${item.name}
+                        </label>`)
+                    .appendTo(rootEl);
+
+                if (children.length > 0) {
+                    $('<i />', { 'class': 'bi bi-plus' })
+                        .prependTo(li);
+                    createNode($('<ul></ul>'), children, `${idAttr}-`, `${dataAttr}-`)
+                        .appendTo(li);
+                }
+            }
+            return rootEl;
+        }
+
+        function initializeTreeView() {
+            // asuming first-level items' parent = 0;
+            const items = DUMMY_DATA.filter(x => x.parent == 0);
+            const selector = $('#treeview');
+            const treeMarkup = createNode(selector, items, 'node-', 'custom-');
+            //
+            selector
+                .append(treeMarkup)
+                .hummingbird();
+        }
+
         $(document).ready(function () {
 
             $('.btn-show-upload-modal').click(function () {
@@ -920,6 +1066,17 @@
                 //send to another link
                 const url = `someurl?source=${source}&type=${type}`;
                 window.open(url, '_blank');
+            });
+
+            // invoke initialize tree view
+            initializeTreeView();
+
+            $("#treeview").on("CheckUncheckDone", function () {
+                var List = { "id": [], "dataid": [], "text": [] };
+                $("#treeview").hummingbird("getChecked", { list: List, onlyEndNodes: true, onlyParents: false, fromThis: false });
+                let cleanedData = List.text.map(item => item.replace('…', '').trim());
+                console.log('CheckUncheckDone', cleanedData);
+                $('#btnSourceDropdown').text(`${List.id.length} selected`);
             });
 
         });
