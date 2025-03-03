@@ -222,8 +222,6 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
             input.focus = false;
             break;
         case "searchable-list":
-            // If a mapping is found, filter the options
-            // Otherwise, show all options
             if (!!mapping) {
                 options = options.filter((option, index, self) =>
                     mapping.positions.includes(option.value) &&
@@ -231,14 +229,13 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
                 );
             }
 
-            // Generate a unique ID for input field
             let uniqueId = "searchable-dropdown-" + Date.now();
 
             const selectedItem = options.find(o => o.value == oldValue);
             const selectedItemHtml = selectedItem
                 ? `<div class="selected-item">
                         <span>${selectedItem.display}</span>
-                        <hr class="my-2" />
+                        <hr class="mt-1 mb-2" />
                     </div>`
                 : '';
 
@@ -262,13 +259,21 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
                         ${options.map(option => `<li data-value="${option.value}" class="search-item ${oldValue == option.value ? 'is-selected' : ''}">${option.display}</li>`).join('')}
                     </ul>`).appendTo("body");
 
-                // Function to position dropdown
+                // Function to position dropdown (supports drop-up)
                 function positionDropdown() {
                     let offset = inputField.offset();
+                    let inputHeight = inputField.outerHeight();
+                    let dropdownHeight = dropdownList.outerHeight();
+                    let windowHeight = $(window).height();
+                    let spaceBelow = windowHeight - (offset.top + inputHeight);
+                    let spaceAbove = offset.top;
+
+                    let dropUp = spaceBelow < dropdownHeight && spaceAbove > dropdownHeight;
+
                     dropdownList.css({
-                        top: offset.top + inputField.outerHeight(),
                         left: offset.left,
-                        width: inputField.outerWidth()
+                        width: inputField.outerWidth(),
+                        top: dropUp ? offset.top - dropdownHeight : offset.top + inputHeight
                     });
                 }
 
