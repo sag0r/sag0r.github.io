@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" /> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.0/css/all.min.css" />
+</head>
+
+<body>
+
+    <style>
+        .hummingbird-treeview,
+        .hummingbird-treeview * {
+            list-style: none;
+            font-size: 20px;
+            line-height: 24px;
+        }
+
+        .hummingbird-treeview label {
+            font-weight: normal;
+            padding-left: 8px;
+        }
+
+
+        .hummingbird-treeview input[type=checkbox] {
+            width: 16px;
+            height: 16px;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        .hummingbird-treeview ul:not(.hummingbird-base) {
+            display: none;
+        }
+
+        .hummingbird-treeview .fa {
+            font-style: normal;
+            cursor: pointer;
+        }
+    </style>
+
+    <div class="container mt-3 pt-5 mb-5 pb-5">
+        <div class="card border-0 rounded-0 shadow pt-4">
+            <div class="card-body">
+                <div id="treeview_container" class="hummingbird-treeview well h-scroll-large">
+                    <ul id="treeview" class="hummingbird-base"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="tree-view.js"></script>
+    <script>
+        const DUMMY_DATA = [
+            { id: 1, name: 'Australia', parent: 0 },
+            { id: 4, name: 'New South Wales', parent: 1 },
+            { id: 5, name: 'Queensland', parent: 1 },
+            { id: 6, name: 'South Australia', parent: 1 },
+            { id: 7, name: 'Tasmania', parent: 1 },
+            { id: 8, name: 'Victoria', parent: 1 },
+            { id: 9, name: 'Western Australia', parent: 1 },
+            { id: 2, name: 'Bangladesh', parent: 0 },
+            { id: 10, name: 'Barisal', parent: 2 },
+            { id: 11, name: 'Chottagong', parent: 2 },
+            { id: 12, name: 'Dhaka', parent: 2 },
+            { id: 18, name: 'Dhaka', parent: 12 },
+            { id: 24, name: 'Educational Institudes', parent: 18 },
+            { id: 27, name: 'School', parent: 24 },
+            { id: 28, name: 'College', parent: 24 },
+            { id: 29, name: 'Madrashah', parent: 24 },
+            { id: 25, name: 'Hospitals', parent: 18 },
+            { id: 26, name: 'Restaurants', parent: 18 },
+            { id: 19, name: 'Faridpur', parent: 12 },
+            { id: 20, name: 'Gazipur', parent: 12 },
+            { id: 21, name: 'Gopalganj', parent: 12 },
+            { id: 22, name: 'Kishoreonj', parent: 12 },
+            { id: 23, name: 'Madaripur', parent: 12 },
+            { id: 13, name: 'Khulna', parent: 2 },
+            { id: 14, name: 'Mymensingh', parent: 2 },
+            { id: 15, name: 'Rajshahi', parent: 2 },
+            { id: 16, name: 'Rangpur', parent: 2 },
+            { id: 17, name: 'Sylhet', parent: 2 },
+            { id: 3, name: 'United States', parent: 0 },
+        ];
+
+        function createNode(rootEl, items, idPrefix, dataPrefix) {
+            for (const item of items) {
+                const id = item.id;
+                const idAttr = idPrefix + id;
+                const dataAttr = dataPrefix + id;
+                const children = DUMMY_DATA.filter(x => x.parent == id);
+
+                const li = $('<li></li>');
+                li
+                    .append(`<label class="${children.length == 0 ? 'ml-3' : ''}">
+                                    <input
+                                        type="checkbox"
+                                        id="${idAttr}"
+                                        data-id="${dataAttr}" />
+                                    ${item.name}
+                                </label>`)
+                    .appendTo(rootEl);
+
+                if (children.length > 0) {
+                    $('<i />', { 'class': 'fa fa-plus' })
+                        .prependTo(li);
+                    createNode($('<ul></ul>'), children, `${idAttr}-`, `${dataAttr}-`)
+                        .appendTo(li);
+                }
+            }
+            return rootEl;
+        }
+
+        $(document).ready(function () {
+            // asuming first-level items' parent = 0;
+            const items = DUMMY_DATA.filter(x => x.parent == 0);
+            const selector = $('#treeview');
+            const treeMarkup = createNode(selector, items, 'node-', 'custom-');
+            //
+            selector
+                .append(treeMarkup)
+                .hummingbird();
+        });
+    </script>
+
+</body>
+
+</html>
