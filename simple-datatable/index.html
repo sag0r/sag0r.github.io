@@ -158,7 +158,7 @@
 
                             <div class="col mb-2 d-flex justify-content-center align-items-center">
                                 <div class="d-flex justify-content-start align-items-center">
-                                    <label class="mx-1">Slect Sources</label>
+                                    <label class="mx-1">Sources</label>
                                     <div class="dropdown ms-1 me-4">
                                         <button class="btn btn-outline-secondary btn-sm rounded-xl dropdown-toggle"
                                             type="button" id="btnSourceDropdown" data-bs-toggle="dropdown"
@@ -174,7 +174,13 @@
                                         </div>
                                     </div>
 
-                                    <label class="mx-1">Select type</label>
+                                    <label class="mx-1">Date</label>
+                                    <div class="ms-1 me-2">
+                                        <input type="text" class="form-control form-control-sm rounded-xl"
+                                            id="SelectDate" />
+                                    </div>
+
+                                    <label class="mx-1">Type</label>
                                     <div class="mx-1">
                                         <select class="form-select form-select-sm rounded-pill ps-3" id="SelectType">
                                             <option value="0" selected> Select Type </option>
@@ -1079,6 +1085,7 @@
                 $('#btnSourceDropdown').text(`${List.id.length} selected`);
             });
 
+            $('#SelectDate').datepicker();
         });
     </script>
 </body>
