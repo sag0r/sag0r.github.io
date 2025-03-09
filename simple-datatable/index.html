@@ -166,7 +166,7 @@
                                             0 Selected
                                         </button>
                                         <div class="dropdown-menu border-0 shadow" aria-labelledby="btnSourceDropdown"
-                                            style="width: 300px;">
+                                            style="width: 300px; max-height: 300px; overflow: hidden scroll;">
                                             <div id="treeview_container"
                                                 class="hummingbird-treeview well h-scroll-large">
                                                 <ul id="treeview" class="hummingbird-base m-0 ps-2"></ul>
@@ -489,6 +489,7 @@
         const EDITABLE_COLUMNS = [0, 1, 2, 3, 4, 5];
         const DATATABLE_PAGING = false;
         const VALIDATION_ERROR_MSG = 'One or more cells have invalid data, please fix before submit.';
+        const TREEVIEW_SELECTION_LEVEL = 4;
 
         // UPLOAD:: Controller => DataTable, Method => ParseContentFromXls
         const UPLOAD_URL = '/DataTable/ParseContentFromXls';
@@ -909,30 +910,32 @@
             { id: 3, name: 'United States', parent: 0 },
         ];
 
-        function createNode(rootEl, items, idPrefix, dataPrefix) {
+        function createNode(rootEl, items, idPrefix, dataPrefix, level = 1) {
             for (const item of items) {
                 const id = item.id;
                 const idAttr = idPrefix + id;
                 const dataAttr = dataPrefix + id;
                 const children = DUMMY_DATA.filter(x => x.parent == id);
 
+                // Disable checkboxes for levels 1 to TREEVIEW_SELECTION_LEVEL
+                const isDisabled = level < TREEVIEW_SELECTION_LEVEL ? 'disabled' : '';
+
                 const li = $('<li></li>');
-                li
-                    .append(`<label class="${children.length == 0 ? 'ml-3' : ''}">
-                            <input
-                                class="${children.length == 0 ? 'hummingbird-end-node' : ''}"
-                                type="checkbox"
-                                id="${idAttr}"
-                                data-id="${dataAttr}" />
-                            ${item.name}
-                        </label>`)
-                    .appendTo(rootEl);
+                li.append(`
+                    <label class="${children.length == 0 ? 'ml-3' : ''}">
+                        <input
+                            class="${children.length == 0 ? 'hummingbird-end-node' : ''}"
+                            type="checkbox"
+                            id="${idAttr}"
+                            data-id="${dataAttr}"
+                            ${isDisabled} />
+                        ${item.name}
+                    </label>
+                `).appendTo(rootEl);
 
                 if (children.length > 0) {
-                    $('<i />', { 'class': 'bi bi-plus' })
-                        .prependTo(li);
-                    createNode($('<ul></ul>'), children, `${idAttr}-`, `${dataAttr}-`)
-                        .appendTo(li);
+                    $('<i />', { 'class': 'bi bi-plus' }).prependTo(li);
+                    createNode($('<ul></ul>'), children, `${idAttr}-`, `${dataAttr}-`, level + 1).appendTo(li);
                 }
             }
             return rootEl;
