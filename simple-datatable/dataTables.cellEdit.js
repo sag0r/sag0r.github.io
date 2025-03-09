@@ -169,24 +169,6 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
         inputType = inputType + "-confirm";
     }
 
-
-    /**
-     * Moved following common variables at the top to resolve conflicts in newer methods
-     */
-    let { columnToMatchValue, options, mappings } = inputSetting;
-
-    // get datatable reference
-    const table = $('table').DataTable().table();
-
-    // find the cell to validate options with
-    const cell = table.cell(currentRowIndex, columnToMatchValue);
-
-    // Get the text content of the cell
-    const cellText = $(cell.node()).text(); // [e.g: New York]
-
-    // Find the mapping by the text value
-    const mapping = mappings?.find(x => x.location == cellText);
-
     switch (inputType) {
         case "list":
             input.html = startWrapperHtml + "<select class='form-select' onchange='$(this).updateEditableCell(this);'>";
@@ -200,28 +182,21 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
             input.html = input.html + "</select>" + endWrapperHtml;
             input.focus = false;
             break;
-        case "list-filter":
-            // If a mapping is found, we filter the options
-            // Otherwise all options are shown
-            if (!!mapping) {
-                options = options.filter((option, index, self) =>
-                    mapping.positions.includes(option.value) &&
-                    index === self.findIndex(o => o.value === option.value)  // Remove duplicates by value
-                );
-            }
-
-            input.html = startWrapperHtml + "<select class='form-select' onchange='$(this).updateEditableCell(this);'>";
-            $.each(options, function (index, option) {
-                if (oldValue == option.value) {
-                    input.html = input.html + "<option value='" + option.value + "' selected>" + option.display + "</option>"
-                } else {
-                    input.html = input.html + "<option value='" + option.value + "' >" + option.display + "</option>"
-                }
-            });
-            input.html = input.html + "</select>" + endWrapperHtml;
-            input.focus = false;
-            break;
         case "searchable-list":
+            let { columnToMatchValue, options, mappings } = inputSetting;
+
+            // get datatable reference
+            const table = $('table').DataTable().table();
+
+            // find the cell to validate options with
+            const cell = table.cell(currentRowIndex, columnToMatchValue);
+
+            // Get the text content of the cell
+            const cellText = $(cell.node()).text(); // [e.g: New York]
+
+            // Find the mapping by the text value
+            const mapping = mappings?.find(x => x.location == cellText);
+
             if (!!mapping) {
                 options = options.filter((option, index, self) =>
                     mapping.positions.includes(option.value) &&
