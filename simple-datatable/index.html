@@ -952,6 +952,16 @@
                 .hummingbird();
         }
 
+        function disableTreeViewHigherLevels() {
+            $('#treeview').find('input[type="checkbox"]').each(function () {
+                const level = $(this).parents('ul').length; // Determines the depth level
+
+                if (level < TREEVIEW_SELECTION_LEVEL) {
+                    $(this).prop('checked', false).prop('disabled', true);
+                }
+            });
+        }
+
         $(document).ready(function () {
 
             $('.btn-show-upload-modal').click(function () {
@@ -1086,6 +1096,8 @@
                 let cleanedData = List.text.map(item => item.replace('…', '').trim());
                 console.log('CheckUncheckDone', cleanedData);
                 $('#btnSourceDropdown').text(`${List.id.length} selected`);
+
+                disableTreeViewHigherLevels();
             });
 
             $('#SelectDate').datepicker();
