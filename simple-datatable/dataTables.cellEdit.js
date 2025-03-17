@@ -204,8 +204,7 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
                 );
             }
 
-            let uniqueId = "searchable-dropdown-" + Date.now();
-
+            const uniqueId = "searchable-dropdown-" + Date.now();
             const selectedItem = options.find(o => o.value == oldValue);
             const selectedItemHtml = selectedItem
                 ? `<div class="selected-item">
@@ -217,7 +216,7 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
             input.html = `
                     <div class="search-dropdown-wrapper" style="position: relative;">
                         <input type="text" id="${uniqueId}" class="form-control form-control-sm search-input"
-                               placeholder="Type to search..." autocomplete="off" />
+                               placeholder="Type to search..." autocomplete="off" onchange="$(this).updateEditableCell(this);" />
                     </div>
                 `;
 
@@ -256,6 +255,11 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
                 inputField.on("focus", function () {
                     positionDropdown();
                     dropdownList.show();
+                });
+
+                // Hide dropdown on change
+                inputField.on("change", function () {
+                    dropdownList.hide();
                 });
 
                 // Filter options on input
