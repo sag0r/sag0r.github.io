@@ -696,9 +696,18 @@
         }
 
         function cellUpdateCallback(updatedCell, updatedRow, oldValue) {
+            console.log('------------------- updatedCell', updatedCell, $(updatedCell.node()));
             // fallback to oldValue if new value is null/empty
             if (!updatedCell.data())
                 updatedCell.data(oldValue);
+
+            // validate whether a valid option is selected
+            // e.g: user searched for an option but selected non
+            if ($(updatedCell.node()).hasClass('dt-type-dropdown')) {
+                const option = POSITION_OPTIONS.find(p => p.display == updatedCell.data());
+                if (!option)
+                    updatedCell.data(oldValue);
+            }
 
             console.log('The new value for the cell is: ' + updatedCell.data());
             console.log('The values for each cell in that row are: ' + updatedRow.data());
