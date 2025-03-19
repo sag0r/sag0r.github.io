@@ -105,10 +105,20 @@ jQuery.fn.dataTable.Api.register('MakeCellsEditable()', function (settings) {
         // On cell click
         $(table.body()).on('click', 'td', function () {
 
-            // Exit edit mode for all cells that are in edit mode, except for elements inside the current cell
+            // Exit edit mode for all cells that are in edit mode, 
+            // --- except for elements inside the current cell
             $('.editing .form-control, .editing .form-select')
                 .not($(this).find('.form-control, .form-select'))
                 .trigger('change');
+
+            // Exit edit mode for all cells on 'Esc' key press
+            // note: 'off()' used to remove previous listener (if any) to avoid multiple listeners
+            $(document).off().on('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    $('.editing .form-control, .editing .form-select, .editing .form-check-input').trigger('change');
+                    $('.input-group-text').trigger('click');
+                }
+            });
 
             var currentColumnIndex = table.cell(this).index().column;
             var currentRowIndex = table.cell(this).index().row;
