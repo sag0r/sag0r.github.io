@@ -1,4 +1,4 @@
-﻿/*! CellEdit 1.0.19
+/*! CellEdit 1.0.19
  * ©2016 Elliott Beaty - datatables.net/license
  */
 
@@ -232,7 +232,7 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
             input.html = `
                     <div class="search-dropdown-wrapper" style="position: relative;">
                         <input type="text" id="${uniqueId}" class="form-control form-control-sm search-input"
-                               placeholder="Type to search..." autocomplete="off" onchange="$(this).updateEditableCell(this);" />
+                               placeholder="Type to search..." autocomplete="off" />
                     </div>
                 `;
 
@@ -288,17 +288,17 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
                 });
 
                 // Handle selection
-                dropdownList.off('mousedown', '.search-item').on('mousedown', '.search-item', function (e) {
-                    console.log('Dropdown item clicked:', $(this).text());
+                dropdownList.off("mousedown", ".search-item").on("mousedown", ".search-item", function (e) {
+                    console.log("Dropdown item clicked:", $(this).text());
                     e.preventDefault(); // Prevents blur before selection
 
-                    let selectedValue = $(this).data('value');
+                    let selectedValue = $(this).data("value");
                     let selectedText = $(this).text();
 
                     inputField.val(selectedText);
 
                     // Ensure `callingElement` is the table cell
-                    let cellElement = inputField.closest('td, th');
+                    let cellElement = inputField.closest("td, th");
 
                     if (cellElement.length) {
                         setTimeout(() => {

@@ -763,6 +763,7 @@
 
             const result = Object.values(duplicates).filter(arr => arr.length > 1).flat();
             console.log(`Found ${result.length} duplicates`);
+            return result;
         }
 
         function identifyInvalidCells() {
@@ -869,6 +870,10 @@
                 errorSummary += `<li> <b>${otherError}</b> Invalid String Value  </li>`;
             if (positionsError > 0)
                 errorSummary += `<li> <b>${positionsError}</b> Poistion options doesn't exist in selected office location  </li>`;
+
+            const duplicateRows = findDuplicateRows();
+            if (duplicateRows.length > 0)
+                errorSummary += `<li> <b>${duplicateRows.length}</b> Duplicate rows (office <> position) </li>`;
 
             const alertHtml = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
                 ${msg}
