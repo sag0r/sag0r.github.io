@@ -292,13 +292,13 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
                     console.log('Dropdown item clicked:', $(this).text());
                     e.preventDefault(); // Prevents blur before selection
 
-                    let selectedValue = $(this).data('value');
-                    let selectedText = $(this).text();
+                    //const selectedValue = $(this).data('value');
+                    const selectedText = $(this).text();
 
                     inputField.val(selectedText);
 
                     // Ensure `callingElement` is the table cell
-                    let cellElement = inputField.closest('td, th');
+                    const cellElement = inputField.closest('td, th');
 
                     if (cellElement.length) {
                         setTimeout(() => {

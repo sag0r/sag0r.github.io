@@ -227,7 +227,7 @@
                         <table id="SimpleDataTable" class="display mt-3" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th>Active</th>
+                                    <th><input type="checkbox" id="checkAll" class="form-check-input" /></th>
                                     <th>Name</th>
                                     <th>Office</th>
                                     <th>Position</th>
@@ -582,8 +582,28 @@
                 {
                     data: 'active',
                     contentPadding: '0px',
+                    orderable: false,
+                    searchable: false,
                     render: function (data, type, row) {
-                        return parseInt(data) == 0 ? 'No' : 'Yes';
+                        const isChecked = parseInt(data) == 1;
+                        return `
+                            <span class="fake-checkbox" style="
+                                display: inline-flex;
+                                justify-content: center;
+                                align-items: center;
+                                width: 16px;
+                                height: 16px;
+                                border: 1px solid #dee2e6;
+                                border-radius: 4px;
+                                background: ${isChecked ? '#0d6efd' : '#fff'};
+                                color: white;
+                                font-size: 12px;
+                                font-weight: bold;
+                                line-height: 1;
+                            ">
+                                ${isChecked ? '✓' : ''}
+                            </span>
+                        `;
                     }
                 },
                 { data: 'first_name', contentPadding: '0px' },
@@ -1144,6 +1164,25 @@
 
                 const data = DATA_TABLE.rows().data().toArray();
                 exportToExcel(data);
+            });
+
+            $(document).on('change', '#checkAll', function () {
+                const isChecked = $(this).is(':checked');
+
+                DATA_TABLE.rows().every(function () {
+                    const cell = this.cell(this.index(), 0);
+                    const data = this.data();
+
+                    data.active = isChecked ? 1 : 0;
+                    this.data(data);
+
+                    cell.invalidate().render('display');
+                });
+
+                DATA_TABLE.draw(false);
+
+                identifyInvalidCells();
+                printCurrentTableData();
             });
         });
     </script>
