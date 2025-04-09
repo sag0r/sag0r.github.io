@@ -645,6 +645,7 @@
                     contentPadding: '0px',
                     orderable: false,
                     searchable: false,
+                    className: 'dt-type-checkbox',
                     render: function (data, type, row) {
                         const isChecked = parseInt(data) == 1;
                         return `
@@ -864,6 +865,11 @@
 
             let officeLoation = '';
             $(`#SimpleDataTable td`).each(function () {
+
+                // skip validtion for checkbox column
+                if ($(this).hasClass('dt-type-checkbox'))
+                    return true;
+
                 const textContent = $(this).text().trim();
                 let valid = true;
 
