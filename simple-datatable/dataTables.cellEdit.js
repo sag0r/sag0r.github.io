@@ -407,6 +407,54 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
                 (oldValue == 1 ? "checked" : "") +
                 " onchange='this.value = this.checked ? 1 : 0; $(this).updateEditableCell(this)' value='" + oldValue + "'>";
             break;
+        case "checkbox-multiple":
+            console.log('rendering checkbox (multiple)', oldValue);
+
+            const yesChecked = oldValue == 1 ? "checked" : "";
+            const noChecked = oldValue == 0 ? "checked" : "";
+
+            const html = `
+                <div class="d-flex flex-row">
+                    <div class="d-flex flex-fill flex-column justify-content-center align-items-center">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <input type='checkbox' class='form-check-input ejbeatycelledit-multi' data-value='1' ${yesChecked}>
+                        </div>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <span class="text-success" style="font-size: 12px;">Yes</span>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-fill flex-column justify-content-center align-items-center">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <input type='checkbox' class='form-check-input ejbeatycelledit-multi' data-value='0' ${noChecked}>
+                        </div>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <span class="text-danger" style="font-size: 12px;">No</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            input.html = html;
+
+            // Delay binding until element is in DOM
+            setTimeout(() => {
+                const $checkboxes = $('.ejbeatycelledit-multi');
+
+                $checkboxes.on('change', function () {
+                    console.log('checkbox changed');
+                    const $clicked = $(this);
+                    const isYes = $clicked.data('value') == 1;
+
+                    // Uncheck others
+                    $checkboxes.prop('checked', false);
+                    $clicked.prop('checked', true);
+
+                    // Set value and trigger update
+                    this.value = isYes ? 1 : 0;
+                    $(this).updateEditableCell(this);
+                });
+            }, 0);
+            break;
         case "datalist":
             const dropdownMarkup = `<div class="input-group input-group-sm">
                 <input type="text" id="ejbeatycelledit" class="form-control" data-bs-toggle="dropdown" aria-expanded="false" onkeyup="filterDropdown(this)" />  

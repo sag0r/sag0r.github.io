@@ -104,6 +104,19 @@
         .search-dropdown li:hover {
             color: #FDB604;
         }
+
+        button.nav-link {
+            color: #16161d !important;
+        }
+
+        button.nav-link:hover,
+        button.nav-link:focus,
+        button.nav-link:active,
+        button.nav-link:visited,
+        button.nav-link.active {
+            background-color: #FDB604 !important;
+            border-color: #FDB604 !important;
+        }
     </style>
 </head>
 
@@ -224,19 +237,67 @@
 
                         <div class="alert-wrapper my-3"></div>
 
-                        <table id="SimpleDataTable" class="display mt-3" cellspacing="0" width="100%">
-                            <thead>
-                                <tr>
-                                    <th><input type="checkbox" id="checkAll" class="form-check-input" /> Active</th>
-                                    <th>Name</th>
-                                    <th>Office</th>
-                                    <th>Position</th>
-                                    <th>DOB</th>
-                                    <th>Salary</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                        </table>
+                        <nav class="mt-4">
+                            <div class="nav nav-tabs justify-content-center align-items-center" id="nav-tab"
+                                role="tablist">
+                                <button class="nav-link active" id="nav-editing-tab" data-bs-toggle="tab"
+                                    data-bs-target="#nav-editing" type="button" role="tab" aria-controls="nav-editing"
+                                    aria-selected="true">
+                                    <i class="bi bi-pencil-square me-2"></i>
+                                    Editing
+                                </button>
+                                <button class="nav-link" id="nav-preview-tab" data-bs-toggle="tab"
+                                    data-bs-target="#nav-preview" type="button" role="tab" aria-controls="nav-preview"
+                                    aria-selected="false">
+                                    <i class="bi bi-eye me-2"></i>
+                                    Preview
+                                </button>
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-editing" role="tabpanel"
+                                aria-labelledby="nav-editing-tab">
+
+                                <table id="SimpleDataTable" class="display mt-3" cellspacing="0" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th><input type="checkbox" id="checkAll" class="form-check-input" /> Active
+                                            </th>
+                                            <th>Name</th>
+                                            <th>Office</th>
+                                            <th>Position</th>
+                                            <th>DOB</th>
+                                            <th>Salary</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+
+                            </div>
+                            <div class="tab-pane fade" id="nav-preview" role="tabpanel"
+                                aria-labelledby="nav-preview-tab">
+
+                                <h5 class="text-brand my-4 text-center">
+                                    'Preview Tab' Content
+                                </h5>
+
+                                <table id="PreviewDataTable" class="display mt-3" cellspacing="0" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Active</th>
+                                            <th>Name</th>
+                                            <th>Office</th>
+                                            <th>Position</th>
+                                            <th>DOB</th>
+                                            <th>Salary</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -669,6 +730,15 @@
                 destroy: true //destroy before initialize (if already initialized)
             });
 
+            // initialize secondary table
+            new DataTable('#PreviewDataTable', {
+                columns,
+                data,
+                order: [[5, 'desc']],
+                paging: DATATABLE_PAGING,
+                destroy: true //destroy before initialize (if already initialized)
+            });
+
             // Initialize editable cell plugin
             const wrapperHtml = `<div class="input-group input-group-sm">
                 {content}
@@ -688,7 +758,7 @@
                 inputTypes: [
                     {
                         column: 0,
-                        type: 'checkbox'
+                        type: 'checkbox-multiple'
                     },
                     {
                         column: 2,
