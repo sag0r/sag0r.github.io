@@ -204,6 +204,11 @@
             border: 1px solid #dc3545;
             /* Red color for No when unchecked */
         }
+
+        .form-check-input:checked {
+            background-color: #FDB604;
+            border-color: #FDB604;
+        }
     </style>
 </head>
 
@@ -725,6 +730,7 @@
         // initialize datatable with editable feature
         function initializeDataTable(selector, data) {
             console.log('initializeDataTable(data)', data);
+
             // Column Definitions
             let columns = [
                 {
@@ -734,31 +740,27 @@
                     searchable: false,
                     className: 'dt-type-checkbox',
                     render: function (data, type, row) {
-                        const isYesChecked = parseInt(data) == 1; // Yes (1) or No (0)
+                        const oldValue = parseInt(data);
+                        const isYesChecked = oldValue == 1; // Yes (1) or No (0)
+                        const yesChecked = oldValue == 1 ? "checked" : "";
+                        const noChecked = oldValue == 0 ? "checked" : "";
 
                         return `
-                            <div class="d-flex flex-row">
-                                <!-- Yes Checkbox -->
-                                <div class="d-flex flex-fill flex-column justify-content-center align-items-center">
-                                    <div class="d-flex justify-content-center align-items-center">
-                                        <span class="fake-checkbox ${isYesChecked ? 'checked' : 'unchecked'}" style="color: ${isYesChecked ? 'white' : ''}">
-                                            ${isYesChecked ? '' : ''}
-                                        </span>
+                            <div class="d-flex flex-column">
+                                <div class="d-flex flex-fill flex-row align-items-center mb-1">
+                                    <div class="d-flex align-items-center">
+                                        <input type='checkbox' class='custom-checkbox ejbeatycelledit-multi yes' data-value='1' ${yesChecked}>
                                     </div>
-                                    <div class="d-flex justify-content-center align-items-center mt-1">
-                                        <span class="text-success" style="font-size: 12px;">Yes</span>
+                                    <div class="d-flex align-items-center ms-2">
+                                        <span class="text-success" style="font-size: 12px;">Approve</span>
                                     </div>
                                 </div>
-
-                                <!-- No Checkbox -->
-                                <div class="d-flex flex-fill flex-column justify-content-center align-items-center">
-                                    <div class="d-flex justify-content-center align-items-center">
-                                        <span class="fake-checkbox ${isYesChecked ? 'no-unchecked' : 'no-checked'}" style="color: ${isYesChecked ? '#dc3545' : 'white'}">
-                                            ${isYesChecked ? '' : ''}
-                                        </span>
+                                <div class="d-flex flex-fill flex-row align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <input type='checkbox' class='custom-checkbox ejbeatycelledit-multi no' data-value='0' ${noChecked}>
                                     </div>
-                                    <div class="d-flex justify-content-center align-items-center mt-1">
-                                        <span class="text-danger" style="font-size: 12px;">No</span>
+                                    <div class="d-flex align-items-center ms-2">
+                                        <span class="text-danger" style="font-size: 12px;">Reject</span>
                                     </div>
                                 </div>
                             </div>
@@ -770,7 +772,14 @@
                     data: 'office',
                     type: 'string',
                     contentPadding: '0px',
-                    width: '230px'
+                    width: '230px',
+                    render: function (data, type, row) {
+                        const url = `https://www.google.com/maps?q=${data}`;
+                        return `<a href="${url}" target="_blank" class="text-decoration-none text-brand">
+                            ${data}
+                            <i class="bi bi-box-arrow-up-right" style="font-size: 10px;"></i>
+                        </a>`;
+                    }
                 },
                 {
                     data: 'position',
@@ -792,6 +801,9 @@
                     data: 'salary',
                     type: 'num',
                     contentPadding: '0px',
+                    render: function (data, type, row) {
+                        return '$' + data.toLocaleString('en-AU');
+                    }
                 },
                 {
                     data: 'id',
@@ -854,10 +866,6 @@
                 columns: EDITABLE_COLUMNS,
                 wrapperHtml: wrapperHtml,
                 inputTypes: [
-                    {
-                        column: 0,
-                        type: 'checkbox-multiple'
-                    },
                     {
                         column: 2,
                         type: 'textarea'
@@ -1356,6 +1364,29 @@
 
                 identifyInvalidCells();
                 printCurrentTableData();
+            });
+
+            $(document).on('change', '.ejbeatycelledit-multi', function () {
+                console.log('checkbox changed');
+                const $clicked = $(this);
+                const isYes = $clicked.data('value') == 1;
+
+                // Uncheck the other checkbox (mutual exclusivity)
+                const $checkboxesInRow = $clicked.closest('td').find('.ejbeatycelledit-multi');
+                $checkboxesInRow.prop('checked', false);  // Uncheck all
+                $clicked.prop('checked', true);           // Check the clicked checkbox
+
+                // Get the new value: 1 for 'Yes', 0 for 'No'
+                const newValue = isYes ? 1 : 0;
+
+                // Update the row with the new value
+                const $cell = $clicked.closest('td');
+                const table = $cell.closest('table').DataTable();
+                const row = table.row($clicked.closest('tr'));
+                const cell = row.cell($cell);
+
+                // Update the cell data
+                cell.data(newValue).draw(false);
             });
         });
     </script>
