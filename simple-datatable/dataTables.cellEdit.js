@@ -107,9 +107,9 @@ jQuery.fn.dataTable.Api.register('MakeCellsEditable()', function (settings) {
 
             // Exit edit mode for all cells that are in edit mode, 
             // --- except for elements inside the current cell
-            $('.editing .form-control, .editing .form-select')
-                .not($(this).find('.form-control, .form-select'))
-                .trigger('change');
+            // $('.editing .form-control, .editing .form-select')
+            //     .not($(this).find('.form-control, .form-select'))
+            //     .trigger('change');
 
             //$(".ui-datepicker-div").hide();
 
@@ -241,15 +241,16 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
             setTimeout(() => {
                 const inputField = $(`#${uniqueId}`);
 
+                let currentIndex = -1;
+
                 // Create dropdown list dynamically & append to body
                 let dropdownList = $(`<ul class="search-dropdown bg-white p-2 rounded border-0 shadow"
-                        style="display: none; position: absolute; background: white; border: 1px solid #ccc;
-                        max-height: 200px; overflow-y: auto; list-style: none; padding: 0; margin: 0; width: 100%;">
-                        ${selectedItemHtml}
-                        ${options.map(option => `<li data-value="${option.value}" class="search-item ${oldValue == option.value ? 'is-selected' : ''}">${option.display}</li>`).join('')}
-                    </ul>`).appendTo("body");
+                    style="display: none; position: absolute; background: white; border: 1px solid #ccc;
+                    max-height: 200px; overflow-y: auto; list-style: none; padding: 0; margin: 0; width: 100%;">
+                    ${selectedItemHtml}
+                    ${options.map(option => `<li data-value="${option.value}" class="search-item ${oldValue == option.value ? 'is-selected' : ''}">${option.display}</li>`).join('')}
+                </ul>`).appendTo("body");
 
-                // Function to position dropdown (supports drop-up)
                 function positionDropdown() {
                     let offset = inputField.offset();
                     let inputHeight = inputField.outerHeight();
@@ -285,21 +286,16 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
                         let text = $(this).text().toLowerCase();
                         $(this).toggle(text.includes(searchText));
                     });
+                    currentIndex = -1; // reset highlight
                 });
 
                 // Handle selection
                 dropdownList.off('mousedown', '.search-item').on('mousedown', '.search-item', function (e) {
-                    console.log('Dropdown item clicked:', $(this).text());
-                    e.preventDefault(); // Prevents blur before selection
-
-                    //const selectedValue = $(this).data('value');
+                    e.preventDefault();
                     const selectedText = $(this).text();
-
                     inputField.val(selectedText);
 
-                    // Ensure `callingElement` is the table cell
                     const cellElement = inputField.closest('td, th');
-
                     if (cellElement.length) {
                         setTimeout(() => {
                             $(cellElement).updateEditableCell(inputField);
@@ -309,11 +305,37 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
                     dropdownList.hide();
                 });
 
+                // Keyboard navigation
+                inputField.on("keydown", function (e) {
+                    const items = dropdownList.find("li:visible");
+
+                    if (e.key === "ArrowDown") {
+                        e.preventDefault();
+                        currentIndex = (currentIndex + 1) % items.length;
+                        items.removeClass("highlighted");
+                        items.eq(currentIndex).addClass("highlighted").get(0).scrollIntoView({ block: "nearest" });
+                    } else if (e.key === "ArrowUp") {
+                        e.preventDefault();
+                        currentIndex = (currentIndex - 1 + items.length) % items.length;
+                        items.removeClass("highlighted");
+                        items.eq(currentIndex).addClass("highlighted").get(0).scrollIntoView({ block: "nearest" });
+                    } else if (e.key === "Enter") {
+                        e.preventDefault();
+                        if (currentIndex >= 0 && items.eq(currentIndex).length) {
+                            items.eq(currentIndex).trigger("mousedown");
+                        }
+                    } else if (e.key === "Escape") {
+                        dropdownList.hide();
+                        currentIndex = -1;
+                    } else {
+                        currentIndex = -1; // Reset on other keys
+                    }
+                });
+
                 // Hide dropdown when clicking outside
                 $(document).on("click", function (e) {
                     if (!$(e.target).closest(".search-dropdown-wrapper, .search-dropdown").length) {
-                        // Ensure `callingElement` is the table cell
-                        let cellElement = inputField.closest("td, th");
+                        const cellElement = inputField.closest("td, th");
 
                         if (cellElement.length) {
                             setTimeout(() => {

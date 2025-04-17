@@ -209,6 +209,18 @@
             background-color: #FDB604;
             border-color: #FDB604;
         }
+
+        .search-item.highlighted {
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+
+        .custom-checkbox-wrapper:focus,
+        td.editable:focus-within {
+            outline: 2px solid #007bff;
+            /* Or border */
+            background-color: #007bff;
+        }
     </style>
 </head>
 
@@ -741,13 +753,12 @@
                     className: 'dt-type-checkbox',
                     render: function (data, type, row) {
                         const oldValue = parseInt(data);
-                        const isYesChecked = oldValue == 1; // Yes (1) or No (0)
                         const yesChecked = oldValue == 1 ? "checked" : "";
                         const noChecked = oldValue == 0 ? "checked" : "";
 
                         return `
                             <div class="d-flex flex-column">
-                                <div class="d-flex flex-fill flex-row align-items-center mb-1">
+                                <div class="d-flex flex-fill flex-row align-items-center mb-1 custom-checkbox-wrapper">
                                     <div class="d-flex align-items-center">
                                         <input type='checkbox' class='custom-checkbox ejbeatycelledit-multi yes' data-value='1' ${yesChecked}>
                                     </div>
@@ -755,7 +766,7 @@
                                         <span class="text-success" style="font-size: 12px;">Approve</span>
                                     </div>
                                 </div>
-                                <div class="d-flex flex-fill flex-row align-items-center">
+                                <div class="d-flex flex-fill flex-row align-items-center custom-checkbox-wrapper">
                                     <div class="d-flex align-items-center">
                                         <input type='checkbox' class='custom-checkbox ejbeatycelledit-multi no' data-value='0' ${noChecked}>
                                     </div>
@@ -1347,46 +1358,89 @@
                 exportToExcel(data);
             });
 
-            $(document).on('change', '#checkAll', function () {
-                const isChecked = $(this).is(':checked');
+            $('#SimpleDataTable').on('draw.dt', function () {
+                console.log('-------------data table drawn event--------------');
 
-                DATA_TABLE.rows().every(function () {
-                    const cell = this.cell(this.index(), 0);
-                    const data = this.data();
+                // set Tab-indices [for keyboard navigation]
+                $('td.editable, .custom-checkbox-wrapper').attr('tabindex', 0);
 
-                    data.active = isChecked ? 1 : 0;
-                    this.data(data);
+                //Re-bind event listeners after DataTable redraw
 
-                    cell.invalidate().render('display');
+                $(this).off('change').on('change', '.ejbeatycelledit-multi', function () {
+                    console.log('checkbox changed');
+                    const $clicked = $(this);
+                    const isYes = $clicked.data('value') == 1;
+
+                    //Uncheck the other checkbox (mutual exclusivity)
+                    const $checkboxesInRow = $clicked.closest('td').find('.ejbeatycelledit-multi');
+                    $checkboxesInRow.prop('checked', false);  //Uncheck all
+                    $clicked.prop('checked', true);           //Check the clicked checkbox
+
+                    //Get the new value: 1 for 'Yes', 0 for 'No'
+                    const newValue = isYes ? 1 : 0;
+
+                    //Update the row with the new value
+                    const $cell = $clicked.closest('td');
+                    const table = $cell.closest('table').DataTable();
+                    const row = table.row($clicked.closest('tr'));
+                    const cell = row.cell($cell);
+
+                    //Update the cell data
+                    cell.data(newValue).draw(false);
                 });
 
-                DATA_TABLE.draw(false);
+                //Rebind the CheckAll event listener (make sure this works after redraw)
+                $(this).on('change', '#checkAll', function () {
+                    console.log('check all clicked');
+                    const isChecked = $(this).is(':checked');
 
-                identifyInvalidCells();
-                printCurrentTableData();
-            });
+                    DATA_TABLE.rows().every(function () {
+                        const cell = this.cell(this.index(), 0);
+                        const data = this.data();
 
-            $(document).on('change', '.ejbeatycelledit-multi', function () {
-                console.log('checkbox changed');
-                const $clicked = $(this);
-                const isYes = $clicked.data('value') == 1;
+                        data.active = isChecked ? 1 : 0;
+                        this.data(data);
 
-                // Uncheck the other checkbox (mutual exclusivity)
-                const $checkboxesInRow = $clicked.closest('td').find('.ejbeatycelledit-multi');
-                $checkboxesInRow.prop('checked', false);  // Uncheck all
-                $clicked.prop('checked', true);           // Check the clicked checkbox
+                        cell.invalidate().render('display');
+                    });
 
-                // Get the new value: 1 for 'Yes', 0 for 'No'
-                const newValue = isYes ? 1 : 0;
+                    DATA_TABLE.draw(false);
+                    identifyInvalidCells();
+                    printCurrentTableData();
+                });
 
-                // Update the row with the new value
-                const $cell = $clicked.closest('td');
-                const table = $cell.closest('table').DataTable();
-                const row = table.row($clicked.closest('tr'));
-                const cell = row.cell($cell);
+                // Numeric Validation
+                $(this).on('keydown', '.form-control', function (e) {
 
-                // Update the cell data
-                cell.data(newValue).draw(false);
+                    // Early trigger submit on 'Enter' press
+                    if (e.key === 'Enter') {
+                        console.log('ENTER PRESSED, SUBMIT & QUIT EDITING');
+                        $(this).blur();
+                    }
+                    const parent = $(this).closest('td');
+                    if (!!parent && parent.hasClass('dt-type-numeric')) {
+                        console.log('VALIDATE NUMBERS');
+                        if (
+                            (e.key.length === 1 && !/[0-9\-]/.test(e.key)) ||  // Allow numbers and minus sign
+                            (e.key === '-' && this.value.includes('-')) ||     // Prevent more than one minus sign
+                            (e.key === '-' && this.selectionStart !== 0)       // Allow minus only at the beginning
+                        ) {
+                            e.preventDefault();
+                        }
+                    }
+                });
+
+                $(document).on('keydown', 'td.editable', function (e) {
+                    // Only trigger if the cell itself is focused
+                    if (e.key === 'Enter' && e.target === this) {
+                        console.log('accessibility > Enter pressed');
+                        e.preventDefault();
+
+                        // Activate edit mode (simulate a click)
+                        $(this).trigger('click');
+                    }
+                });
+
             });
         });
     </script>
