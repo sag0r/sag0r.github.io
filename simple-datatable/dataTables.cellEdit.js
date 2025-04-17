@@ -251,6 +251,24 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
                     ${options.map(option => `<li data-value="${option.value}" class="search-item ${oldValue == option.value ? 'is-selected' : ''}">${option.display}</li>`).join('')}
                 </ul>`).appendTo("body");
 
+                function getNextEditableCell(currentCell) {
+                    let allCells = $('td[tabindex]').toArray();
+                    let currentIndex = allCells.indexOf(currentCell[0]);
+                    if (currentIndex >= 0 && currentIndex < allCells.length - 1) {
+                        return $(allCells[currentIndex + 1]);
+                    }
+                    return null;
+                }
+
+                function getPreviousEditableCell(currentCell) {
+                    let allCells = $('td[tabindex]').toArray();
+                    let currentIndex = allCells.indexOf(currentCell[0]);
+                    if (currentIndex > 0) {
+                        return $(allCells[currentIndex - 1]);
+                    }
+                    return null;
+                }
+
                 function positionDropdown() {
                     let offset = inputField.offset();
                     let inputHeight = inputField.outerHeight();
@@ -299,6 +317,7 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
                     if (cellElement.length) {
                         setTimeout(() => {
                             $(cellElement).updateEditableCell(inputField);
+                            $(cellElement).focus();
                         }, 50);
                     }
 
@@ -327,7 +346,24 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
                     } else if (e.key === "Escape") {
                         dropdownList.hide();
                         currentIndex = -1;
-                    } else {
+                    } else if (e.key === "Tabx") {
+                        e.preventDefault();
+                        dropdownList.hide();
+                        currentIndex = -1;
+
+                        const currentCell = inputField.closest("td[tabindex]");
+                        const nextCell = e.shiftKey
+                            ? getPreviousEditableCell(currentCell)
+                            : getNextEditableCell(currentCell);
+
+                        if (nextCell && nextCell.length) {
+                            nextCell.focus();
+                            setTimeout(() => {
+                                nextCell.trigger("click"); // enter edit mode
+                            }, 10);
+                        }
+                    }
+                    else {
                         currentIndex = -1; // Reset on other keys
                     }
                 });
