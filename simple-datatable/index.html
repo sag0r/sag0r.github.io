@@ -383,7 +383,8 @@
                                     'Preview Tab' Content
                                 </h5>
 
-                                <table id="PreviewDataTable" class="display mt-3" cellspacing="0" width="100%">
+                                <table id="PreviewDataTable" class="display mt-3" cellspacing="0" width="100%"
+                                    tabindex="0">
                                     <thead>
                                         <tr>
                                             <th>Active</th>
@@ -1363,6 +1364,8 @@
 
                 // set Tab-indices [for keyboard navigation]
                 $('td.editable, .focusable-element-wrapper').attr('tabindex', 0);
+                // focus the table so the focus don't start from the parent <body>
+                $(this).focus();
 
                 //Re-bind event listeners after DataTable redraw
 
@@ -1417,6 +1420,14 @@
                         console.log('ENTER PRESSED, SUBMIT & QUIT EDITING');
                         $(this).blur();
                     }
+
+                    if ($(this).hasClass('hasDatepicker')) {
+                        console.log('---------------------- HAS DATEPICKER ------------------------------')
+                        const iconEl = $(this).next('.input-group-text');
+                        if (iconEl.length > 0)
+                            iconEl.click();
+                    }
+
                     const parent = $(this).closest('td');
                     if (!!parent && parent.hasClass('dt-type-numeric')) {
                         console.log('VALIDATE NUMBERS');
