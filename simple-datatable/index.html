@@ -366,6 +366,7 @@
                                             <th><input type="checkbox" id="checkAll" class="form-check-input" /> Active
                                             </th>
                                             <th>Name</th>
+                                            <th>Email</th>
                                             <th>Office</th>
                                             <th>Position</th>
                                             <th>DOB</th>
@@ -389,6 +390,7 @@
                                         <tr>
                                             <th>Active</th>
                                             <th>Name</th>
+                                            <th>Email</th>
                                             <th>Office</th>
                                             <th>Position</th>
                                             <th>DOB</th>
@@ -650,10 +652,11 @@
         let DATA_TABLE = null;
 
         const SHOW_EDIT_ICON = true;
-        const EDITABLE_COLUMNS = [1, 2, 3, 4, 5];
+        const EDITABLE_COLUMNS = [1, 2, 3, 4, 5, 6];
         const DATATABLE_PAGING = false;
         const VALIDATION_ERROR_MSG = 'One or more cells have invalid data, please fix before submit.';
         const TREEVIEW_SELECTION_LEVEL = 4;
+        const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
         // UPLOAD:: Controller => DataTable, Method => ParseContentFromXls
         const UPLOAD_URL = '/DataTable/ParseContentFromXls';
@@ -779,6 +782,11 @@
                 },
                 { data: 'first_name', contentPadding: '0px' },
                 {
+                    data: 'email',
+                    contentPadding: '0px',
+                    className: 'dt-type-email'
+                },
+                {
                     data: 'office',
                     type: 'string',
                     contentPadding: '0px',
@@ -879,18 +887,18 @@
                 wrapperHtml: wrapperHtml,
                 inputTypes: [
                     {
-                        column: 2,
+                        column: 3,
                         type: 'textarea'
                     },
                     {
-                        column: 3,
+                        column: 4,
                         type: 'searchable-list',
                         options: POSITION_OPTIONS,
                         columnToMatchValue: 2,
                         mappings: OFFICE_POSITION_MAPPING
                     },
                     {
-                        column: 4,
+                        column: 5,
                         type: 'datepicker'
                     }
                 ]
@@ -975,7 +983,7 @@
         }
 
         function identifyInvalidCells() {
-            let [dropdownError, datePickerError, numericError, otherError, positionsError] = [0, 0, 0, 0, 0];
+            let [dropdownError, datePickerError, numericError, otherError, positionsError, emailError] = [0, 0, 0, 0, 0, 0];
 
             $('td').removeClass('invalid-data');
             findDuplicateRows();
@@ -1044,6 +1052,13 @@
                         numericError++;
                         valid = false;
                     }
+                } else if ($(this).hasClass('dt-type-email')) {
+                    // data type: email
+                    // rule: must be a valid email
+                    if (!EMAIL_REGEX.test(textContent)) {
+                        emailError++;
+                        valid = false;
+                    }
                 } else {
                     // data type: else, string and all
                     // rule: can't be null OR empty
@@ -1057,7 +1072,7 @@
                     $(this).addClass('invalid-data');
             });
 
-            return ({ dropdownError, datePickerError, numericError, otherError, positionsError });
+            return ({ dropdownError, datePickerError, numericError, otherError, positionsError, emailError });
         }
 
         function showAlert(msg, isSuccess = true) {
@@ -1070,9 +1085,11 @@
         }
 
         function showErrorAlertWithValidationSummary(msg, validationErrors) {
-            const { dropdownError, datePickerError, numericError, otherError, positionsError } = validationErrors;
+            const { dropdownError, datePickerError, numericError, otherError, positionsError, emailError } = validationErrors;
             let errorSummary = ``;
 
+            if (emailError > 0)
+                errorSummary += `<li> <b>${emailError}</b> Invalid Email Address  </li>`;
             if (dropdownError > 0)
                 errorSummary += `<li> <b>${dropdownError}</b> Invalid Dropdown Value  </li>`;
             if (datePickerError > 0)
