@@ -657,6 +657,7 @@
         const VALIDATION_ERROR_MSG = 'One or more cells have invalid data, please fix before submit.';
         const TREEVIEW_SELECTION_LEVEL = 4;
         const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        const EMAIL_SEPARATOR = ':';
 
         // UPLOAD:: Controller => DataTable, Method => ParseContentFromXls
         const UPLOAD_URL = '/DataTable/ParseContentFromXls';
@@ -1055,9 +1056,15 @@
                 } else if ($(this).hasClass('dt-type-email')) {
                     // data type: email
                     // rule: must be a valid email
-                    if (!EMAIL_REGEX.test(textContent)) {
-                        emailError++;
-                        valid = false;
+                    // note: there can be multiple email addresses separted by EMAIL_SEPARATOR
+                    const emails = textContent
+                        .split(EMAIL_SEPARATOR)
+                        .map(e => e.trim());
+                    for (const email of emails) {
+                        if (!EMAIL_REGEX.test(email)) {
+                            emailError++;
+                            valid = false;
+                        }
                     }
                 } else {
                     // data type: else, string and all
