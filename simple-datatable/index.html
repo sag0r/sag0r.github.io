@@ -656,7 +656,7 @@
         const DATATABLE_PAGING = false;
         const VALIDATION_ERROR_MSG = 'One or more cells have invalid data, please fix before submit.';
         const TREEVIEW_SELECTION_LEVEL = 4;
-        const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        const EMAIL_REGEX = /^[^\s@]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/;
         const EMAIL_SEPARATOR = ':';
 
         // UPLOAD:: Controller => DataTable, Method => ParseContentFromXls
