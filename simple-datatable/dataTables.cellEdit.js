@@ -107,7 +107,7 @@ jQuery.fn.dataTable.Api.register('MakeCellsEditable()', function (settings) {
             //console.log('settings.column', settings.column);
 
             // return if child has 'cell-diabled' class
-            if ($(this).find('.cell-disabled').length > 0) {
+            if ($(this).hasClass('cell-disabled')) {
                 console.warn('Cell is disabled, cannot edit');
                 return;
             }
