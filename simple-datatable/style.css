@@ -514,7 +514,7 @@ table.dataTable,
     outline: none;
 } */
 
-td:has(.cell-disabled) {
+td.cell-disabled {
     background: rgba(0, 0, 0, .15);
     color: rgba(0, 0, 0, .5);
     cursor: not-allowed;

@@ -781,14 +781,7 @@
                         `;
                     }
                 },
-                {
-                    data: 'first_name',
-                    contentPadding: '0px',
-                    render: function (data, type, row) {
-                        const className = row.position == 'Accountant' ? 'cell-disabled' : '';
-                        return `<span class="${className}">${data}</span>`;
-                    }
-                },
+                { data: 'first_name', contentPadding: '0px' },
                 {
                     data: 'email',
                     contentPadding: '0px',
@@ -865,7 +858,13 @@
                 data,
                 order: [[5, 'desc']],
                 paging: DATATABLE_PAGING,
-                destroy: true //destroy before initialize (if already initialized)
+                destroy: true, //destroy before initialize (if already initialized)
+                initComplete: function () {
+                    const table = this.api();
+                    table.rows().every(function () {
+                        disableCertainCell(this, table); // 'this' is a row
+                    });
+                }
             });
 
             // initialize secondary table
@@ -919,6 +918,22 @@
             console.log('Traversed:', data);
         }
 
+        function disableCertainCell(row, tableInstance = DATA_TABLE) {
+            // Column index of the target cell (e.g., "Name" column)
+            const NAME_COLUMN_INDEX = 1;
+
+            const rowIdx = row.index();
+            const targetCell = tableInstance.cell(rowIdx, NAME_COLUMN_INDEX);
+
+            if (!targetCell.node()) return; // Avoid error if cell doesn't exist
+
+            if (row.data().position === 'Accountant') {
+                $(targetCell.node()).addClass('cell-disabled');
+            } else {
+                $(targetCell.node()).removeClass('cell-disabled');
+            }
+        }
+
         function cellUpdateCallback(updatedCell, updatedRow, oldValue) {
             console.log('------------------- updatedCell', updatedCell, $(updatedCell.node()));
             // validate whether a valid option is selected
@@ -933,7 +948,7 @@
                     updatedCell.data(oldValue);
 
                 // conditionally disable column
-                console.log('********************** ', updatedRow.data(), updatedCell.data())
+                disableCertainCell(updatedRow);
             }
 
             console.log('The new value for the cell is: ' + updatedCell.data());
