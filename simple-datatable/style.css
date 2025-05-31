@@ -513,3 +513,9 @@ table.dataTable,
     border-bottom: solid 2px #2490EF;
     outline: none;
 } */
+
+td:has(.cell-disabled) {
+    background: rgba(0, 0, 0, .15);
+    color: rgba(0, 0, 0, .5);
+    cursor: not-allowed;
+}

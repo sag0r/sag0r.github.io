@@ -781,7 +781,14 @@
                         `;
                     }
                 },
-                { data: 'first_name', contentPadding: '0px' },
+                {
+                    data: 'first_name',
+                    contentPadding: '0px',
+                    render: function (data, type, row) {
+                        const className = row.position == 'Accountant' ? 'cell-disabled' : '';
+                        return `<span class="${className}">${data}</span>`;
+                    }
+                },
                 {
                     data: 'email',
                     contentPadding: '0px',
@@ -1480,6 +1487,13 @@
                 });
 
             });
+
+            $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
+                console.log('tab changed');
+                console.log('newly activated tab', event.target);
+                console.log('previous active tab', event.relatedTarget);
+            });
+
         });
     </script>
 </body>

@@ -104,27 +104,28 @@ jQuery.fn.dataTable.Api.register('MakeCellsEditable()', function (settings) {
     if (table != null) {
         // On cell click
         $(table.body()).on('click', 'td', function () {
+            //console.log('settings.column', settings.column);
+
+            // return if child has 'cell-diabled' class
+            if ($(this).find('.cell-disabled').length > 0) {
+                console.warn('Cell is disabled, cannot edit');
+                return;
+            }
 
             // Exit edit mode for all cells that are in edit mode, 
             // --- except for elements inside the current cell
-            // $('.editing .form-control, .editing .form-select')
-            //     .not($(this).find('.form-control, .form-select'))
-            //     .trigger('change');
-
-            //$(".ui-datepicker-div").hide();
-
-            //jQuery(".datepick").datepicker("destroy");
+            $('.editing .form-control, .editing .form-select')
+                .not($(this).find('.form-control, .form-select'))
+                .trigger('change');
 
             // Exit edit mode for all cells on 'Esc' key press
             // note: 'off()' used to remove previous listener (if any) to avoid multiple listeners
-
-
-            // $(document).on("click", function (event) {
-            //     if (!$(event.target).closest('table').length) {
-            //         console.log("Clicked outside!");
-            //         // Perform your action here (e.g., hide a dropdown, close a modal)
-            //     }
-            // });
+            $(document).off().on('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    $('.editing .form-control, .editing .form-select, .editing .form-check-input').trigger('change');
+                    $('.input-group-text').trigger('click');
+                }
+            });
 
             var currentColumnIndex = table.cell(this).index().column;
             var currentRowIndex = table.cell(this).index().row;
