@@ -911,6 +911,9 @@
                 ]
             });
 
+            setTimeout(() => {
+                DATA_TABLE.columns.adjust().draw(false);
+            }, 0);
         }
 
         function printCurrentTableData() {
