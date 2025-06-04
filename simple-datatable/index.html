@@ -867,6 +867,27 @@
                 }
             });
 
+            // overried checkbox column's definition for checkbox behavior
+            const CB_COL_INDEX = 0;
+            columns[CB_COL_INDEX] = {
+                data: 'active',
+                className: 'dt-type-checkbox',
+                render: function (data, type, row) {
+                    const oldValue = parseInt(data);
+                    const isChecked = oldValue == 1 ? "checked" : "";
+
+                    return `
+                        <div class="d-flex flex-column justify-content-center align-items-center">
+                            <input 
+                                type='checkbox' 
+                                class='form-check-input' 
+                                data-value='${oldValue}'
+                                ${isChecked} />
+                        </div>
+                    `;
+                }
+            };
+
             // initialize secondary table
             new DataTable('#PreviewDataTable', {
                 columns,
@@ -1523,6 +1544,26 @@
                 console.log('newly activated tab', event.target);
                 console.log('previous active tab', event.relatedTarget);
             });
+
+            $('#PreviewDataTable').on('change', 'input[type="checkbox"]', function () {
+                const $checkbox = $(this);
+                const isChecked = $checkbox.is(':checked') ? 1 : 0;
+
+                // 1. Get the DataTable instance
+                const table = $('#PreviewDataTable').DataTable();
+
+                // 2. Get the row and its data
+                const rowEl = $checkbox.closest('tr');
+                const row = table.row(rowEl);
+                const rowData = row.data();
+
+                // 3. Update the data
+                rowData.active = isChecked;
+
+                // 4. Set the updated data and redraw
+                row.data(rowData).invalidate().draw(false);
+            });
+
 
         });
     </script>
