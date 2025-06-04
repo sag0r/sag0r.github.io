@@ -312,7 +312,8 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
                 dropdownList.off('mousedown', '.search-item').on('mousedown', '.search-item', function (e) {
                     e.preventDefault();
                     const selectedText = $(this).text();
-                    inputField.val(selectedText);
+                    const selectedValue = $(this).data('value');
+                    inputField.val(selectedValue);
 
                     const cellElement = inputField.closest('td, th');
                     if (cellElement.length) {

@@ -494,7 +494,7 @@
                 "id": 1,
                 "first_name": "Tiger",
                 "last_name": "Nixon",
-                "position": "System Architect",
+                "position": 0,
                 "email": "t.nixon@datatables.net",
                 "office": "Edinburgh",
                 "extn": 5421,
@@ -725,7 +725,7 @@
             'Event Manager',
             'Logistics Coordinator'
         ];
-        const POSITION_OPTIONS = POSITIONS.map(p => ({ value: p, display: p }));
+        const POSITION_OPTIONS = POSITIONS.map(p => ({ value: p.toLowerCase(), display: p }));
 
         const OFFICE_POSITION_MAPPING = [
             {
@@ -919,18 +919,23 @@
         }
 
         function disableCertainCell(row, tableInstance = DATA_TABLE) {
-            // Column index of the target cell (e.g., "Name" column)
-            const NAME_COLUMN_INDEX = 1;
+            // Column indices of the target cells
+            // 1 = Name, 2 = Email, 5 = DOB
+            const TARGET_VALUE = 'Accountant';
+            const COLUMN_INDICES = [1, 2, 5];
 
             const rowIdx = row.index();
-            const targetCell = tableInstance.cell(rowIdx, NAME_COLUMN_INDEX);
 
-            if (!targetCell.node()) return; // Avoid error if cell doesn't exist
+            for (const colIdx of COLUMN_INDICES) {
+                const targetCell = tableInstance.cell(rowIdx, colIdx);
 
-            if (row.data().position === 'Accountant') {
-                $(targetCell.node()).addClass('cell-disabled');
-            } else {
-                $(targetCell.node()).removeClass('cell-disabled');
+                if (!targetCell.node()) return; // Avoid error if cell doesn't exist
+
+                if (row.data().position === TARGET_VALUE) {
+                    $(targetCell.node()).addClass('cell-disabled');
+                } else {
+                    $(targetCell.node()).removeClass('cell-disabled');
+                }
             }
         }
 
@@ -1256,15 +1261,17 @@
 
         $(document).ready(function () {
 
-            $('.btn-show-upload-modal').click(function () {
-                modal.show();
-            });
+            // $('.btn-show-upload-modal').click(function () {
+            //     modal.show();
+            // });
 
-            $('.launch-upload-modal').click(function () {
-                $('.pre-content-wrapper').hide();
-                $('.main-content-wrapper').show();
-                initializeDataTable('#SimpleDataTable', DATA);
-            });
+            // $('.launch-upload-modal').click(function () {
+            //     $('.pre-content-wrapper').hide();
+            //     $('.main-content-wrapper').show();
+            //     initializeDataTable('#SimpleDataTable', DATA);
+            // });
+
+            initializeDataTable('#SimpleDataTable', DATA);
 
             // Numeric Validation
             $(document).on('keydown', '#SimpleDataTable .form-control', function (e) {
@@ -1408,6 +1415,10 @@
                 exportToExcel(data);
             });
 
+            $('#PreviewDataTable').on('draw.dt', function () {
+                console.log('-------------the other -- - data table drawn event--------------');
+            });
+
             $('#SimpleDataTable').on('draw.dt', function () {
                 console.log('-------------data table drawn event--------------');
 
@@ -1505,6 +1516,7 @@
 
             $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
                 console.log('tab changed');
+                $('#PreviewDataTable').DataTable().columns.adjust().draw(false);
                 console.log('newly activated tab', event.target);
                 console.log('previous active tab', event.relatedTarget);
             });
