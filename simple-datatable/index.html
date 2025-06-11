@@ -501,7 +501,7 @@
                 "age": 61,
                 "salary": 320800,
                 "dob": "2011-04-25",
-                "active": 0
+                "active": 2
             },
             {
                 "id": 2,
@@ -1472,8 +1472,17 @@
                     const row = table.row($clicked.closest('tr'));
                     const cell = row.cell($cell);
 
-                    //Update the cell data
-                    cell.data(newValue).draw(false);
+                    // Set value for current cell
+                    cell.data(newValue);
+                    // 👉 Set value for another column in the same row
+                    const targetColIndex = 6; // Salary column index (0-based)
+                    const newRelatedValue = isYes ? 5000 : 0;
+
+                    // Use cell() to get the target cell, then update its data
+                    row.cell(row.index(), targetColIndex).data(newRelatedValue);
+
+                    // Re-draw the row without full table redraw
+                    row.invalidate().draw(false);
                 });
 
                 //Rebind the CheckAll event listener (make sure this works after redraw)

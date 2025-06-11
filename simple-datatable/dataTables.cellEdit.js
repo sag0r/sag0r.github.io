@@ -313,7 +313,7 @@ function getInputHtml(currentColumnIndex, settings, oldValue, currentRowIndex) {
                     e.preventDefault();
                     const selectedText = $(this).text();
                     const selectedValue = $(this).data('value');
-                    inputField.val(selectedValue);
+                    inputField.val(selectedText);
 
                     const cellElement = inputField.closest('td, th');
                     if (cellElement.length) {
