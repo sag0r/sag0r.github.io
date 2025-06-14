@@ -365,7 +365,7 @@
                                         <tr>
                                             <th><input type="checkbox" id="checkAll" class="form-check-input" /> Approve
                                             </th>
-                                            <th><input type="checkbox" id="uncheckAll" class="form-check-input" />
+                                            <th>
                                                 Reject
                                             </th>
                                             <th>Name</th>
@@ -1304,17 +1304,19 @@
         function appendTableRowsCount() {
             let tableEl = $('#SimpleDataTable').DataTable();
             let totalRows = tableEl.rows().count();
-            if ($('#nav-editing-tab').find('span').length == 0)
-                $('#nav-editing-tab').append(`<span class="badge badge-pill text-bg-warning ml-2">${totalRows}</span>`);
+            totalRows = totalRows > 99 ? '99+' : totalRows;
+            if ($('#nav-editing-tab').find('.badge-count').length == 0)
+                $('#nav-editing-tab').append(`<div class="badge-count">${totalRows}</div>`);
             else
-                $('#nav-editing-tab').find('span').text(totalRows);
+                $('#nav-editing-tab').find('.badge-count').text(totalRows);
 
             tableEl = $('#PreviewDataTable').DataTable();
             totalRows = tableEl.rows().count();
-            if ($('#nav-preview-tab').find('span').length == 0)
-                $('#nav-preview-tab').append(`<span class="badge badge-pill text-bg-warning ml-2">${totalRows}</span>`);
+            totalRows = totalRows > 99 ? '99+' : totalRows;
+            if ($('#nav-preview-tab').find('.badge-count').length == 0)
+                $('#nav-preview-tab').append(`<div class="badge-count">${totalRows}</div>`);
             else
-                $('#nav-preview-tab').find('span').text(totalRows);
+                $('#nav-preview-tab').find('.badge-count').text(totalRows);
         }
 
         $(document).ready(function () {

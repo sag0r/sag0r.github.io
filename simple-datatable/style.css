@@ -519,3 +519,14 @@ td.cell-disabled {
     color: rgba(0, 0, 0, .5);
     cursor: not-allowed;
 }
+
+.badge-count {
+    background: #dc3545;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 10px;
+    line-height: 20px;
+    color: white;
+}
