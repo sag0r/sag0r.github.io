@@ -1283,6 +1283,22 @@
             XLSX.writeFile(workbook, `export_${Date.now()}.xlsx`);
         }
 
+        function appendTableRowsCount() {
+            let tableEl = $('#SimpleDataTable').DataTable();
+            let totalRows = tableEl.rows().count();
+            if ($('#nav-editing-tab').find('span').length == 0)
+                $('#nav-editing-tab').append(`<span class="badge badge-pill text-bg-warning ml-2">${totalRows}</span>`);
+            else
+                $('#nav-editing-tab').find('span').text(totalRows);
+
+            tableEl = $('#PreviewDataTable').DataTable();
+            totalRows = tableEl.rows().count();
+            if ($('#nav-preview-tab').find('span').length == 0)
+                $('#nav-preview-tab').append(`<span class="badge badge-pill text-bg-warning ml-2">${totalRows}</span>`);
+            else
+                $('#nav-preview-tab').find('span').text(totalRows);
+        }
+
         $(document).ready(function () {
 
             // $('.btn-show-upload-modal').click(function () {
@@ -1441,6 +1457,7 @@
 
             $('#PreviewDataTable').on('draw.dt', function () {
                 console.log('-------------the other -- - data table drawn event--------------');
+                appendTableRowsCount();
             });
 
             $('#SimpleDataTable').on('draw.dt', function () {
@@ -1474,6 +1491,7 @@
 
                     // Set value for current cell
                     cell.data(newValue);
+
                     // 👉 Set value for another column in the same row
                     const targetColIndex = 6; // Salary column index (0-based)
                     const newRelatedValue = isYes ? 5000 : 0;
@@ -1545,6 +1563,9 @@
                     }
                 });
 
+
+                //
+                appendTableRowsCount();
             });
 
             $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
