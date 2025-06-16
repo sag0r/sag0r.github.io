@@ -363,10 +363,9 @@
                                 <table id="SimpleDataTable" class="display mt-3" cellspacing="0" width="100%">
                                     <thead>
                                         <tr>
-                                            <th><input type="checkbox" id="checkAll" class="form-check-input" /> Approve
-                                            </th>
                                             <th>
-                                                Reject
+                                                <input type="checkbox" id="checkAll" class="form-check-input" />
+                                                Approve
                                             </th>
                                             <th>Name</th>
                                             <th>Email</th>
@@ -655,7 +654,7 @@
         let DATA_TABLE = null;
 
         const SHOW_EDIT_ICON = true;
-        const EDITABLE_COLUMNS = [2, 3, 4, 5, 6, 7];
+        const EDITABLE_COLUMNS = [1, 2, 3, 4, 5, 6];
         const DATATABLE_PAGING = false;
         const VALIDATION_ERROR_MSG = 'One or more cells have invalid data, please fix before submit.';
         const TREEVIEW_SELECTION_LEVEL = 4;
@@ -760,6 +759,7 @@
                     render: function (data, type, row) {
                         const oldValue = parseInt(data);
                         const yesChecked = oldValue == 1 ? "checked" : "";
+                        const noChecked = oldValue == 2 ? "checked" : "";
 
                         return `
                             <div class="d-flex flex-column">
@@ -768,31 +768,15 @@
                                         <input type='checkbox' class='custom-checkbox ejbeatycelledit-multi yes' data-value='1' ${yesChecked}>
                                     </div>
                                     <div class="d-flex align-items-center ms-2">
-                                        <span class="text-success" style="font-size: 12px;">Approve</span>
+                                        <span class="text-success" style="font-size: 16px;">Approve</span>
                                     </div>
                                 </div>
-                            </div>
-                        `;
-                    }
-                },
-                {
-                    data: 'active',
-                    contentPadding: '0px',
-                    orderable: false,
-                    searchable: false,
-                    className: 'dt-type-checkbox',
-                    render: function (data, type, row) {
-                        const oldValue = parseInt(data);
-                        const noChecked = oldValue == 2 ? "checked" : "";
-
-                        return `
-                            <div class="d-flex flex-column">
-                                <div class="d-flex flex-fill flex-row align-items-center focusable-element-wrapper">
+                                <div class="d-flex flex-fill flex-row align-items-center focusable-element-wrapper mt-2">
                                     <div class="d-flex align-items-center">
                                         <input type='checkbox' class='custom-checkbox ejbeatycelledit-multi no' data-value='2' ${noChecked}>
                                     </div>
                                     <div class="d-flex align-items-center ms-2">
-                                        <span class="text-danger" style="font-size: 12px;">Reject</span>
+                                        <span class="text-danger" style="font-size: 16px;">Reject</span>
                                     </div>
                                 </div>
                             </div>
