@@ -359,28 +359,30 @@
                         <div class="tab-content" id="nav-tabContent">
                             <div class="tab-pane fade show active" id="nav-editing" role="tabpanel"
                                 aria-labelledby="nav-editing-tab">
-
-                                <table id="SimpleDataTable" class="display mt-3" cellspacing="0" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                <input type="checkbox" id="checkAll" class="form-check-input" />
-                                                Approve
-                                            </th>
-                                            <th>Name</th>
-                                            <th>Last Name</th>
-                                            <th>Extn</th>
-                                            <th>Age</th>
-                                            <th>Another Prop</th>
-                                            <th>Email</th>
-                                            <th>Office</th>
-                                            <th>Position</th>
-                                            <th>DOB</th>
-                                            <th>Salary</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                </table>
+                                <div style="overflow-x: auto;">
+                                    <table id="SimpleDataTable" class="display nowrap mt-3" cellspacing="0"
+                                        width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <input type="checkbox" id="checkAll" class="form-check-input" />
+                                                    Approve
+                                                </th>
+                                                <th>Name</th>
+                                                <th>Last Name</th>
+                                                <th>Extn</th>
+                                                <th>Age</th>
+                                                <th>Another Prop</th>
+                                                <th>Email</th>
+                                                <th>Office</th>
+                                                <th>Position</th>
+                                                <th>DOB</th>
+                                                <th>Salary</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
 
                             </div>
                             <div class="tab-pane fade" id="nav-preview" role="tabpanel"
@@ -795,9 +797,9 @@
                 {
                     data: 'extn',
                     contentPadding: '0px',
-                    width: '200px',
+                    width: '220px',
                     render: function (data, type, row) {
-                        return `Some random value -- ${data}`;
+                        return `random value -- ${data}`;
                     }
                 },
                 {
@@ -810,6 +812,7 @@
                     type: 'string',
                     contentPadding: '0px',
                     width: '230px',
+                    className: 'text-wrap',
                     render: function (data, type, row) {
                         const url = `https://www.google.com/maps?q=${data}`;
                         return `<a href="${url}" target="_blank" class="text-decoration-none text-brand">
@@ -872,6 +875,8 @@
 
             // Initialize DataTable from JS array
             DATA_TABLE = new DataTable(selector, {
+                scrollX: true,
+                autoWidth: false,
                 columns,
                 data,
                 order: [[5, 'desc']],

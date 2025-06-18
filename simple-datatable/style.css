@@ -530,3 +530,9 @@ td.cell-disabled {
     line-height: 20px;
     color: white;
 }
+
+
+table.dataTable th,
+table.dataTable td {
+    white-space: nowrap;
+}
