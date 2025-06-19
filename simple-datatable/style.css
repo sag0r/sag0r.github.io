@@ -531,8 +531,6 @@ td.cell-disabled {
     color: white;
 }
 
-
-table.dataTable th,
-table.dataTable td {
-    white-space: nowrap;
+table.dataTable {
+    table-layout: fixed !important;
 }
