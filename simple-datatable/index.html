@@ -368,10 +368,6 @@
                                                 Approve
                                             </th>
                                             <th>Name</th>
-                                            <th>Last Name</th>
-                                            <th>Extn</th>
-                                            <th>Age</th>
-                                            <th>Another Prop</th>
                                             <th>Email</th>
                                             <th>Office</th>
                                             <th>Position</th>
@@ -502,7 +498,7 @@
                 "last_name": "Nixon",
                 "position": 0,
                 "email": "t.nixon@datatables.net",
-                "office": "Edinburgh asf sda ffdasdfasafd safasdfa rg argfvga fgfdga dfgadg sfdhfdh fdh h",
+                "office": "Edinburgh",
                 "extn": 5421,
                 "age": 61,
                 "salary": 320800,
@@ -760,7 +756,7 @@
                     orderable: false,
                     searchable: false,
                     className: 'dt-type-checkbox',
-                    width: '5px',
+                    width: '200px',
                     render: function (data, type, row) {
                         const oldValue = parseInt(data);
                         const yesChecked = oldValue == 1 ? "checked" : "";
@@ -788,18 +784,7 @@
                         `;
                     }
                 },
-                { data: 'first_name', contentPadding: '0px', width: '200px' },
-                { data: 'last_name', contentPadding: '0px', width: '200px' },
-                { data: 'age', contentPadding: '0px', width: '200px' },
-                { data: 'extn', contentPadding: '0px', width: '200px' },
-                {
-                    data: 'extn',
-                    contentPadding: '0px',
-                    width: '200px',
-                    render: function (data, type, row) {
-                        return `Some random value -- ${data}`;
-                    }
-                },
+                { data: 'first_name', contentPadding: '0px' },
                 {
                     data: 'email',
                     contentPadding: '0px',
@@ -810,6 +795,7 @@
                     type: 'string',
                     contentPadding: '0px',
                     width: '230px',
+                    className: 'len-40',
                     render: function (data, type, row) {
                         const url = `https://www.google.com/maps?q=${data}`;
                         return `<a href="${url}" target="_blank" class="text-decoration-none text-brand">
@@ -996,6 +982,17 @@
 
                 // conditionally disable column
                 disableCertainCell(updatedRow);
+            }
+
+            // length validation
+            // check if has class 'len-x'
+            const classes = $(updatedCell.node()).attr('class').split(/\s+/);
+            const lenClass = classes.find(c => c.startsWith('len-'));
+            if (!!lenClass) {
+                let txt = updatedCell.data();
+                const maxLen = parseInt(lenClass.slice(4), 10);
+                txt = txt.length > maxLen ? txt.slice(0, maxLen) : txt;
+                updatedCell.data(txt);
             }
 
             console.log('The new value for the cell is: ' + updatedCell.data());
