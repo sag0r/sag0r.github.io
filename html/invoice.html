@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Invoice</title>
+    <link rel="stylesheet" href="https://pik-ups.com/lib_npm/bootstrap/css/bootstrap.min.css">
+</head>
+
+<body>
+
+    <div class="pdf-content-wrapper container-fluid p-5" style="max-width: 803px; border: 1px solid black;">
+
+        <div class="pdf-header d-flex flex-row">
+
+            <div class="d-flex flex-fill flex-column justify-content-center alignitems-center">
+                <h2> AgroMukam Logo </h2>
+            </div>
+
+            <div class="d-flex flex-fill flex-column justify-content-center align-items-end">
+                <h1 class="font-weight-light"> INVOICE </h1>
+                <h5 class="font-weight-light text-muted"> #12513-10601-0003_12514-10601-0003 </h5>
+            </div>
+
+        </div>
+
+        <div class="pdf-address row no-gutters mt-5">
+            <div class="col-7 pr-5">
+                <div class="row">
+                    <div class="col-6 px-1">
+                        <div class="card border-0">
+                            <div class="card-body p-0">
+                                <h6 class="text-muted mb-3"> Bill To: </h6>
+                                <h6>MH Fahim</h6>
+                                <p style="font-size: 14px;">
+                                    Pakiza Collection, Zia
+                                    super market,Sadar
+                                    Road,Bhola Sadar,
+                                    Bhola
+                                    Phone:01712595162
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 px-1">
+                        <div class="card border-0">
+                            <div class="card-body p-0">
+                                <h6 class="text-muted mb-3"> Ship To: </h6>
+                                <h6>MH Fahim</h6>
+                                <p style="font-size: 14px;">
+                                    Pakiza Collection, Zia
+                                    super market,Sadar
+                                    Road,Bhola Sadar,
+                                    Bhola
+                                    Phone:01712595162
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-5">
+                <div class="row no-gutters">
+                    <div class="col-6 text-right text-muted">Date:</div>
+                    <div class="col-6 text-right pl-2">Jun 17, 2025</div>
+                </div>
+                <div class="row no-gutters">
+                    <div class="col-6 text-right text-muted">Invoice Number:</div>
+                    <div class="col-6 text-right pl-2">AX0978asHJHG</div>
+                </div>
+                <div class="row no-gutters bg-light mt-2 p-2">
+                    <div class="col-6 text-right text-muted">
+                        <h5 class="mb-0">Balance Due:</h5>
+                    </div>
+                    <div class="col-6 text-right pl-2">
+                        <h5 class="mb-0">12,999,999tk</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="pdf-items row mt-5">
+            <div class="col-12 px-0">
+                <table class="table table-sm table-bordered">
+                    <thead class="bg-light">
+                        <tr style="font-size: 14px;">
+                            <th scope="col">Item</th>
+                            <th scope="col" class="text-center">Quantity</th>
+                            <th scope="col" class="text-center">Rate</th>
+                            <th scope="col" class="text-center">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="font-size: 14px;">
+                            <th scope="row">This is item name</th>
+                            <td class="text-center">2</td>
+                            <td class="text-right">100</td>
+                            <td class="text-right">200</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="pdf-order-summary row mt-5">
+            <div class="col-7">
+                <p class="text-muted mb-0">Payment Method:</p>
+                <h6 class="font-weight-bold mb-3">Cash on Delivery</h6>
+                <p class="text-muted mb-0">Courier:</p>
+                <h6 class="font-weight-bold mb-3">CarryBee</h6>
+            </div>
+            <div class="col-5">
+                <table class="table table-sm">
+                    <tbody style="font-size: 14px;">
+                        <tr>
+                            <th scope="row" class="text-right">Subtotal:</th>
+                            <td class="text-right">BDT 891.00</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="text-right">Discount:</th>
+                            <td class="text-right">BDT 20.00</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="text-right">Shipping Cost:</th>
+                            <td class="text-right">BDT 110.00</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="text-right">Total:</th>
+                            <td class="text-right">BDT 981.00</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="text-right">Advanced Paid:</th>
+                            <td class="text-right">BDT 500.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

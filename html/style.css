@@ -1,0 +1,200 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+}
+
+.invoice-container {
+    width: 210mm;
+    /* A4 width */
+    min-height: 297mm;
+    /* A4 height */
+    background-color: #fff;
+    padding: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    color: #4CAF50;
+    /* A green color similar to the source */
+    flex: 1;
+}
+
+.invoice-title {
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+    text-align: right;
+    flex: 1;
+}
+
+.invoice-number {
+    font-size: 14px;
+    color: #555;
+    text-align: right;
+    flex: 1;
+}
+
+.company-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.address-section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.bill-to,
+.ship-to {
+    width: 45%;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+}
+
+.section-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #4CAF50;
+    font-size: 16px;
+}
+
+.name {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.address,
+.phone {
+    font-size: 14px;
+    color: #555;
+}
+
+.item-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+.item-table th,
+.item-table td {
+    border: 1px solid #eee;
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+    color: #333;
+}
+
+.item-table th {
+    background-color: #f8f8f8;
+    font-weight: bold;
+    color: #666;
+}
+
+.item-table tbody tr:nth-child(even) {
+    background-color: #fdfdfd;
+}
+
+.payment-courier-section {
+    display: flex;
+    justify-content: flex-start;
+    gap: 50px;
+    margin-bottom: 30px;
+}
+
+.payment-method,
+.courier {
+    line-height: 1.6;
+}
+
+.detail {
+    font-size: 14px;
+    color: #555;
+}
+
+.summary-details {
+    display: flex;
+    justify-content: space-between;
+}
+
+.invoice-info,
+.financial-summary {
+    width: 45%;
+    /* Adjust as needed */
+}
+
+.invoice-info table,
+.financial-summary table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.invoice-info td,
+.financial-summary td {
+    padding: 8px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.invoice-info td:first-child,
+.financial-summary td:first-child {
+    font-weight: bold;
+    width: 60%;
+}
+
+.financial-summary td:last-child {
+    text-align: right;
+    font-weight: bold;
+    color: #000;
+}
+
+/* Specific adjustments for layout matching */
+.header .logo {
+    text-align: left;
+}
+
+.header .invoice-title {
+    margin-left: auto;
+    /* Push invoice title to center */
+    margin-right: auto;
+    /* Push invoice title to center */
+}
+
+.header .invoice-number {
+    text-align: right;
+}
+
+.item-table th:nth-child(2),
+.item-table td:nth-child(2) {
+    text-align: center;
+    /* Quantity column */
+}
+
+.item-table th:nth-child(3),
+.item-table td:nth-child(3),
+.item-table th:nth-child(4),
+.item-table td:nth-child(4) {
+    text-align: right;
+    /* Rate and Amount columns */
+}
