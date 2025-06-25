@@ -63,6 +63,7 @@ var IdleSessionManager = (function () {
         $('#sessionExpiringSoonModal').on('hide.bs.modal', function () {
             clearInterval(countdownTimer);
             currentCountdown = countdownSeconds;
+            location.reload(); // Reload the page to reset session
         });
     }
 
