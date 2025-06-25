@@ -480,7 +480,6 @@
         </div>
     </div>
 
-
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="jquery-ui-1.14.0.custom/jquery-ui.min.js"></script>
@@ -488,6 +487,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="dataTables.cellEdit.js"></script>
     <script src="tree-view.js"></script>
+    <script src="session-manager.js"></script>
 
     <script>
 
@@ -1306,6 +1306,12 @@
         }
 
         $(document).ready(function () {
+
+            IdleSessionManager.init({
+                idleSeconds: 10,
+                countdownSeconds: 10,
+                redirectUrl: 'session-expired.html',
+            });
 
             // $('.btn-show-upload-modal').click(function () {
             //     modal.show();
