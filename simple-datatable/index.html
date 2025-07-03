@@ -825,7 +825,9 @@
                     type: 'num',
                     contentPadding: '0px',
                     render: function (data, type, row) {
-                        return '$' + data.toLocaleString('en-AU');
+                        console.log('render current salary', data);
+                        const value = Number(data);
+                        return isNaN(value) ? '$0' : '$' + value.toLocaleString('en-AU');
                     }
                 },
                 {
@@ -1308,8 +1310,8 @@
         $(document).ready(function () {
 
             IdleSessionManager.init({
-                idleSeconds: 10,
-                countdownSeconds: 10,
+                idleSeconds: 3000,
+                countdownSeconds: 3000,
                 redirectUrl: 'session-expired.html',
             });
 
