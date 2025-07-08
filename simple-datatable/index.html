@@ -825,9 +825,13 @@
                     type: 'num',
                     contentPadding: '0px',
                     render: function (data, type, row) {
-                        console.log('render current salary', data);
                         const value = Number(data);
-                        return isNaN(value) ? '$0' : '$' + value.toLocaleString('en-AU');
+
+                        if (type === 'display') {
+                            return isNaN(value) ? '$0' : '$' + value.toLocaleString('en-AU');
+                        }
+
+                        return value;
                     }
                 },
                 {
@@ -1108,7 +1112,8 @@
                 } else if ($(this).hasClass('dt-type-numeric')) {
                     // data type: numeric
                     // rule: can't be empty && must be a number
-                    const number = parseInt(textContent);
+                    const cleaned = textContent.replace(/[^0-9.-]/g, '');
+                    const number = parseFloat(cleaned);
                     if (!textContent || isNaN(number)) {
                         numericError++;
                         valid = false;
@@ -1558,15 +1563,16 @@
                         if (parent.hasClass('dt-type-numeric')) {
                             console.log('VALIDATE NUMBERS');
                             if (
-                                (e.key.length === 1 && !/[0-9\-]/.test(e.key)) ||  // Allow numbers and minus sign
-                                (e.key === '-' && this.value.includes('-')) ||     // Prevent more than one minus sign
-                                (e.key === '-' && this.selectionStart !== 0)       // Allow minus only at the beginning
+                                (e.key.length === 1 && !/[0-9\.\-]/.test(e.key)) ||              // Allow digits, dot, minus
+                                (e.key === '-' && this.value.includes('-')) ||                  // Only one minus sign
+                                (e.key === '-' && this.selectionStart !== 0) ||                 // Minus must be at the beginning
+                                (e.key === '.' && this.value.includes('.'))                     // Only one decimal point
                             ) {
                                 e.preventDefault();
                             }
                         } else {
-                            const classes = parent.attr('class').split(/\s+/);
-                            const lenClass = classes.find(c => c.startsWith('len-'));
+                            const classes = parent.attr('class')?.split(/\s+/);
+                            const lenClass = classes?.find(c => c.startsWith('len-'));
                             if (!!lenClass) {
                                 console.log('VALIDATE STRING LENGTH');
                                 const maxLen = parseInt(lenClass.slice(4), 10);
