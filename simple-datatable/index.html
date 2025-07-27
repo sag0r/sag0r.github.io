@@ -1490,35 +1490,44 @@
                 //Re-bind event listeners after DataTable redraw
 
                 $(this).off('change').on('change', '.ejbeatycelledit-multi', function () {
-                    console.log('checkbox changed');
+                    console.log('--checkbox changed');
                     const $clicked = $(this);
-                    const isYes = $clicked.data('value') == 1;
+                    const clickedValue = $clicked.data('value'); // 1 for Approved, 2 for Rejected
 
-                    //Uncheck the other checkbox (mutual exclusivity)
-                    const $checkboxesInRow = $clicked.closest('td').find('.ejbeatycelledit-multi');
-                    $checkboxesInRow.prop('checked', false);  //Uncheck all
-                    $clicked.prop('checked', true);           //Check the clicked checkbox
-
-                    //Get the new value: 1 for 'Yes', 2 for 'No'
-                    const newValue = isYes ? 1 : 2;
-
-                    //Update the row with the new value
                     const $cell = $clicked.closest('td');
                     const table = $cell.closest('table').DataTable();
                     const row = table.row($clicked.closest('tr'));
                     const cell = row.cell($cell);
 
-                    // Set value for current cell
+                    const currentValue = cell.data(); // 0 (none), 1 (approved), 2 (rejected)
+
+                    let newValue;
+
+                    if (currentValue == clickedValue) {
+                        // Toggle off if already selected
+                        newValue = 0;
+                    } else {
+                        // Select the clicked one
+                        newValue = clickedValue;
+                    }
+
+                    // Update UI checkboxes
+                    const $checkboxesInCell = $cell.find('.ejbeatycelledit-multi');
+                    $checkboxesInCell.prop('checked', false); // Uncheck all
+                    if (newValue !== 0) {
+                        // Only re-check if not reset
+                        $checkboxesInCell.filter(`[data-value="${newValue}"]`).prop('checked', true);
+                    }
+
+                    // Update current cell data
                     cell.data(newValue);
 
-                    // 👉 Set value for another column in the same row
-                    const targetColIndex = 6; // Salary column index (0-based)
-                    const newRelatedValue = isYes ? 5000 : 0;
-
-                    // Use cell() to get the target cell, then update its data
+                    // Update related column (e.g. salary logic)
+                    const targetColIndex = 6;
+                    const newRelatedValue = newValue === 1 ? 5000 : 0; // Only approve sets salary
                     row.cell(row.index(), targetColIndex).data(newRelatedValue);
 
-                    // Re-draw the row without full table redraw
+                    // Refresh the row only
                     row.invalidate().draw(false);
                 });
 
