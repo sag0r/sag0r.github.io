@@ -364,8 +364,17 @@
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input type="checkbox" id="checkAll" class="form-check-input" />
-                                                Approve
+                                                <div class="d-flex flex-row">
+                                                    <div>
+                                                        <input type="checkbox" id="checkAll" class="form-check-input" />
+                                                        Approve
+                                                    </div>
+                                                    <div class="ms-4">
+                                                        <input type="checkbox" id="uncheckAll"
+                                                            class="form-check-input" />
+                                                        Reject
+                                                    </div>
+                                                </div>
                                             </th>
                                             <th>Name</th>
                                             <th>Email</th>
@@ -1488,7 +1497,6 @@
                 $(this).focus();
 
                 //Re-bind event listeners after DataTable redraw
-
                 $(this).off('change').on('change', '.ejbeatycelledit-multi', function () {
                     console.log('--checkbox changed');
                     const $clicked = $(this);
@@ -1540,7 +1548,27 @@
                         const cell = this.cell(this.index(), 0);
                         const data = this.data();
 
-                        data.active = isChecked ? 1 : 2;
+                        data.active = isChecked ? 1 : 0;
+                        this.data(data);
+
+                        cell.invalidate().render('display');
+                    });
+
+                    DATA_TABLE.draw(false);
+                    identifyInvalidCells();
+                    printCurrentTableData();
+                });
+
+                //Rebind the UnCheckAll event listener (make sure this works after redraw)
+                $(this).on('change', '#uncheckAll', function () {
+                    console.log('uncheck all clicked');
+                    const isChecked = $(this).is(':checked');
+
+                    DATA_TABLE.rows().every(function () {
+                        const cell = this.cell(this.index(), 0);
+                        const data = this.data();
+
+                        data.active = isChecked ? 2 : 0;
                         this.data(data);
 
                         cell.invalidate().render('display');
