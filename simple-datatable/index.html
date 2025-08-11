@@ -1542,6 +1542,9 @@
                 //Rebind the CheckAll event listener (make sure this works after redraw)
                 $(this).on('change', '#checkAll', function () {
                     console.log('check all clicked');
+                    // uncheck UncheckAll checkbox
+                    $('#uncheckAll').prop('checked', false);
+
                     const isChecked = $(this).is(':checked');
 
                     DATA_TABLE.rows().every(function () {
@@ -1562,6 +1565,9 @@
                 //Rebind the UnCheckAll event listener (make sure this works after redraw)
                 $(this).on('change', '#uncheckAll', function () {
                     console.log('uncheck all clicked');
+                    // uncheck CheckAll checkbox
+                    $('#checkAll').prop('checked', false);
+
                     const isChecked = $(this).is(':checked');
 
                     DATA_TABLE.rows().every(function () {
