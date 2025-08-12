@@ -534,3 +534,14 @@ td.cell-disabled {
 table.dataTable {
     table-layout: fixed !important;
 }
+
+
+#checkAll:checked {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+}
+
+#uncheckAll:checked {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
