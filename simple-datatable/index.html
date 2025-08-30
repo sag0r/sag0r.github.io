@@ -1321,6 +1321,24 @@
                 $('#nav-preview-tab').find('.badge-count').text(totalRows);
         }
 
+        function changeCheckUncheckState() {
+            const allRows = DATA_TABLE.rows().data().toArray();
+            const approved = allRows.filter(r => r.active == 1).length;
+            const rejected = allRows.filter(r => r.active == 2).length;
+
+            if (approved == allRows.length) {
+                $('#checkAll').prop('checked', true);
+            } else {
+                $('#checkAll').prop('checked', false);
+            }
+
+            if (rejected == allRows.length) {
+                $('#uncheckAll').prop('checked', true);
+            } else {
+                $('#uncheckAll').prop('checked', false);
+            }
+        }
+
         $(document).ready(function () {
 
             IdleSessionManager.init({
@@ -1537,6 +1555,8 @@
 
                     // Refresh the row only
                     row.invalidate().draw(false);
+
+                    changeCheckUncheckState();
                 });
 
                 //Rebind the CheckAll event listener (make sure this works after redraw)
