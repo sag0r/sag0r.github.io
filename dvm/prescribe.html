@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>AgroMukam - New Prescription</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap 4.6 CDNJS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.2/css/bootstrap.min.css">
+    <!-- FontAwesome 5 CDNJS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            padding-top: 70px;
+            padding-bottom: 70px;
+            font-size: 14px;
+            background: linear-gradient(rgba(105, 164, 31, 0.05), transparent);
+        }
+
+        .navbar-brand {
+            color: #69A41F !important;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 0.75rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-body {
+            padding: 0.75rem 1rem;
+        }
+
+        .list-group-item {
+            border: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .product-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .vendor-price {
+            font-size: 12px;
+            color: #555;
+        }
+
+        .product-extra {
+            display: none;
+            margin-top: 0.5rem;
+        }
+
+        .dosage-input {
+            width: 100%;
+            font-size: 13px;
+            margin-top: 2px;
+        }
+
+        .btn-brand {
+            background-color: #69A41F;
+            color: #fff;
+            border: none;
+        }
+
+        .btn-brand:hover {
+            background-color: #558316;
+        }
+
+        .sticky-top-filter {
+            position: sticky;
+            top: 54px;
+            z-index: 1020;
+            background-color: #fff;
+            padding: 0.5rem 1rem;
+            border-bottom: none;
+        }
+
+        .fixed-bottom-actions {
+            padding: 0.5rem 0.75rem;
+            border-top: 1px solid #ddd;
+            background: #fff;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-sm {
+            font-size: 13px;
+            margin: 2px;
+        }
+
+        .btn-close-product {
+            padding: 0.25rem 0.5rem;
+            font-size: 14px;
+            height: 35px;
+        }
+
+        .product-extra .form-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .product-extra .left-controls {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .product-extra .right-close {
+            display: flex;
+            align-items: center;
+            margin-left: 5px;
+        }
+
+        .paging-controls {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.25rem 0;
+            margin-top: 0.5rem;
+        }
+
+        .paging-controls button {
+            min-width: 70px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm">
+        <a class="navbar-brand" href="home.html">AgroMukam</a>
+        <div class="ml-auto dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="profileMenu" data-toggle="dropdown">
+                <i class="fas fa-user"></i>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="#">Profile</a>
+                <a class="dropdown-item" href="#">Settings</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-2">
+
+        <!-- Customer Info -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h6 class="mb-2 font-weight-bold">Customer Information</h6>
+                <input type="text" class="form-control mb-1 form-control-sm" placeholder="Name">
+                <input type="text" class="form-control mb-1 form-control-sm" placeholder="Phone">
+                <input type="text" class="form-control mb-1 form-control-sm" placeholder="Address">
+            </div>
+        </div>
+
+        <!-- Product Filters -->
+        <div class="card shadow-sm">
+            <div class="sticky-top-filter">
+                <input type="text" id="productSearch" class="form-control form-control-sm"
+                    placeholder="Search product, vendor, description...">
+            </div>
+            <ul id="productList" class="list-group list-group-flush mb-2"></ul>
+        </div>
+
+    </div>
+
+    <!-- Fixed Bottom Actions with Order Total -->
+    <div class="fixed-bottom fixed-bottom-actions d-flex justify-content-between align-items-center">
+        <div>
+            <strong>Order Total: </strong><span id="orderTotal">৳0</span>
+        </div>
+        <div>
+            <button id="savePrescription" class="btn btn-brand btn-sm"><i class="fas fa-save"></i> Save</button>
+            <button id="saveBackList" class="btn btn-success btn-sm"><i class="fas fa-arrow-left"></i> Back</button>
+            <button id="printBtn" class="btn btn-info btn-sm d-none"><i class="fas fa-print"></i> Print</button>
+            <button id="exportPdfBtn" class="btn btn-secondary btn-sm d-none"><i class="fas fa-file-pdf"></i>
+                PDF</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.2/js/bootstrap.min.js"></script>
+    <script>
+        const products = [
+            { name: 'Amoxicillin 500mg', vendor: 'ABC Pharma', price: '150', desc: 'Antibiotic for poultry' },
+            { name: 'Calcium Powder', vendor: 'FarmCare', price: '80', desc: 'Strengthens bones' },
+            { name: 'Ivermectin Injection', vendor: 'VetPlus', price: '220', desc: 'Parasite treatment' },
+            { name: 'Vitamin B12', vendor: 'BioVet', price: '120', desc: 'Energy booster' },
+            { name: 'Vitamin Mix', vendor: 'AgroLife', price: '200', desc: 'Growth supplement' },
+            { name: 'Enrofloxacin 10%', vendor: 'ABC Pharma', price: '180', desc: 'Bacterial infection' },
+            { name: 'Zinc Sulfate', vendor: 'FarmCare', price: '70', desc: 'Mineral supplement' },
+            { name: 'Oxytetracycline 200mg', vendor: 'VetPlus', price: '160', desc: 'Antibiotic' },
+            { name: 'Deworming Paste', vendor: 'BioVet', price: '90', desc: 'Internal parasite control' },
+            { name: 'Probiotic Mix', vendor: 'AgroLife', price: '150', desc: 'Gut health' },
+            { name: 'Iron Syrup', vendor: 'ABC Pharma', price: '130', desc: 'Anemia treatment' },
+            { name: 'Coccidiostat Powder', vendor: 'FarmCare', price: '110', desc: 'Coccidiosis control' },
+            { name: 'Multivitamin Injection', vendor: 'VetPlus', price: '250', desc: 'Vitamin booster' },
+            { name: 'Electrolyte Powder', vendor: 'BioVet', price: '95', desc: 'Hydration supplement' },
+            { name: 'Selenium Mix', vendor: 'AgroLife', price: '120', desc: 'Trace mineral supplement' }
+        ];
+
+        let currentPage = 1;
+        const pageSize = 10;
+
+        function renderProductList(filter = '') {
+            const list = $('#productList').empty();
+            const filtered = products
+                .filter(p => `${p.name} ${p.vendor} ${p.desc}`.toLowerCase().includes(filter.toLowerCase()))
+                .sort((a, b) => a.name.localeCompare(b.name));
+
+            const totalPages = Math.ceil(filtered.length / pageSize);
+            const start = (currentPage - 1) * pageSize;
+            const end = start + pageSize;
+            const pageItems = filtered.slice(start, end);
+
+            pageItems.forEach(p => {
+                const li = $(`
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="product-name">${p.name}</div>
+                            <div class="vendor-price">${p.vendor} | ৳${p.price}</div>
+                            <span class="d-none product-desc">${p.desc}</span>
+                        </div>
+                        <button class="btn btn-sm btn-brand btn-add-product"><i class="fas fa-plus"></i> Add</button>
+                        </div>
+                        <div class="product-extra mt-2">
+                        <div class="form-row w-100 align-items-center">
+                            <div class="left-controls d-flex flex-column">
+                            <div class="input-group input-group-sm mb-1">
+                                <div class="input-group-prepend">
+                                <button class="btn btn-outline-secondary btn-decrease px-4" type="button">-</button>
+                                </div>
+                                <input type="text" class="form-control form-control-sm text-center quantity-input" value="1" readonly>
+                                <div class="input-group-append">
+                                <button class="btn btn-outline-secondary btn-increase px-4" type="button">+</button>
+                                </div>
+                            </div>
+                            <input type="text" class="form-control form-control-sm dosage-input" placeholder="Dosage & instructions">
+                            </div>
+                            <div class="right-close">
+                            <button class="btn btn-sm btn-danger btn-close-product px-4">×</button>
+                            </div>
+                        </div>
+                        </div>
+                    </li>
+                `);
+                list.append(li);
+            });
+
+            const pagingLi = $(`
+                <li class="list-group-item">
+                    <div class="paging-controls">
+                        <button class="btn btn-sm btn-secondary ${currentPage === 1 ? 'disabled' : ''}" id="prevPage"><i class="fas fa-chevron-left"></i> Prev</button>
+                        <span>Page ${currentPage} of ${totalPages}</span>
+                        <button class="btn btn-sm btn-secondary ${currentPage === totalPages ? 'disabled' : ''}" id="nextPage">Next <i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </li>
+            `);
+            list.append(pagingLi);
+
+            updateOrderTotal();
+        }
+
+        function updateOrderTotal() {
+            let total = 0;
+            $('#productList .product-extra:visible').each(function () {
+                const parentLi = $(this).closest('li');
+                const quantity = parseInt($(this).find('.quantity-input').val()) || 0;
+                const priceText = parentLi.find('.vendor-price').text().split('৳')[1];
+                const price = parseFloat(priceText) || 0;
+                total += quantity * price;
+            });
+            $('#orderTotal').text('৳' + total);
+        }
+
+        $(document).ready(function () {
+            renderProductList();
+
+            $('#productSearch').on('input', function () { currentPage = 1; renderProductList($(this).val()); });
+
+            $(document).on('click', '.btn-add-product', function () {
+                const parent = $(this).closest('li');
+                $(this).hide();
+                parent.find('.product-extra').slideDown(updateOrderTotal);
+            });
+
+            $(document).on('click', '.btn-close-product', function () {
+                const parent = $(this).closest('li');
+                parent.find('.product-extra').slideUp(updateOrderTotal);
+                parent.find('.btn-add-product').show();
+                parent.find('.quantity-input').val(1);
+                parent.find('.dosage-input').val('');
+            });
+
+            $(document).on('click', '.btn-increase', function () {
+                const input = $(this).closest('.input-group').find('.quantity-input');
+                let val = parseInt(input.val()) || 1;
+                input.val(val + 1);
+                updateOrderTotal();
+            });
+
+            $(document).on('click', '.btn-decrease', function () {
+                const input = $(this).closest('.input-group').find('.quantity-input');
+                let val = parseInt(input.val()) || 1;
+                if (val > 1) input.val(val - 1);
+                updateOrderTotal();
+            });
+
+            $(document).on('click', '#prevPage', function () { if (currentPage > 1) { currentPage--; renderProductList($('#productSearch').val()); } });
+            $(document).on('click', '#nextPage', function () {
+                const filtered = products.filter(p => `${p.name} ${p.vendor} ${p.desc}`.toLowerCase().includes($('#productSearch').val().toLowerCase()));
+                const totalPages = Math.ceil(filtered.length / pageSize);
+                if (currentPage < totalPages) { currentPage++; renderProductList($('#productSearch').val()); }
+            });
+
+            $('#savePrescription').on('click', function () { alert('Prescription saved!'); $('#printBtn, #exportPdfBtn').removeClass('d-none'); });
+            $('#saveBackList').on('click', function () { alert('Prescription saved! Returning to list...'); window.location.href = 'prescriptions.html'; });
+            $('#printBtn').on('click', function () { alert('Printing...'); });
+            $('#exportPdfBtn').on('click', function () { alert('Exporting PDF...'); });
+        });
+    </script>
+</body>
+
+</html>
