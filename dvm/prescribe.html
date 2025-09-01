@@ -123,11 +123,16 @@
             color: rgba(105, 164, 31, 1);
         }
 
-        #prevPage:hover,
-        #nextPage:hover {
+        #prevPage:not(:disabled):hover,
+        #nextPage:not(:disabled):hover {
             border-color: rgba(105, 164, 31, .8);
             background-color: rgba(105, 164, 31, .8);
             color: #fff;
+        }
+
+        #prevPage:disabled,
+        #nextPage:disabled {
+            cursor: not-allowed;
         }
 
         .ais-Hits-item,
@@ -168,7 +173,7 @@
             </div>
 
             <div class="d-flex align-items-center pb-4">
-                <button id="prevPage" class="btn btn-sm btn-outline-secondary ml-1 mr-2"><i
+                <button id="prevPage" class="btn btn-sm btn-outline-secondary mx-2" style="display: none;"><i
                         class="fas fa-chevron-left"></i></button>
 
                 <ul id="productList" class="list-group list-group-flush flex-grow-1">
@@ -178,7 +183,7 @@
                     </div>
                 </ul>
 
-                <button id="nextPage" class="btn btn-sm btn-outline-secondary ml-2 mr-1"><i
+                <button id="nextPage" class="btn btn-sm btn-outline-secondary mx-2" style="display: none;"><i
                         class="fas fa-chevron-right"></i></button>
             </div>
         </div>
@@ -278,6 +283,13 @@
                 transformItems(items) {
                     const loader = document.getElementById("loadingState");
                     if (loader) loader.style.display = "none";
+
+                    const prevBtn = document.getElementById("prevPage");
+                    if (prevBtn) prevBtn.style.display = "block";
+
+                    const nextBtn = document.getElementById("nextPage");
+                    if (nextBtn) nextBtn.style.display = "block";
+
                     return items;
                 }
             })
@@ -294,20 +306,44 @@
         );
 
         // Hidden pagination for controlling pages
-        const pagination = instantsearch.widgets.pagination({ container: document.createElement('div') });
+        const pagination = instantsearch.widgets.pagination({
+            container: document.createElement('div'),
+            scrollTo: false,
+            showFirst: false,
+            showLast: false,
+            padding: 0
+        });
+
         search.addWidgets([pagination]);
         search.start();
 
+        // Function to update prev/next button disabled state
+        function updatePageButtons(helper) {
+            const prevBtn = document.getElementById('prevPage');
+            const nextBtn = document.getElementById('nextPage');
+
+            const currentPage = helper.state.page;
+            const totalPages = helper.lastResults ? helper.lastResults.nbPages : 0;
+
+            prevBtn.disabled = currentPage === 0;
+            nextBtn.disabled = currentPage >= totalPages - 1;
+        }
+
+        // Attach to render event
+        search.on('render', function () {
+            updatePageButtons(search.helper);
+        });
+
         // Prev/Next click events
         document.getElementById('prevPage').addEventListener('click', () => {
-            const state = search.helper.state;
-            if (state.page > 0) search.helper.setPage(state.page - 1).search();
+            if (!search.helper.state.page) return;
+            search.helper.setPage(search.helper.state.page - 1).search();
         });
 
         document.getElementById('nextPage').addEventListener('click', () => {
             const state = search.helper.state;
-            if (state.page < search.helper.lastResults.nbPages - 1)
-                search.helper.setPage(state.page + 1).search();
+            if (state.page >= search.helper.lastResults.nbPages - 1) return;
+            search.helper.setPage(state.page + 1).search();
         });
 
         // Order total calculation & product events
