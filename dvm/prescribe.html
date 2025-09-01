@@ -168,6 +168,22 @@
 
     <script>
 
+        const vendorNames = [
+            'Incepta Pharmaceuticals Ltd.',
+            'NAVANA PHARMA',
+            'Square Pharmaceuticals PLC.',
+            'Eskayef Pharmaceuticals Limited',
+            'The Acme Laboratories Ltd',
+            'Advanced Chemical Industries Limited',
+            'Popular Pharmaceuticals Ltd.'
+        ];
+
+        function buildVendorFilter() {
+            if (vendorNames.length === 0) return "";
+            const vendors = vendorNames.map(v => `"${v}"`).join(",");
+            return `VendorName:=[${vendors}]`;
+        }
+
         const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
             server: {
                 nodes: [
@@ -180,7 +196,8 @@
                 apiKey: "eb9FsCbTLxZzvZwbRKnBb4770Ccrs01Q", // 🔧 replace with your search-only API key
             },
             additionalSearchParameters: {
-                queryBy: "Name,NameBn,FullDescription,FullDescriptionBn,VendorName,VendorStoreName"
+                queryBy: "Name,NameBn,FullDescription,FullDescriptionBn,VendorName,VendorStoreName",
+                filterBy: buildVendorFilter()
             }
         });
 
