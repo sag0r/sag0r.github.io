@@ -17,6 +17,11 @@
         src="https://cdn.jsdelivr.net/npm/typesense-instantsearch-adapter@2/dist/typesense-instantsearch-adapter.min.js"></script>
 
     <style>
+        button:focus {
+            outline: none;
+            box-shadow: none !important;
+        }
+
         body {
             padding-top: 70px;
             padding-bottom: 70px;
@@ -34,7 +39,7 @@
             border: none;
             border-radius: 0.75rem;
             margin-bottom: 0.75rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            box-shadow: 0px 4px 24px rgba(122, 172, 193, 0.16) !important;
         }
 
         .card-body {
@@ -46,7 +51,7 @@
             padding: 0.5rem 0.75rem;
             border-radius: 0.5rem;
             margin-bottom: 0.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            box-shadow: 0px 4px 24px rgba(122, 172, 193, 0.16) !important;
         }
 
         .product-name {
@@ -71,13 +76,14 @@
         }
 
         .btn-brand {
-            background-color: #69A41F;
-            color: #fff;
+            background-color: rgba(105, 164, 31, 1);
+            color: #fff !important;
             border: none;
+            transition: .2s all ease-in-out;
         }
 
         .btn-brand:hover {
-            background-color: #558316;
+            background-color: rgba(105, 164, 31, .7);
         }
 
         .sticky-top-filter {
@@ -92,26 +98,45 @@
             padding: 0.5rem 0.75rem;
             border-top: 1px solid #ddd;
             background: #fff;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+            box-shadow: 0px 4px 24px rgba(122, 172, 193, 0.16) !important;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
         }
 
-
         .ais-Hits-item {
             padding: 0 !important;
         }
 
-        .ais-Pagination {
-            display: flex !important;
-            justify-content: center !important;
-            align-items: center !important;
-        }
-
         #loadingState {
             min-height: 300px;
+        }
+
+        #prevPage,
+        #nextPage {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border-color: rgba(105, 164, 31, 1);
+            color: rgba(105, 164, 31, 1);
+        }
+
+        #prevPage:hover,
+        #nextPage:hover {
+            border-color: rgba(105, 164, 31, .8);
+            background-color: rgba(105, 164, 31, .8);
+            color: #fff;
+        }
+
+        .ais-Hits-item,
+        .ais-InfiniteHits-item,
+        .ais-FrequentlyBoughtTogether-item,
+        .ais-LookingSimilar-item,
+        .ais-RelatedProducts-item,
+        .ais-TrendingItems-item {
+            box-shadow: none !important;
         }
     </style>
 </head>
@@ -141,13 +166,21 @@
                 <div id="searchbox"></div>
                 <div id="searchStats" class="mt-1 text-muted small"></div>
             </div>
-            <ul id="productList" class="list-group list-group-flush">
-                <div id="loadingState" class="text-center my-3 text-muted">
-                    <div class="spinner-border text-success spinner-border-sm" role="status"></div>
-                    <span class="ml-2">Loading products...</span>
-                </div>
-            </ul>
-            <div id="pagination" class="text-center mt-1 mb-2"></div>
+
+            <div class="d-flex align-items-center pb-4">
+                <button id="prevPage" class="btn btn-sm btn-outline-secondary ml-1 mr-2"><i
+                        class="fas fa-chevron-left"></i></button>
+
+                <ul id="productList" class="list-group list-group-flush flex-grow-1">
+                    <div id="loadingState" class="text-center my-3 text-muted">
+                        <div class="spinner-border text-success spinner-border-sm" role="status"></div>
+                        <span class="ml-2">Loading products...</span>
+                    </div>
+                </ul>
+
+                <button id="nextPage" class="btn btn-sm btn-outline-secondary ml-2 mr-1"><i
+                        class="fas fa-chevron-right"></i></button>
+            </div>
         </div>
 
     </div>
@@ -163,11 +196,9 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
     <script>
-
         const vendorNames = [
             'Incepta Pharmaceuticals Ltd.',
             'NAVANA PHARMA',
@@ -187,52 +218,33 @@
         const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
             server: {
                 nodes: [
-                    {
-                        host: "agromukam.com", // 🔧 replace with your Typesense host
-                        port: "8108",
-                        protocol: "https"
-                    }
+                    { host: "agromukam.com", port: "8108", protocol: "https" }
                 ],
-                apiKey: "eb9FsCbTLxZzvZwbRKnBb4770Ccrs01Q", // 🔧 replace with your search-only API key
+                apiKey: "eb9FsCbTLxZzvZwbRKnBb4770Ccrs01Q",
             },
             additionalSearchParameters: {
                 queryBy: "Name,NameBn,FullDescription,FullDescriptionBn,VendorName,VendorStoreName",
                 filterBy: buildVendorFilter(),
-                "sort_by": "IsAvailableForAdvisors:desc"
+                per_page: 7,
+                sort_by: "IsAvailableForAdvisors:desc"
             }
         });
 
         const searchClient = typesenseInstantsearchAdapter.searchClient;
+        const search = instantsearch({ indexName: "agro_products", searchClient });
 
-
-        const search = instantsearch({
-            indexName: "agro_products", // 🔧 replace with your collection
-            searchClient,
-        });
-
-        // searchbox
+        // Searchbox
         search.addWidget(
-            instantsearch.widgets.searchBox({
-                container: "#searchbox",
-                placeholder: "Search product, vendor, description...",
-                showReset: true,
-                showSubmit: false,
-            })
+            instantsearch.widgets.searchBox({ container: "#searchbox", placeholder: "Search product, vendor, description...", showReset: true, showSubmit: false })
         );
 
-        // custom hits widget
+        // Hits
         search.addWidget(
             instantsearch.widgets.hits({
                 container: "#productList",
-                cssClasses: {
-                    root: 'w-100',
-                    list: 'list-group list-group-flush mb-2 ais-Hits-list',
-                    item: 'list-group-item w-100 mb-0 ais-Hits-item'
-                },
                 templates: {
                     item(hit) {
-                        return `
-                            <li class="list-group-item w-100 mb-0" data-price="${hit.ProductPrice.Price}">
+                        return `<li class="list-group-item w-100 mb-0" data-price="${hit.ProductPrice.Price}">
                                 <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <div class="product-name ${hit.AdvisorIds.length > 0 ? 'text-success' : ''}">${hit.Name}</div>
@@ -241,30 +253,27 @@
                                 <button class="btn btn-sm btn-brand btn-add-product"><i class="fas fa-plus"></i> Add</button>
                                 </div>
                                 <div class="product-extra mt-2">
-                                <div class="form-row w-100 align-items-center px-2">
-                                    <div class="left-controls d-flex flex-column flex-grow-1">
-                                    <div class="input-group input-group-sm mb-1">
-                                        <div class="input-group-prepend">
-                                        <button class="btn btn-outline-secondary btn-decrease px-4" type="button">-</button>
+                                    <div class="form-row w-100 align-items-center px-2">
+                                        <div class="left-controls d-flex flex-column flex-grow-1">
+                                        <div class="input-group input-group-sm mb-1">
+                                            <div class="input-group-prepend">
+                                            <button class="btn btn-outline-secondary btn-decrease px-4" type="button">-</button>
+                                            </div>
+                                            <input type="text" class="form-control quantity-input text-center" value="1" readonly>
+                                            <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary btn-increase px-4" type="button">+</button>
+                                            </div>
                                         </div>
-                                        <input type="text" class="form-control quantity-input text-center" value="1" readonly>
-                                        <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary btn-increase px-4" type="button">+</button>
+                                        <input type="text" class="form-control form-control-sm dosage-input" placeholder="Dosage & instructions">
                                         </div>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm dosage-input" placeholder="Dosage & instructions">
-                                    </div>
-                                    <div class="right-close ml-2">
-                                    <button class="btn btn-sm btn-danger btn-close-product px-4">×</button>
+                                        <div class="right-close ml-2">
+                                        <button class="btn btn-sm btn-danger btn-close-product px-4">×</button>
+                                        </div>
                                     </div>
                                 </div>
-                                </div>
-                            </li>
-                        `;
+                            </li>`;
                     },
-                    empty: `
-                        <div class="text-center text-muted my-3">No products found</div>
-                    `
+                    empty: `<div class="text-center text-muted my-3">No products found</div>`
                 },
                 transformItems(items) {
                     const loader = document.getElementById("loadingState");
@@ -274,27 +283,34 @@
             })
         );
 
-        // pagination
-        search.addWidget(
-            instantsearch.widgets.pagination({
-                container: "#pagination"
-            })
-        );
-
+        // Stats
         search.addWidget(
             instantsearch.widgets.stats({
                 container: '#searchStats',
                 templates: {
-                    text: function (data) {
-                        return `⚡️ ${data.nbHits} results found in ${data.processingTimeMS}ms`;
-                    }
+                    text: data => `⚡️ ${data.nbHits} results found in ${data.processingTimeMS}ms`
                 }
             })
         );
 
-
+        // Hidden pagination for controlling pages
+        const pagination = instantsearch.widgets.pagination({ container: document.createElement('div') });
+        search.addWidgets([pagination]);
         search.start();
 
+        // Prev/Next click events
+        document.getElementById('prevPage').addEventListener('click', () => {
+            const state = search.helper.state;
+            if (state.page > 0) search.helper.setPage(state.page - 1).search();
+        });
+
+        document.getElementById('nextPage').addEventListener('click', () => {
+            const state = search.helper.state;
+            if (state.page < search.helper.lastResults.nbPages - 1)
+                search.helper.setPage(state.page + 1).search();
+        });
+
+        // Order total calculation & product events
         function updateOrderTotal() {
             let total = 0;
             $('#productList .product-extra:visible').each(function () {
@@ -306,7 +322,6 @@
             $('#orderTotal').text('৳' + total);
         }
 
-        // event handlers
         $(document).on('click', '.btn-add-product', function () {
             const li = $(this).closest('li');
             $(this).hide();
