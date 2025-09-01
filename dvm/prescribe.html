@@ -217,7 +217,7 @@
                             <li class="list-group-item w-100 mb-0" data-price="${hit.ProductPrice.Price}">
                                 <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <div class="product-name">${hit.Name}</div>
+                                    <div class="product-name ${hit.AdvisorIds.length > 0 ? 'text-success' : ''}">${hit.Name}</div>
                                     <div class="vendor-price">${hit.VendorStoreName} | ৳${hit.ProductPrice.Price}</div>
                                 </div>
                                 <button class="btn btn-sm btn-brand btn-add-product"><i class="fas fa-plus"></i> Add</button>
@@ -245,12 +245,12 @@
                         `;
                     },
                     empty: `
-        <div class="text-center text-muted my-3">No products found</div>
-      `
+                        <div class="text-center text-muted my-3">No products found</div>
+                    `
                 },
                 transformItems(items) {
-                    // Hide loading spinner once hits are rendered
-                    document.getElementById("loadingState").style.display = "none";
+                    const loader = document.getElementById("loadingState");
+                    if (loader) loader.style.display = "none";
                     return items;
                 }
             })
