@@ -197,7 +197,8 @@
             },
             additionalSearchParameters: {
                 queryBy: "Name,NameBn,FullDescription,FullDescriptionBn,VendorName,VendorStoreName",
-                filterBy: buildVendorFilter()
+                filterBy: buildVendorFilter(),
+                "sort_by": "IsAvailableForAdvisors:desc"
             }
         });
 
