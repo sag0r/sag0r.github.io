@@ -9,6 +9,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.2/css/bootstrap.min.css">
     <!-- FontAwesome 5 CDNJS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- InstantSearch.js -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@8/themes/satellite-min.css">
+    <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typesense@1/dist/typesense.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/typesense-instantsearch-adapter@2/dist/typesense-instantsearch-adapter.min.js"></script>
+
     <style>
         body {
             padding-top: 70px;
@@ -79,7 +86,6 @@
             z-index: 1020;
             background-color: #fff;
             padding: 0.5rem 1rem;
-            border-bottom: none;
         }
 
         .fixed-bottom-actions {
@@ -93,44 +99,19 @@
             flex-wrap: wrap;
         }
 
-        .btn-sm {
-            font-size: 13px;
-            margin: 2px;
+
+        .ais-Hits-item {
+            padding: 0 !important;
         }
 
-        .btn-close-product {
-            padding: 0.25rem 0.5rem;
-            font-size: 14px;
-            height: 35px;
+        .ais-Pagination {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
         }
 
-        .product-extra .form-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .product-extra .left-controls {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
-
-        .product-extra .right-close {
-            display: flex;
-            align-items: center;
-            margin-left: 5px;
-        }
-
-        .paging-controls {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.25rem 0;
-            margin-top: 0.5rem;
-        }
-
-        .paging-controls button {
-            min-width: 70px;
+        #loadingState {
+            min-height: 300px;
         }
     </style>
 </head>
@@ -140,17 +121,6 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm">
         <a class="navbar-brand" href="home.html">AgroMukam</a>
-        <div class="ml-auto dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="profileMenu" data-toggle="dropdown">
-                <i class="fas fa-user"></i>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item" href="#">Profile</a>
-                <a class="dropdown-item" href="#">Settings</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Logout</a>
-            </div>
-        </div>
     </nav>
 
     <div class="container mt-2">
@@ -165,173 +135,186 @@
             </div>
         </div>
 
-        <!-- Product Filters -->
+        <!-- Product Filters + Results -->
         <div class="card shadow-sm">
-            <div class="sticky-top-filter">
-                <input type="text" id="productSearch" class="form-control form-control-sm"
-                    placeholder="Search product, vendor, description...">
+            <div class="sticky-top-filter m-2">
+                <div id="searchbox"></div>
+                <div id="searchStats" class="mt-1 text-muted small"></div>
             </div>
-            <ul id="productList" class="list-group list-group-flush mb-2"></ul>
+            <ul id="productList" class="list-group list-group-flush mb-2">
+                <div id="loadingState" class="text-center my-3 text-muted">
+                    <div class="spinner-border text-success spinner-border-sm" role="status"></div>
+                    <span class="ml-2">Loading products...</span>
+                </div>
+            </ul>
+            <div id="pagination" class="text-center my-2"></div>
         </div>
 
     </div>
 
-    <!-- Fixed Bottom Actions with Order Total -->
-    <div class="fixed-bottom fixed-bottom-actions d-flex justify-content-between align-items-center">
+    <!-- Fixed Bottom Actions -->
+    <div class="fixed-bottom fixed-bottom-actions">
         <div>
             <strong>Order Total: </strong><span id="orderTotal">৳0</span>
         </div>
         <div>
-            <button id="savePrescription" class="btn btn-brand btn-sm"><i class="fas fa-save"></i> Save</button>
-            <button id="saveBackList" class="btn btn-success btn-sm"><i class="fas fa-arrow-left"></i> Back</button>
-            <button id="printBtn" class="btn btn-info btn-sm d-none"><i class="fas fa-print"></i> Print</button>
-            <button id="exportPdfBtn" class="btn btn-secondary btn-sm d-none"><i class="fas fa-file-pdf"></i>
-                PDF</button>
+            <button class="btn btn-brand btn-sm"><i class="fas fa-save"></i> Save</button>
+            <button class="btn btn-success btn-sm"><i class="fas fa-arrow-left"></i> Back</button>
         </div>
     </div>
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.2/js/bootstrap.min.js"></script>
+
     <script>
-        const products = [
-            { name: 'Amoxicillin 500mg', vendor: 'ABC Pharma', price: '150', desc: 'Antibiotic for poultry' },
-            { name: 'Calcium Powder', vendor: 'FarmCare', price: '80', desc: 'Strengthens bones' },
-            { name: 'Ivermectin Injection', vendor: 'VetPlus', price: '220', desc: 'Parasite treatment' },
-            { name: 'Vitamin B12', vendor: 'BioVet', price: '120', desc: 'Energy booster' },
-            { name: 'Vitamin Mix', vendor: 'AgroLife', price: '200', desc: 'Growth supplement' },
-            { name: 'Enrofloxacin 10%', vendor: 'ABC Pharma', price: '180', desc: 'Bacterial infection' },
-            { name: 'Zinc Sulfate', vendor: 'FarmCare', price: '70', desc: 'Mineral supplement' },
-            { name: 'Oxytetracycline 200mg', vendor: 'VetPlus', price: '160', desc: 'Antibiotic' },
-            { name: 'Deworming Paste', vendor: 'BioVet', price: '90', desc: 'Internal parasite control' },
-            { name: 'Probiotic Mix', vendor: 'AgroLife', price: '150', desc: 'Gut health' },
-            { name: 'Iron Syrup', vendor: 'ABC Pharma', price: '130', desc: 'Anemia treatment' },
-            { name: 'Coccidiostat Powder', vendor: 'FarmCare', price: '110', desc: 'Coccidiosis control' },
-            { name: 'Multivitamin Injection', vendor: 'VetPlus', price: '250', desc: 'Vitamin booster' },
-            { name: 'Electrolyte Powder', vendor: 'BioVet', price: '95', desc: 'Hydration supplement' },
-            { name: 'Selenium Mix', vendor: 'AgroLife', price: '120', desc: 'Trace mineral supplement' }
-        ];
 
-        let currentPage = 1;
-        const pageSize = 10;
+        const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
+            server: {
+                nodes: [
+                    {
+                        host: "agromukam.com", // 🔧 replace with your Typesense host
+                        port: "8108",
+                        protocol: "https"
+                    }
+                ],
+                apiKey: "eb9FsCbTLxZzvZwbRKnBb4770Ccrs01Q", // 🔧 replace with your search-only API key
+            },
+            additionalSearchParameters: {
+                queryBy: "Name,NameBn,FullDescription,FullDescriptionBn,VendorName,VendorStoreName"
+            }
+        });
 
-        function renderProductList(filter = '') {
-            const list = $('#productList').empty();
-            const filtered = products
-                .filter(p => `${p.name} ${p.vendor} ${p.desc}`.toLowerCase().includes(filter.toLowerCase()))
-                .sort((a, b) => a.name.localeCompare(b.name));
+        const searchClient = typesenseInstantsearchAdapter.searchClient;
 
-            const totalPages = Math.ceil(filtered.length / pageSize);
-            const start = (currentPage - 1) * pageSize;
-            const end = start + pageSize;
-            const pageItems = filtered.slice(start, end);
 
-            pageItems.forEach(p => {
-                const li = $(`
-                    <li class="list-group-item">
-                        <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="product-name">${p.name}</div>
-                            <div class="vendor-price">${p.vendor} | ৳${p.price}</div>
-                            <span class="d-none product-desc">${p.desc}</span>
-                        </div>
-                        <button class="btn btn-sm btn-brand btn-add-product"><i class="fas fa-plus"></i> Add</button>
-                        </div>
-                        <div class="product-extra mt-2">
-                        <div class="form-row w-100 align-items-center">
-                            <div class="left-controls d-flex flex-column">
-                            <div class="input-group input-group-sm mb-1">
-                                <div class="input-group-prepend">
-                                <button class="btn btn-outline-secondary btn-decrease px-4" type="button">-</button>
+        const search = instantsearch({
+            indexName: "agro_products", // 🔧 replace with your collection
+            searchClient,
+        });
+
+        // searchbox
+        search.addWidget(
+            instantsearch.widgets.searchBox({
+                container: "#searchbox",
+                placeholder: "Search product, vendor, description...",
+                showReset: true,
+                showSubmit: false,
+            })
+        );
+
+        // custom hits widget
+        search.addWidget(
+            instantsearch.widgets.hits({
+                container: "#productList",
+                cssClasses: {
+                    root: 'w-100',
+                    list: 'list-group list-group-flush mb-2 ais-Hits-list',
+                    item: 'list-group-item w-100 mb-0 ais-Hits-item'
+                },
+                templates: {
+                    item(hit) {
+                        return `
+                            <li class="list-group-item w-100 mb-0" data-price="${hit.ProductPrice.Price}">
+                                <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="product-name">${hit.Name}</div>
+                                    <div class="vendor-price">${hit.VendorStoreName} | ৳${hit.ProductPrice.Price}</div>
                                 </div>
-                                <input type="text" class="form-control form-control-sm text-center quantity-input" value="1" readonly>
-                                <div class="input-group-append">
-                                <button class="btn btn-outline-secondary btn-increase px-4" type="button">+</button>
+                                <button class="btn btn-sm btn-brand btn-add-product"><i class="fas fa-plus"></i> Add</button>
                                 </div>
-                            </div>
-                            <input type="text" class="form-control form-control-sm dosage-input" placeholder="Dosage & instructions">
-                            </div>
-                            <div class="right-close">
-                            <button class="btn btn-sm btn-danger btn-close-product px-4">×</button>
-                            </div>
-                        </div>
-                        </div>
-                    </li>
-                `);
-                list.append(li);
-            });
+                                <div class="product-extra mt-2">
+                                <div class="form-row w-100 align-items-center px-2">
+                                    <div class="left-controls d-flex flex-column flex-grow-1">
+                                    <div class="input-group input-group-sm mb-1">
+                                        <div class="input-group-prepend">
+                                        <button class="btn btn-outline-secondary btn-decrease px-4" type="button">-</button>
+                                        </div>
+                                        <input type="text" class="form-control quantity-input text-center" value="1" readonly>
+                                        <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary btn-increase px-4" type="button">+</button>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="form-control form-control-sm dosage-input" placeholder="Dosage & instructions">
+                                    </div>
+                                    <div class="right-close ml-2">
+                                    <button class="btn btn-sm btn-danger btn-close-product px-4">×</button>
+                                    </div>
+                                </div>
+                                </div>
+                            </li>
+                        `;
+                    },
+                    empty: `
+        <div class="text-center text-muted my-3">No products found</div>
+      `
+                },
+                transformItems(items) {
+                    // Hide loading spinner once hits are rendered
+                    document.getElementById("loadingState").style.display = "none";
+                    return items;
+                }
+            })
+        );
 
-            const pagingLi = $(`
-                <li class="list-group-item">
-                    <div class="paging-controls">
-                        <button class="btn btn-sm btn-secondary ${currentPage === 1 ? 'disabled' : ''}" id="prevPage"><i class="fas fa-chevron-left"></i> Prev</button>
-                        <span>Page ${currentPage} of ${totalPages}</span>
-                        <button class="btn btn-sm btn-secondary ${currentPage === totalPages ? 'disabled' : ''}" id="nextPage">Next <i class="fas fa-chevron-right"></i></button>
-                    </div>
-                </li>
-            `);
-            list.append(pagingLi);
+        // pagination
+        search.addWidget(
+            instantsearch.widgets.pagination({
+                container: "#pagination"
+            })
+        );
 
-            updateOrderTotal();
-        }
+        search.addWidget(
+            instantsearch.widgets.stats({
+                container: '#searchStats',
+                templates: {
+                    text: function (data) {
+                        return `⚡️ ${data.nbHits} results found in ${data.processingTimeMS}ms`;
+                    }
+                }
+            })
+        );
+
+
+        search.start();
 
         function updateOrderTotal() {
             let total = 0;
             $('#productList .product-extra:visible').each(function () {
-                const parentLi = $(this).closest('li');
+                const li = $(this).closest('li');
                 const quantity = parseInt($(this).find('.quantity-input').val()) || 0;
-                const priceText = parentLi.find('.vendor-price').text().split('৳')[1];
-                const price = parseFloat(priceText) || 0;
+                const price = parseFloat(li.data('price')) || 0;
                 total += quantity * price;
             });
             $('#orderTotal').text('৳' + total);
         }
 
-        $(document).ready(function () {
-            renderProductList();
+        // event handlers
+        $(document).on('click', '.btn-add-product', function () {
+            const li = $(this).closest('li');
+            $(this).hide();
+            li.find('.product-extra').slideDown(updateOrderTotal);
+        });
 
-            $('#productSearch').on('input', function () { currentPage = 1; renderProductList($(this).val()); });
+        $(document).on('click', '.btn-close-product', function () {
+            const li = $(this).closest('li');
+            li.find('.product-extra').slideUp(updateOrderTotal);
+            li.find('.btn-add-product').show();
+            li.find('.quantity-input').val(1);
+            li.find('.dosage-input').val('');
+            updateOrderTotal();
+        });
 
-            $(document).on('click', '.btn-add-product', function () {
-                const parent = $(this).closest('li');
-                $(this).hide();
-                parent.find('.product-extra').slideDown(updateOrderTotal);
-            });
+        $(document).on('click', '.btn-increase', function () {
+            const input = $(this).closest('.input-group').find('.quantity-input');
+            input.val(parseInt(input.val()) + 1);
+            updateOrderTotal();
+        });
 
-            $(document).on('click', '.btn-close-product', function () {
-                const parent = $(this).closest('li');
-                parent.find('.product-extra').slideUp(updateOrderTotal);
-                parent.find('.btn-add-product').show();
-                parent.find('.quantity-input').val(1);
-                parent.find('.dosage-input').val('');
-            });
-
-            $(document).on('click', '.btn-increase', function () {
-                const input = $(this).closest('.input-group').find('.quantity-input');
-                let val = parseInt(input.val()) || 1;
-                input.val(val + 1);
-                updateOrderTotal();
-            });
-
-            $(document).on('click', '.btn-decrease', function () {
-                const input = $(this).closest('.input-group').find('.quantity-input');
-                let val = parseInt(input.val()) || 1;
-                if (val > 1) input.val(val - 1);
-                updateOrderTotal();
-            });
-
-            $(document).on('click', '#prevPage', function () { if (currentPage > 1) { currentPage--; renderProductList($('#productSearch').val()); } });
-            $(document).on('click', '#nextPage', function () {
-                const filtered = products.filter(p => `${p.name} ${p.vendor} ${p.desc}`.toLowerCase().includes($('#productSearch').val().toLowerCase()));
-                const totalPages = Math.ceil(filtered.length / pageSize);
-                if (currentPage < totalPages) { currentPage++; renderProductList($('#productSearch').val()); }
-            });
-
-            $('#savePrescription').on('click', function () { alert('Prescription saved!'); $('#printBtn, #exportPdfBtn').removeClass('d-none'); });
-            $('#saveBackList').on('click', function () { alert('Prescription saved! Returning to list...'); window.location.href = 'prescriptions.html'; });
-            $('#printBtn').on('click', function () { alert('Printing...'); });
-            $('#exportPdfBtn').on('click', function () { alert('Exporting PDF...'); });
+        $(document).on('click', '.btn-decrease', function () {
+            const input = $(this).closest('.input-group').find('.quantity-input');
+            let val = parseInt(input.val());
+            if (val > 1) input.val(val - 1);
+            updateOrderTotal();
         });
     </script>
 </body>
