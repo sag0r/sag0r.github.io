@@ -399,7 +399,15 @@
                                     tabindex="0">
                                     <thead>
                                         <tr>
-                                            <th>Active</th>
+                                            <th>
+                                                <div class="d-flex flex-row">
+                                                    <div>
+                                                        <input type="checkbox" id="activeAll"
+                                                            class="form-check-input" />
+                                                        Active
+                                                    </div>
+                                                </div>
+                                            </th>
                                             <th>Name</th>
                                             <th>Email</th>
                                             <th>Office</th>
@@ -891,12 +899,14 @@
             columns[CB_COL_INDEX] = {
                 data: 'active',
                 className: 'dt-type-checkbox',
+                orderable: false,
+                searchable: false,
                 render: function (data, type, row) {
                     const oldValue = parseInt(data);
                     const isChecked = oldValue == 1 ? "checked" : "";
 
                     return `
-                        <div class="d-flex flex-column justify-content-center align-items-center">
+                        <div class="d-flex flex-column justify-content-center">
                             <input 
                                 type='checkbox' 
                                 class='form-check-input' 
@@ -1339,6 +1349,19 @@
             }
         }
 
+        function changePreviewTableCheckUncheckState(tableEl) {
+            const allRows = tableEl.rows().data().toArray();
+            console.log('all rows', allRows);
+            const active = allRows.filter(r => r.active == 1).length;
+            console.log('active', active);
+
+            if (active == allRows.length) {
+                $('#activeAll').prop('checked', true);
+            } else {
+                $('#activeAll').prop('checked', false);
+            }
+        }
+
         $(document).ready(function () {
 
             IdleSessionManager.init({
@@ -1669,7 +1692,7 @@
                 console.log('previous active tab', event.relatedTarget);
             });
 
-            $('#PreviewDataTable').on('change', 'input[type="checkbox"]', function () {
+            $('#PreviewDataTable').on('change', 'tbody input[type="checkbox"]', function () {
                 const $checkbox = $(this);
                 const isChecked = $checkbox.is(':checked') ? 1 : 0;
 
@@ -1686,6 +1709,28 @@
 
                 // 4. Set the updated data and redraw
                 row.data(rowData).invalidate().draw(false);
+
+                //
+                changePreviewTableCheckUncheckState(table);
+            });
+
+            $('#PreviewDataTable').on('change', '#activeAll', function () {
+                console.log('active all clicked');
+
+                const isChecked = $(this).is(':checked');
+                const table = $('#PreviewDataTable').DataTable();
+
+                table.rows().every(function () {
+                    const cell = this.cell(this.index(), 0);
+                    const data = this.data();
+
+                    data.active = isChecked ? 1 : 0;
+                    this.data(data);
+
+                    cell.invalidate().render('display');
+                });
+
+                table.draw(false);
             });
 
 
