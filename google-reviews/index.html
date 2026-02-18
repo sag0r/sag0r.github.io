@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Google Reviews Widget</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+
+        /* --- BASE WIDGET STYLES --- */
+        .grw-widget-wrapper {
+            font-family: "Oswald", sans-serif;
+            font-optical-sizing: auto;
+            font-style: normal;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            box-sizing: border-box;
+            color: rgb(28, 28, 28);
+        }
+
+        /* --- SECTION TITLE STYLES --- */
+        .grw-section-title h3 {
+            text-align: center;
+            font-size: 42px;
+            font-weight: 400;
+            margin: 20px auto;
+        }
+
+        /* --- HEADER STYLES --- */
+        .grw-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+            background: rgb(248, 248, 248);
+            padding: 24px;
+            border-radius: 8px;
+        }
+
+        .grw-logo-title {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .grw-logo-title svg {
+            height: 32px;
+        }
+
+        .grw-logo-title span {
+            font-weight: 700;
+            font-size: 20px;
+            line-height: 26px;
+            color: rgb(17, 17, 17);
+        }
+
+        .grw-aggregate {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .grw-rating-number {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .grw-stars {
+            display: flex;
+            gap: 0;
+        }
+
+        .grw-stars svg {
+            width: 18px;
+            height: 18px;
+            fill: #fbbc04;
+        }
+
+        .grw-stars svg path {
+            fill: #fbbc04 !important;
+        }
+
+        .grw-stars.summary-stars svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .grw-count {
+            font-size: 12px;
+            line-height: 14px;
+            color: rgba(17, 17, 17, 0.5);
+        }
+
+        .grw-btn {
+            background: #202124;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .grw-btn:hover {
+            background: #3c4043;
+        }
+
+        /* --- CAROUSEL STYLES --- */
+        .grw-carousel-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .grw-track {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            padding: 10px 0;
+            align-items: flex-start;
+            /* FIX 1: Smooth transition added for adaptive height */
+            transition: height 0.3s ease-in-out;
+            /* Hide scrollbar */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .grw-track::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* --- ARROW BUTTONS --- */
+        .grw-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: opacity 0.2s, background 0.2s;
+        }
+
+        .grw-arrow:hover {
+            background: #f8f9fa;
+        }
+
+        .grw-arrow:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .grw-arrow:disabled:hover {
+            background: #fff;
+        }
+
+        .grw-arrow.left {
+            left: -20px;
+        }
+
+        .grw-arrow.right {
+            right: -20px;
+        }
+
+        .grw-arrow svg {
+            width: 24px;
+            height: 24px;
+            fill: #5f6368;
+        }
+
+        /* --- CARD STYLES --- */
+        .grw-card {
+            min-width: 300px;
+            max-width: 300px;
+            background: rgb(248, 248, 248);
+            border: 1px solid rgba(17, 17, 17, 0.1);
+            border-radius: 8px;
+            padding: 22px;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .grw-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .grw-avatar {
+            position: relative;
+            width: 40px;
+            height: 40px;
+        }
+
+        .grw-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .grw-g-badge {
+            position: absolute;
+            bottom: -6px;
+            right: -6px;
+            width: 24px;
+            height: 24px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .grw-g-badge svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .grw-user-meta {
+            flex-grow: 1;
+            line-height: 1.2;
+        }
+
+        .grw-name {
+            font-weight: bold;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .grw-verified svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .grw-date {
+            font-size: 12px;
+            color: #70757a;
+            margin-top: 4px;
+        }
+
+        .grw-snippet {
+            font-size: 16px;
+            color: rgb(17, 17, 17);
+            line-height: 1.5;
+        }
+
+        /* --- PAGINATION DOTS --- */
+        .grw-dots {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 20px;
+        }
+
+        .grw-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #dadce0;
+            transition: background 0.3s;
+        }
+
+        .grw-dot.active {
+            background: #5f6368;
+        }
+
+        @media (max-width: 768px) {
+            .grw-arrow {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="grw-widget-wrapper">
+        <div class="grw-section-title">
+            <h3> Testimonials </h3>
+        </div>
+        <div class="grw-container" id="grw-root"></div>
+    </div>
+
+    <script>
+        const MOCK_DATA = [
+            {
+                "rating": 5,
+                "date": "6 months ago",
+                "isoDate": "2025-08-13T14:27:02.905Z",
+                "snippet": "Saved my life 4 times now! So accommodating and quick, always lower than the competition. He once came out at 11pm and stayed til 2am to make sure I had transportation in the morning. Wonderful service - 11/10 would recommend!",
+                "likes": 0,
+                "user": {
+                    "name": "Taylor Just",
+                    "thumbnail": "https://lh3.googleusercontent.com/a-/ALV-UjVQvgUxAqlMwj8EcInA01wpNQp5byCtsoouvVzQO8ooacytTPg=s64-c-rp-mo-br100",
+                    "link": "https://www.google.com/maps/contrib/103647248903632620384/reviews?hl=en-US",
+                    "reviews": 4,
+                    "photos": 1
+                },
+                "response": {
+                    "date": "2 weeks ago",
+                    "snippet": "Thank you so much for your continued trust and support! It truly means a lot to us. We’re always here whenever you need help."
+                },
+                "link": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT2pWZmQyMVZPR3BaVmpKWGRGcHNNMDVPV2pKVFZsRRAB!2m1!1s0x0:0x1558d9e3ec3fedf5!3m1!1s2@1:CAIQACodChtycF9oOjVfd21VOGpZVjJXdFpsM05OWjJTVlE%7C0cb91qpwJJj%7C?hl=en-US",
+                "id": "Ci9DQUlRQUNvZENodHljRjlvT2pWZmQyMVZPR3BaVmpKWGRGcHNNMDVPV2pKVFZsRRAB"
+            },
+            {
+                "rating": 5,
+                "date": "a week ago",
+                "isoDate": "2026-02-08T19:44:29.913Z",
+                "snippet": "Fast response...super accommodating. Very respectful. My new go to!",
+                "likes": 1,
+                "user": {
+                    "name": "Soni",
+                    "thumbnail": "https://lh3.googleusercontent.com/a/ACg8ocJnX7d2U3Ini9GpZqenQCvUXzLi5W7W8SO84hF-fSslw-sDmg=s64-c-rp-mo-br100",
+                    "link": "https://www.google.com/maps/contrib/108157817844074787835/reviews?hl=en-US",
+                    "reviews": 1,
+                    "photos": 0
+                },
+                "response": {
+                    "date": "a week ago",
+                    "snippet": "Thanks for the love! We're stoked we could exceed your expectations! We'll keep up the good work 🚀"
+                },
+                "link": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT21wTlZDMVhNM2xRWTBGRVMxbEZRV2N6V2w4MWJYYxAB!2m1!1s0x0:0x1558d9e3ec3fedf5!3m1!1s2@1:CAIQACodChtycF9oOmpNVC1XM3lQY0FES1lFQWczWl81bXc%7C0dXDTSqT0e3%7C?hl=en-US",
+                "id": "Ci9DQUlRQUNvZENodHljRjlvT21pTlZDMVhNM2xRWTBGRVMxbEZRV2N6V2w4MWJYYxAB"
+            },
+            {
+                "rating": 5,
+                "date": "3 months ago",
+                "isoDate": "2025-10-22T15:13:08.092Z",
+                "snippet": "Very helpful for a special situation, strongly recommended!",
+                "likes": 1,
+                "user": {
+                    "name": "Acm C",
+                    "thumbnail": "https://lh3.googleusercontent.com/a/ACg8ocKRrg1FTOwCtwUCTbnI576nE3D0YjLejE9nbTnDje77FaWjrg=s64-c-rp-mo-br100",
+                    "link": "https://www.google.com/maps/contrib/106461823086083805385/reviews?hl=en-US",
+                    "reviews": 2,
+                    "photos": 0
+                },
+                "response": {
+                    "date": "2 weeks ago",
+                    "snippet": "Thank you so much for your recommendation! We’re glad we could help and truly appreciate your support"
+                },
+                "link": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT2taYVNHTnBWRVJtWkZWUVVVZzBhR2xFUjFVMldrRRAB!2m1!1s0x0:0x1558d9e3ec3fedf5!3m1!1s2@1:CAIQACodChtycF9oOkZaSGNpVERmZFVQUUg0aGlER1U2WkE%7C0cyEH34UDVR%7C?hl=en-US",
+                "id": "Ci9DQUlRQUNvZENodHljRjlvT2taYVNHTnBWRVJtWkZWUVVVZzBhR2xFUjFVMldrRRAB"
+            },
+            {
+                "rating": 5,
+                "date": "6 months ago",
+                "isoDate": "2025-08-09T21:09:49.256Z",
+                "snippet": "Speedy service, caring and thoughtful. Plus very reasonable prices!",
+                "likes": 1,
+                "user": {
+                    "name": "Keisha Williams",
+                    "thumbnail": "https://lh3.googleusercontent.com/a-/ALV-UjWvc-hCSssePAY4c6B7tCoG33q5tMvWsKdj4if5fNEPim3HZuwuAA=s64-c-rp-mo-ba4-br100",
+                    "link": "https://www.google.com/maps/contrib/106843905945730186734/reviews?hl=en-US",
+                    "reviews": 135,
+                    "photos": 72
+                },
+                "response": {
+                    "date": "6 months ago",
+                    "snippet": "“Thank you so much, Keisha! We’re glad you found our locksmith service speedy, caring, and reasonably priced. At ASAP H Locksmith, we pride ourselves on providing 24/7 emergency locksmith help for car lockouts, home lockouts, and key replacements. We look forward to helping you or your friends anytime you need a trusted, local locksmith.”"
+                },
+                "link": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT20xeVQzWnVZbFJ5YWxwUFVYWTJaVzFzVERKRk1tYxAB!2m1!1s0x0:0x1558d9e3ec3fedf5!3m1!1s2@1:CAIQACodChtycF9oOm1yT3ZuYlRyalpPUXY2ZW1sTDJFMmc%7C0c_vZSEIjch%7C?hl=en-US",
+                "id": "Ci9DQUlRQUNvZENodHljRjlvT20xeVQzWnVZbFJ5YWxwUFVYWTJaVzFzVERKRk1tYxAB"
+            },
+            {
+                "rating": 5,
+                "date": "2 weeks ago",
+                "isoDate": "2026-01-30T20:15:51.686Z",
+                "snippet": "Very good",
+                "likes": 0,
+                "user": {
+                    "name": "Leonardo Jose Figuereo",
+                    "thumbnail": "https://lh3.googleusercontent.com/a/ACg8ocKPU2YZpUUHG8STYPEHgqzZG955GGQkl-aod9M2tY56PaWeXQ=s64-c-rp-mo-br100",
+                    "link": "https://www.google.com/maps/contrib/112975441391942443662/reviews?hl=en-US",
+                    "reviews": 2,
+                    "photos": 0
+                },
+                "response": {
+                    "date": "2 weeks ago",
+                    "snippet": "Thank you, Leonardo! We appreciate your feedback and are glad you had a good experience. Feel free to reach out anytime if you need our services again."
+                },
+                "link": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT2pSVGVrUlZWRXROWlhSUGJVVkhNR3R6Wkc4MExYYxAB!2m1!1s0x0:0x1558d9e3ec3fedf5!3m1!1s2@1:CAIQACodChtycF9oOjRTekRVVEtNZXRPbUVHMGtzZG80LXc%7C0dUG4rct06B%7C?hl=en-US",
+                "id": "Ci9DQUlRQUNvZENodHljRjlvT2pSVGVrUlZWRXROWlhSUGJVVkhNR3R6Wkc4MExYYxAB"
+            },
+            {
+                "rating": 5,
+                "date": "6 months ago",
+                "isoDate": "2025-08-06T23:29:59.257Z",
+                "snippet": "Amazing fast service, affordable price...I recommend it for anyone in need of a locksmith.",
+                "likes": 1,
+                "user": {
+                    "name": "Mr Barbosa",
+                    "thumbnail": "https://lh3.googleusercontent.com/a-/ALV-UjUiT8FwqCoXy3iCR6nwt8XU2R1XIDFfkDuHzstF1UepxaTOsJH4=s64-c-rp-mo-br100",
+                    "link": "https://www.google.com/maps/contrib/105597433409647131565/reviews?hl=en-US",
+                    "reviews": 3,
+                    "photos": 0
+                },
+                "response": {
+                    "date": "6 months ago",
+                    "snippet": "“Thank you so much Mr. Barbosa! We’re glad you were happy with the fast and affordable locksmith service. We’re always ready 24/7 to help with any car lockout, house rekey, or key fob programming in Minneapolis and surrounding areas. Appreciate the recommendation!”"
+                },
+                "link": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT25Gd2NTMDNOV016Y1hKaGExVXljV1ZqVEdORU4xRRAB!2m1!1s0x0:0x1558d9e3ec3fedf5!3m1!1s2@1:CAIQACodChtycF9oOnFwcS03NWMzcXJha1UycWVjTGNEN1E%7C0cZyKrEKo5v%7C?hl=en-US",
+                "id": "Ci9DQUlRQUNvZENodHljRjlvT25Gd2NTMDNOV016Y1hKaGExVXljV1ZqVEdORU4xRRAB"
+            },
+            {
+                "rating": 5,
+                "date": "2 weeks ago",
+                "isoDate": "2026-02-01T19:35:15.176Z",
+                "snippet": "Excellent Locksmith Service – Highly Recommended!\nI recently had an emergency lockout situation and contacted a local locksmith — and I couldn’t be more satisfied with the service. They arrived quickly, were polite and professional, and got me back into my home without damaging the door or lock.",
+                "likes": 0,
+                "user": {
+                    "name": "Luis Toribio",
+                    "thumbnail": "https://lh3.googleusercontent.com/a-/ALV-UjUjXVX7gVXQ7y51dl2OtqSXXrSthCRMxSHEt2fIBRV0w2B_synh=s64-c-rp-mo-ba2-br100",
+                    "link": "https://www.google.com/maps/contrib/105100811334147260664/reviews?hl=en-US",
+                    "reviews": 21,
+                    "photos": 16
+                },
+                "response": {
+                    "date": "2 weeks ago",
+                    "snippet": "Thank you so much, Luis, for your kind review!<br>We’re glad we could assist you quickly and provide a professional, damage-free service.<br>If you ever need a locksmith again, we’re here 24/7"
+                },
+                "link": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT25GUE1IVk9kMTlPV2xscFdFTlJkVTF6YmxGa01sRRAB!2m1!1s0x0:0x1558d9e3ec3fedf5!3m1!1s2@1:CAIQACodChtycF9oOnFPMHVOd19OWllpWENRdU1zblFkMlE%7C0dUufn9VyJk%7C?hl=en-US",
+                "id": "Ci9DQUlRQUNvZENodHljRjlvT25GUE1IVk9kMTlPV2xscFdFTlJkVTF6YmxGa01sRRAB"
+            },
+            {
+                "rating": 5,
+                "date": "a week ago",
+                "isoDate": "2026-02-04T22:03:38.118Z",
+                "likes": 1,
+                "user": {
+                    "name": "hugo Rivas",
+                    "thumbnail": "https://lh3.googleusercontent.com/a/ACg8ocKX9iaN1fQY7Ab0f5xllta3PIMxRFOYb9XhnJrN_picqB-sgg=s64-c-rp-mo-br100",
+                    "link": "https://www.google.com/maps/contrib/117954612982565563983/reviews?hl=en-US",
+                    "reviews": 2,
+                    "photos": 0
+                },
+                "response": {
+                    "date": "a week ago",
+                    "snippet": "Thnak you for using our services! "
+                },
+                "link": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT21ZMlVGZzFVV1ZqYm5CWmJYSkJlRkZNUlRkRVgzYxAB!2m1!1s0x0:0x1558d9e3ec3fedf5!3m1!1s2@1:CAIQACodChtycF9oOmY2UFg1UWVjbnBZbXJBeFFMRTdEX3c%7C0dVw7u61O9C%7C?hl=en-US",
+                "id": "Ci9DQUlRQUNvZENodHljRjlvT21ZMlVGZzFVV1ZqYm5CWmJYSkJlRkZNUlRkRVgzYxAB"
+            }
+        ];
+
+        const DATA_URL = 'https://gist.githubusercontent.com/sag0r/43b853668844114faf09809fc2c5a6f3/raw/c35f753c513bec2bdc498abaf79dba220c1ef3b7/reviews.json';
+
+        const starSVG = `<svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_3796_102578)"><path d="M6.82617 11.442L3.54617 13.166C3.46353 13.2093 3.3704 13.2287 3.27732 13.2219C3.18425 13.2151 3.09494 13.1824 3.0195 13.1274C2.94406 13.0725 2.8855 12.9975 2.85045 12.911C2.8154 12.8245 2.80526 12.7299 2.82117 12.638L3.44817 8.98798C3.46192 8.908 3.456 8.82587 3.43091 8.74869C3.40582 8.67151 3.36232 8.6016 3.30417 8.54499L0.650168 5.95899C0.583317 5.89388 0.53602 5.81136 0.51363 5.72076C0.491239 5.63017 0.494647 5.53512 0.52347 5.44637C0.552292 5.35761 0.605378 5.27869 0.676721 5.21854C0.748065 5.15838 0.834818 5.1194 0.927168 5.10599L4.59317 4.57299C4.67344 4.56146 4.7497 4.53059 4.81537 4.48303C4.88105 4.43547 4.93418 4.37265 4.97017 4.29999L6.61017 0.977985C6.65153 0.894518 6.7154 0.824266 6.79455 0.775151C6.87371 0.726037 6.96501 0.700012 7.05817 0.700012C7.15132 0.700012 7.24263 0.726037 7.32178 0.775151C7.40094 0.824266 7.4648 0.894518 7.50617 0.977985L9.14717 4.29899C9.18307 4.37152 9.23604 4.43426 9.30153 4.48182C9.36702 4.52937 9.44308 4.56031 9.52317 4.57199L13.1892 5.10499C13.2815 5.1184 13.3683 5.15738 13.4396 5.21754C13.511 5.27769 13.564 5.35661 13.5929 5.44537C13.6217 5.53412 13.6251 5.62917 13.6027 5.71976C13.5803 5.81036 13.533 5.89288 13.4662 5.95798L10.8132 8.54398C10.7552 8.60049 10.7118 8.67024 10.6867 8.74723C10.6616 8.82422 10.6556 8.90616 10.6692 8.98598L11.2962 12.637C11.3122 12.7291 11.3021 12.8238 11.267 12.9105C11.232 12.9971 11.1733 13.0722 11.0977 13.1272C11.0221 13.1822 10.9326 13.2149 10.8393 13.2215C10.7461 13.2282 10.6528 13.2086 10.5702 13.165L7.29117 11.441C7.21946 11.4033 7.13967 11.3836 7.05867 11.3836C6.97767 11.3836 6.89788 11.4033 6.82617 11.441V11.442Z" fill="none"></path></g><defs><clipPath id="clip0_3796_102578"><rect width="14" height="14" fill="white"></rect></clipPath></defs></svg>`;
+
+        const googleLogoSVG = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 25" class="injected-svg" data-src="https://static.elfsight.com/icons/app-all-in-one-reviews-icons-google-multicolor-stroke.svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g clip-path="url(#a-2)"><path fill="#fff" stroke="#fff" stroke-linejoin="round" stroke-width="2" d="M11.8 1.5C5.835 1.5 1 6.335 1 12.3v.4c0 5.965 4.835 10.8 10.8 10.8 5.965 0 10.8-4.835 10.8-10.8v-.4c0-5.965-4.835-10.8-10.8-10.8Z"></path><path fill="#2A84FC" d="M21.579 12.734c0-.677-.055-1.358-.172-2.025h-9.403v3.839h5.384a4.614 4.614 0 0 1-1.992 3.029v2.49h3.212c1.886-1.736 2.97-4.3 2.97-7.333Z"></path><path fill="#00AC47" d="M12.004 22.474c2.688 0 4.956-.882 6.608-2.406l-3.213-2.491c-.893.608-2.047.952-3.392.952-2.6 0-4.806-1.754-5.597-4.113H3.095v2.567a9.97 9.97 0 0 0 8.909 5.491Z"></path><path fill="#FFBA00" d="M6.407 14.416a5.971 5.971 0 0 1 0-3.817V8.03H3.095a9.977 9.977 0 0 0 0 8.952l3.312-2.567Z"></path><path fill="#FC2C25" d="M12.004 6.482a5.417 5.417 0 0 1 3.824 1.494l2.846-2.846a9.581 9.581 0 0 0-6.67-2.593A9.967 9.967 0 0 0 3.095 8.03l3.312 2.57c.787-2.363 2.996-4.117 5.597-4.117Z"></path></g><defs><clipPath id="a-2"><path fill="#fff" d="M0 0h24v24H0z" transform="translate(0 .5)"></path></clipPath></defs></svg>`;
+
+        const verifiedSVG = `<svg viewBox="0 0 24 24"><path fill="#202124" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>`;
+
+        const leftArrowSVG = `<svg viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>`;
+
+        const rightArrowSVG = `<svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>`;
+
+        async function fetchReviewData() {
+            try {
+                const response = await fetch(DATA_URL);
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                return MOCK_DATA;
+            }
+        }
+
+        async function renderWidget() {
+            const reviewData = await fetchReviewData();
+
+            const totalReviews = reviewData.reduce((sum, review) => sum + (review?.response && review?.response?.snippet ? 2 : 1), 0);
+            const ratingSum = reviewData.reduce((sum, review) => sum + review.rating, 0);
+
+            const config = {
+                totalReviews,
+                aggregateRating: Number(ratingSum / reviewData.length).toFixed(2),
+                googleMapsLink: "https://search.google.com/local/writereview?placeid=ChIJ2U6Ca2iFdAER9e0_7OPZWBU"
+            };
+
+            const root = document.getElementById('grw-root');
+
+            let html = `
+                <div class="grw-header">
+                    <div>
+                        <div class="grw-logo-title">${googleLogoSVG} <span>Reviews</span></div>
+                        <div class="grw-aggregate">
+                            <span class="grw-rating-number">${config.aggregateRating}</span>
+                            <div class="grw-stars summary-stars">${starSVG.repeat(5)}</div>
+                            <span class="grw-count">(${config.totalReviews})</span>
+                        </div>
+                        </div>
+                        <a href="${config.googleMapsLink}" target="_blank" class="grw-btn">Review us on Google</a>
+                    </div>
+                    <div class="grw-carousel-wrapper">
+                        <button class="grw-arrow left" id="grw-prev" onclick="grwScroll(-320)" disabled>${leftArrowSVG}</button>
+                        <div class="grw-track" id="grw-track">
+                `;
+
+            reviewData.forEach(review => {
+                const avatarSrc = review.user.thumbnail || 'https://via.placeholder.com/40x40.png?text=' + review.user.name.charAt(0);
+
+                html += `
+                    <div class="grw-card">
+                    <div class="grw-card-header">
+                        <div class="grw-avatar">
+                        <img src="${avatarSrc}" alt="${review.user.name}">
+                        <div class="grw-g-badge">${googleLogoSVG}</div>
+                        </div>
+                        <div class="grw-user-meta">
+                        <div class="grw-name">${review.user.name} <span class="grw-verified">${verifiedSVG}</span></div>
+                        <div class="grw-date">${review.date}</div>
+                        </div>
+                    </div>
+                    <div class="grw-stars">${starSVG.repeat(review.rating)}</div>
+                    <div class="grw-snippet">${review.snippet}</div>
+                    </div>
+                `;
+            });
+
+            html += `
+                </div>
+                    <button class="grw-arrow right" id="grw-next" onclick="grwScroll(320)">${rightArrowSVG}</button>
+                </div>
+                <div class="grw-dots">
+                    ${reviewData.map((_, i) => `<div class="grw-dot ${i === 0 ? 'active' : ''}"></div>`).join('')}
+                </div>
+            `;
+
+            root.innerHTML = html;
+
+            // Initialize the carousel logic AFTER the DOM elements have been safely injected
+            initCarousel();
+        }
+
+        window.grwScroll = function (offset) {
+            const track = document.getElementById('grw-track');
+            if (track) {
+                track.scrollBy({ left: offset, behavior: 'smooth' });
+            }
+        };
+
+        function initCarousel() {
+            const track = document.getElementById('grw-track');
+            const prevBtn = document.getElementById('grw-prev');
+            const nextBtn = document.getElementById('grw-next');
+            const dots = document.querySelectorAll('.grw-dot');
+
+            if (!track) return;
+
+            const updateCarouselState = () => {
+                const scrollPos = track.scrollLeft;
+                const scrollWidth = track.scrollWidth;
+                const clientWidth = track.clientWidth;
+
+                // 1. Update Button States
+                // FIX: Check if scroll is back at 0 (or within 5px tolerance)
+                prevBtn.disabled = scrollPos <= 5;
+
+                // Disable next button if we've reached the end of the scrollable area
+                const isAtEnd = Math.ceil(scrollPos + clientWidth) >= scrollWidth - 5;
+                nextBtn.disabled = isAtEnd;
+
+                // 2. Update Dots (FIX 2: Percentage-based calculation)
+                let activeIndex = 0;
+                if (scrollWidth > clientWidth) {
+                    const maxScroll = scrollWidth - clientWidth;
+                    const scrollPercentage = scrollPos / maxScroll;
+
+                    // Maps the scroll percentage to the exact dot index
+                    activeIndex = Math.round(scrollPercentage * (dots.length - 1));
+                }
+
+                // Safety bound check
+                if (activeIndex < 0) activeIndex = 0;
+                if (activeIndex >= dots.length) activeIndex = dots.length - 1;
+
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === activeIndex);
+                });
+
+                // 3. Update Adaptive Height (FIX 1)
+                updateTrackHeight();
+            };
+
+            // FIX 1: Logic to dynamically measure and apply height based on visible cards
+            const updateTrackHeight = () => {
+                const cards = track.querySelectorAll('.grw-card');
+                const trackRect = track.getBoundingClientRect();
+                let maxHeight = 0;
+
+                cards.forEach(card => {
+                    const cardRect = card.getBoundingClientRect();
+                    // Check if card is currently visible inside the track (with a 15px buffer)
+                    const isVisible = (cardRect.right > trackRect.left + 15) && (cardRect.left < trackRect.right - 15);
+
+                    if (isVisible) {
+                        maxHeight = Math.max(maxHeight, card.offsetHeight);
+                    }
+                });
+
+                if (maxHeight > 0) {
+                    track.style.height = `${maxHeight}px`;
+                }
+            };
+
+            // Attach the listener so it fires on button clicks AND natural swiping
+            track.addEventListener('scroll', updateCarouselState);
+            window.addEventListener('resize', updateCarouselState); // Recalculate if user rotates phone
+
+            // Fire after a brief timeout so DOM and images render their heights correctly before measuring
+            setTimeout(updateCarouselState, 150);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderWidget();
+        });
+    </script>
+
+</body>
+
+</html>
