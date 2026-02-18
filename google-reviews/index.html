@@ -127,6 +127,7 @@
             display: flex;
             gap: 20px;
             overflow-x: auto;
+            overflow-y: hidden;
             scroll-snap-type: x mandatory;
             scroll-behavior: smooth;
             padding: 10px 0;
@@ -191,8 +192,8 @@
 
         /* --- CARD STYLES --- */
         .grw-card {
-            min-width: 300px;
-            max-width: 300px;
+            min-width: 90%;
+            max-width: 90%;
             background: rgb(248, 248, 248);
             border: 1px solid rgba(17, 17, 17, 0.1);
             border-radius: 8px;
@@ -294,6 +295,27 @@
         @media (max-width: 768px) {
             .grw-arrow {
                 display: none;
+            }
+        }
+
+        @media (min-width: 560px) {
+            .grw-card {
+                min-width: 40%;
+                max-width: 40%;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .grw-card {
+                min-width: 25%;
+                max-width: 25%;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .grw-card {
+                min-width: 18.55%;
+                max-width: 18.55%;
             }
         }
     </style>
@@ -484,12 +506,20 @@
         const rightArrowSVG = `<svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>`;
 
         async function fetchReviewData() {
+            let result = [];
+
             try {
                 const response = await fetch(DATA_URL);
                 const data = await response.json();
-                return data;
+                result = data;
             } catch (error) {
-                return MOCK_DATA;
+                result = MOCK_DATA;
+            } finally {
+                const cleaned = result.map(review => ({
+                    ...review,
+                    snippet: review.snippet || '👍👍👍',
+                }));
+                return cleaned;
             }
         }
 
@@ -619,7 +649,7 @@
                 cards.forEach(card => {
                     const cardRect = card.getBoundingClientRect();
                     // Check if card is currently visible inside the track (with a 15px buffer)
-                    const isVisible = (cardRect.right > trackRect.left + 15) && (cardRect.left < trackRect.right - 15);
+                    const isVisible = (cardRect.right > trackRect.left + 105) && (cardRect.left < trackRect.right - 105);
 
                     if (isVisible) {
                         maxHeight = Math.max(maxHeight, card.offsetHeight);
